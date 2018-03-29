@@ -1,7 +1,7 @@
 import { JsonLD } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
 import { measure, MapBounds } from '@toba/map';
-import { Photo, VideoInfo, LinkDataModel } from './';
+import { Photo, VideoInfo, LinkDataModel } from '../';
 import { forPost } from './json-ld';
 import { fromTimeStamp } from '../util/time';
 import config from '../config';

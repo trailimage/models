@@ -1,7 +1,7 @@
 import { is } from '@toba/tools';
 import { JsonLD } from '@toba/json-ld';
 import { forCategory } from './json-ld';
-import { Post, LinkDataModel } from './';
+import { Post, LinkDataModel } from '../';
 
 /**
  * Category contains posts.

@@ -8,7 +8,7 @@ import {
    place
 } from '@toba/json-ld';
 import { is } from '@toba/tools';
-import { Category, Post, photoBlog, VideoInfo } from './';
+import { Category, Post, photoBlog, VideoInfo } from '../';
 import config from '../config';
 
 export { serialize } from '@toba/json-ld';

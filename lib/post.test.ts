@@ -1,4 +1,4 @@
-import { Post, photoBlog } from './';
+import { Post, photoBlog } from '../';
 import { makePhotoBlog } from '../factory/';
 let post1: Post = null;
 let post2: Post = null;

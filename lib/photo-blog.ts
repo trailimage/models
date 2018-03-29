@@ -1,5 +1,5 @@
 import { removeItem, is } from '@toba/tools';
-import { Post, Category, Photo, EXIF } from './';
+import { Post, Category, Photo, EXIF } from '../';
 
 /**
  * Singleton collection of photos grouped into "posts" (called a "set" or

@@ -1,6 +1,5 @@
 import '@toba/test';
-import { makePhotoBlog } from '../factory/';
-import { Category, Post, photoBlog } from './';
+import { Category, Post, photoBlog } from '../';
 
 let post: Post = null;
 let category: Category = null;
