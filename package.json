@@ -1,6 +1,6 @@
 {
    "name": "@trailimage/models",
-   "version": "1.0.0-alpha.1",
+   "version": "1.0.0-alpha.2",
    "description": "Trail Image models",
    "private": false,
    "author": {
@@ -11,7 +11,17 @@
    "publishConfig": {
       "access": "public"
    },
-   "files": ["index.ts"],
+   "main": "index.ts",
+   "files": [
+      "category.ts",
+      "exif.ts",
+      "json-ld.ts",
+      "photo-blog.ts",
+      "photo-size.ts",
+      "photo.ts",
+      "post.ts",
+      "video-info.ts"
+   ],
    "scripts": {
       "test": "jest --coverage"
    },
