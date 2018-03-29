@@ -8,5 +8,5 @@
 # Usage
 
 ```
-yarn add @trailimage/models --dev
+yarn add @trailimage/models
 ```

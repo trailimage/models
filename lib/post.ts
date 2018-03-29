@@ -1,10 +1,9 @@
 import { JsonLD } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
 import { measure, MapBounds } from '@toba/map';
-import { Photo, VideoInfo, LinkDataModel } from '../';
-import { forPost } from './json-ld';
-import { fromTimeStamp } from '../util/time';
-import config from '../config';
+import { Photo, VideoInfo, config } from '../';
+import { forPost, LinkDataModel } from './json-ld';
+// import { fromTimeStamp } from '../util/time';
 
 export class Post extends LinkDataModel<JsonLD.BlogPosting> {
    id: string = null;
@@ -142,9 +141,7 @@ export class Post extends LinkDataModel<JsonLD.BlogPosting> {
    name(): string {
       return (
          this.title +
-         (this.isPartial
-            ? config.library.subtitleSeparator + ' ' + this.subTitle
-            : '')
+         (this.isPartial ? config.subtitleSeparator + ' ' + this.subTitle : '')
       );
    }
 
@@ -159,13 +156,13 @@ export class Post extends LinkDataModel<JsonLD.BlogPosting> {
       const locations: number[][] = [];
       const bounds: MapBounds = { sw: [0, 0], ne: [0, 0] };
 
-      if (total > config.map.maxMarkers) {
-         start = 5; // skip the first few which are often just prep shots
-         total = config.map.maxMarkers + 5;
-         if (total > this.photos.length) {
-            total = this.photos.length;
-         }
-      }
+      // if (total > config.map.maxMarkers) {
+      //    start = 5; // skip the first few which are often just prep shots
+      //    total = config.map.maxMarkers + 5;
+      //    if (total > this.photos.length) {
+      //       total = this.photos.length;
+      //    }
+      // }
 
       for (let i = start; i < total; i++) {
          const img = this.photos[i];
@@ -190,7 +187,7 @@ export class Post extends LinkDataModel<JsonLD.BlogPosting> {
       }
       this.photoLocations = locations.length > 0 ? locations : null;
       this.bounds = bounds;
-      this.centroid = measure.centroid(locations);
+      //this.centroid = measure.centroid(locations);
    }
 
    linkDataJSON(): JsonLD.BlogPosting {

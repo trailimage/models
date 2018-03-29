@@ -1,12 +1,12 @@
 import { is } from '@toba/tools';
 import { JsonLD } from '@toba/json-ld';
-import { forCategory } from './json-ld';
-import { Post, LinkDataModel } from '../';
+import { forCategory, LinkDataModel } from './json-ld';
+import { Post } from '../index';
 
 /**
- * Category contains posts.
+ * Post category.
  */
-export class Category extends LinkDataModel<JsonLD.Blog | JsonLD.WebPage> {
+export class Category extends LinkDataModel<any> {
    title: string = null;
    key: string = null;
    subcategories: Category[] = [];

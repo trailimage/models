@@ -1,10 +1,8 @@
 import { Post, photoBlog } from '../';
-import { makePhotoBlog } from '../factory/';
 
 let post: Post = null;
 
 beforeAll(async () => {
-   await makePhotoBlog();
    post = photoBlog.postWithID('72157666685116730');
    await post.getPhotos();
 });

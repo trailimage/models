@@ -1,12 +1,31 @@
 import { Post, photoBlog } from '../';
-import { makePhotoBlog } from '../factory/';
-let post1: Post = null;
-let post2: Post = null;
+
+interface TestData {
+   key: string;
+   title: string;
+   nextKey?: string;
+   prevKey?: string;
+}
+
+const posts: Post[] = [];
+const testData: TestData[] = [
+   { key: 'key1', title: 'Title 1', nextKey: 'key2' },
+   { key: 'key2', title: 'Title 2' },
+   { key: 'key3', title: 'Title 3', nextKey: 'key1' },
+   { key: 'key4', title: 'Title 4', prevKey: 'key1' }
+];
 
 beforeAll(async () => {
-   await makePhotoBlog();
-   post1 = photoBlog.postWithID('72157666685116730');
-   post2 = photoBlog.postWithKey('owyhee-snow-and-sand/lowlands');
+   testData.forEach(d => {
+      const c = new Post();
+      posts.push(c);
+      // if (d.parentKey) {
+      //    const parent = categories.find(c => c.key == d.parentKey);
+      //    if (parent) {
+      //       parent.add(c);
+      //    }
+      // }
+   });
 });
 
 test.skip('normalizes provider values', () => {

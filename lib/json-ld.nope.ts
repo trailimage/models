@@ -5,7 +5,6 @@ let post: Post = null;
 let category: Category = null;
 
 beforeAll(async () => {
-   await makePhotoBlog();
    post = photoBlog.postWithID('72157666685116730');
    category = photoBlog.categoryWithKey('what');
    await post.getPhotos();

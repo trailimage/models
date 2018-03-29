@@ -5,11 +5,11 @@ import {
    breadcrumb,
    organization,
    webPage,
-   place
+   place,
+   serialize
 } from '@toba/json-ld';
 import { is } from '@toba/tools';
-import { Category, Post, photoBlog, VideoInfo } from '../';
-import config from '../config';
+import { Category, Post, photoBlog, VideoInfo, config } from '../';
 
 export { serialize } from '@toba/json-ld';
 
@@ -22,6 +22,13 @@ const configPage = (path: string = '') => webPage(pathUrl(path));
 
 const configOrg = () =>
    organization(config.site.title, config.site.companyLogo);
+
+export abstract class LinkDataModel<T extends JsonLD.Thing> {
+   abstract linkDataJSON(): T;
+   linkDataString(): string {
+      return serialize(this.linkDataJSON());
+   }
+}
 
 export function owner(): JsonLD.Person {
    return ld<JsonLD.Person>('Person', {

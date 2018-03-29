@@ -1,5 +1,5 @@
 import { is } from '@toba/tools';
-import re from '../regex';
+//import re from '../regex';
 
 export class EXIF {
    artist: string = null;
@@ -18,7 +18,8 @@ export class EXIF {
          return this;
       }
 
-      if (is.value(this.artist) && re.artist.test(this.artist)) {
+      if (is.value(this.artist)) {
+         // } && re.artist.test(this.artist)) {
          // only sanitize EXIF for photos shot by known artists
          this.model = camera(this.model);
          this.lens = lens(this.lens, this.model);
