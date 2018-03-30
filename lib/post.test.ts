@@ -1,32 +1,33 @@
-import { Post, photoBlog } from '../';
+import { Post } from '../';
 import { photos } from './photo.test';
 import { categories } from './category.test';
 
 interface TestData {
    key: string;
    title: string;
-   nextKey?: string;
-   prevKey?: string;
    seriesKey?: string;
 }
 
 const posts: Post[] = ([
-   { key: 'key0', title: 'Title 1', nextKey: 'key1', seriesKey: 'series1' },
-   { key: 'key1', title: 'Title 2', nextKey: 'key2', seriesKey: 'series1' },
-   { key: 'key2', title: 'Title 3', nextKey: 'key3', seriesKey: 'series1' },
+   { key: 'key0', title: 'Title 1', seriesKey: 'series1' },
+   { key: 'key1', title: 'Title 2', seriesKey: 'series1' },
+   { key: 'key2', title: 'Title 3', seriesKey: 'series1' },
    { key: 'key3', title: 'Title 4' }
-] as TestData[]).map(d => {
+] as TestData[]).map((d, index) => {
    const p = new Post();
    p.key = d.key;
    p.title = d.title;
    p.photos = photos;
-   p.categories = categories.reduce(
-      (hash, c) => {
-         hash[c.key] = c.title;
-         return hash;
-      },
-      {} as { [key: string]: string }
-   );
+   if (index != 3) {
+      // assign no categories to key3
+      p.categories = categories.reduce(
+         (hash, c) => {
+            hash[c.key] = c.title;
+            return hash;
+         },
+         {} as { [key: string]: string }
+      );
+   }
    return p;
 });
 
@@ -43,6 +44,11 @@ const posts: Post[] = ([
 test('can be matched to a key', () => {
    expect(posts[0].hasKey('blah')).toBe(false);
    expect(posts[1].hasKey('key1')).toBe(true);
+});
+
+test('identifies category membership', () => {
+   expect(posts[0].hasCategories).toBe(true);
+   expect(posts[3].hasCategories).toBe(false);
 });
 
 // test('is linked to next and previous posts', () => {

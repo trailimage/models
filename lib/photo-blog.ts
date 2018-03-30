@@ -28,7 +28,7 @@ class PhotoBlog {
    getEXIF: (photoID: string) => Promise<EXIF>;
 
    /**
-    * Add post to library and link with adjacent posts
+    * Add post to library and link with adjacent posts.
     */
    addPost(p: Post) {
       // exit if post with same ID is already present

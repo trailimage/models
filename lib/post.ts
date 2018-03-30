@@ -96,7 +96,7 @@ export class Post extends LinkDataModel<JsonLD.BlogPosting> {
    }
 
    /**
-    * Whether item matches key
+    * Whether key matches series or non-series post.
     */
    hasKey(key: string): boolean {
       return (
