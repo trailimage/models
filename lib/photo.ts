@@ -1,6 +1,7 @@
 import { is } from '@toba/tools';
 import { geoJSON } from '@toba/map';
-import { PhotoSize, EXIF, IMappable } from '../';
+import { IMappable } from './mappable';
+import { PhotoSize, EXIF } from '../';
 
 export class Photo implements IMappable<GeoJSON.Point> {
    id: string = null;
@@ -32,7 +33,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
    }
 
    // comma-delimited list of tags
-   get tagList(this: Photo): string {
+   get tagList(): string {
       return this.tags.join(',');
    }
 
@@ -72,6 +73,7 @@ export function identifyOutliers(photos: Photo[]) {
          ? values[half]
          : (values[half - 1] + values[half]) / 2.0;
    };
+
    const boundary = (values: number[], distance?: number) => {
       if (!is.array(values) || values.length === 0) {
          return null;
