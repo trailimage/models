@@ -1,4 +1,4 @@
-interface ImageConfig {
+export interface ImageConfig {
    url: string;
    height: number;
    width: number;
@@ -28,4 +28,8 @@ export interface Configuration {
    owner: OwnerConfig;
 }
 
-export let config: Configuration;
+export const config: Configuration = {
+   subtitleSeparator: ':',
+   site: null,
+   owner: null
+};

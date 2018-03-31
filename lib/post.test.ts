@@ -8,7 +8,7 @@ interface TestData {
    seriesKey?: string;
 }
 
-const posts: Post[] = ([
+export const posts: Post[] = ([
    { key: 'key0', title: 'Title 1', seriesKey: 'series1' },
    { key: 'key1', title: 'Title 2', seriesKey: 'series1' },
    { key: 'key2', title: 'Title 3', seriesKey: 'series1' },

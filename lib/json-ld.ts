@@ -138,7 +138,9 @@ export function forPost(p: Post): JsonLD.BlogPosting {
       name: p.title,
       headline: p.title,
       description: p.description,
-      image: image(p.coverPhoto.size.normal),
+      image: is.value(p.coverPhoto)
+         ? image(p.coverPhoto.size.normal)
+         : undefined,
       publisher: configOrg(),
       mainEntityOfPage: configPage(p.key),
       datePublished: p.createdOn,
@@ -160,7 +162,7 @@ export function forPost(p: Post): JsonLD.BlogPosting {
    //	content.keywords = config.alwaysKeywords + post.photoTagList;
    //}
 
-   if (is.value(p.coverPhoto.size.thumb)) {
+   if (is.value(p.coverPhoto) && is.value(p.coverPhoto.size.thumb)) {
       (schema.image as JsonLD.ImageObject).thumbnail = image(
          p.coverPhoto.size.thumb
       );

@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`creates link data for categories 1`] = `
+Object {
+  "@context": "http://schema.org",
+  "@id": "key0",
+  "@type": "WebPage",
+  "breadcrumb": Array [
+    Object {
+      "@context": "http://schema.org",
+      "@type": "BreadcrumbList",
+      "item": Object {
+        "id": "http://www.test.com",
+        "name": "Home",
+      },
+      "position": 1,
+    },
+    Object {
+      "@context": "http://schema.org",
+      "@type": "BreadcrumbList",
+      "item": Object {
+        "id": "http://www.test.com/key0",
+        "name": "Title 1",
+      },
+      "position": 2,
+    },
+  ],
+  "name": "Title 1",
+  "publisher": Object {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "logo": Object {
+      "@context": "http://schema.org",
+      "@type": "ImageObject",
+      "height": 100,
+      "url": "http://test.com/image.jpg",
+      "width": 100,
+    },
+    "name": "Test Site",
+  },
+}
+`;
