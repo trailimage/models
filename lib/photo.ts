@@ -1,6 +1,5 @@
 import { is } from '@toba/tools';
-import { geoJSON } from '@toba/map';
-import { IMappable } from './mappable';
+import { geoJSON, IMappable } from '@toba/map';
 import { PhotoSize, EXIF } from '../';
 
 export class Photo implements IMappable<GeoJSON.Point> {
