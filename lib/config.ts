@@ -23,11 +23,21 @@ export interface SiteConfig {
 }
 
 export interface Configuration {
+   /**
+    * Character(s) to be placed between post titles and subtitles.
+    */
    subtitleSeparator: string;
+   /**
+    * Regular expression to match photo artists whose EXIF should be normalized.
+    */
+   artistNamePattern?: RegExp;
    site: SiteConfig;
    owner: OwnerConfig;
 }
 
+/**
+ * Configuration singleton.
+ */
 export const config: Configuration = {
    subtitleSeparator: ':',
    site: null,

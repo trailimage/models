@@ -11,17 +11,32 @@ export const categories: Category[] = ([
    { key: 'key1', title: 'Title 2' },
    { key: 'key2', title: 'Title 3', parentKey: 'key0' },
    { key: 'key3', title: 'Title 4', parentKey: 'key0' }
-] as TestData[]).map(d => {
-   const c = new Category(d.key, d.title);
-   if (d.parentKey) {
-      // const parent = categories.find(c => c.key == d.parentKey);
-      // if (parent) {
-      //    parent.add(c);
-      // }
-   }
-   return c;
+] as TestData[]).reduce(
+   (out, d) => {
+      const c = new Category(d.key, d.title);
+      if (d.parentKey) {
+         const parent = out.find(c => c.key == d.parentKey);
+         if (parent) {
+            parent.add(c);
+         }
+      } else {
+         out.push(c);
+      }
+      return out;
+   },
+   [] as Category[]
+);
+
+test('assigns subcategories', () => {
+   expect(categories[0]).toBeDefined();
+   expect(categories[0].isParent).toBe(true);
+   expect(categories[0].subcategories[0].isChild).toBe(true);
 });
 
-test('category', () => {
-   expect(categories[0]).toBeDefined();
+test('finds subcategories', () => {
+   expect(categories[0].getSubcategory('key0/key2')).toBeDefined();
+   expect(categories[0].getSubcategory('key0/key8')).not.toBeDefined();
+
+   expect(categories[0].has('key0/key2')).toBe(true);
+   expect(categories[0].has('key0/key9')).toBe(false);
 });

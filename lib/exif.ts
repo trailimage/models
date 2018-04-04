@@ -1,5 +1,5 @@
 import { is } from '@toba/tools';
-//import re from '../regex';
+import { config } from './config';
 
 export class EXIF {
    artist: string = null;
@@ -18,8 +18,11 @@ export class EXIF {
          return this;
       }
 
-      if (is.value(this.artist)) {
-         // } && re.artist.test(this.artist)) {
+      if (
+         is.value(this.artist) &&
+         is.value(config.artistNamePattern) &&
+         config.artistNamePattern.test(this.artist)
+      ) {
          // only sanitize EXIF for photos shot by known artists
          this.model = camera(this.model);
          this.lens = lens(this.lens, this.model);
@@ -98,9 +101,5 @@ const software = (text: string) =>
            .replace('Photoshop Lightroom', 'Lightroom')
            .replace(/\s*\(Windows\)/, '');
 
-const compensation = (text: string | number) => {
-   if (text == '0') {
-      text = 'No';
-   }
-   return text as string;
-};
+const compensation = (text: string | number) =>
+   text == '0' ? 'No' : text.toString();
