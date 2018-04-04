@@ -1,4 +1,5 @@
 import { removeItem, is } from '@toba/tools';
+import { ISyndicate, AtomFeed } from '@toba/feed';
 import { Post, Category, Photo, EXIF } from '../';
 
 /**
@@ -6,7 +7,7 @@ import { Post, Category, Photo, EXIF } from '../';
  * "album" in most providers) that are in turn assigned categories. Additional
  * library methods are added by the factory.
  */
-class PhotoBlog {
+class PhotoBlog implements ISyndicate {
    categories: { [key: string]: Category } = {};
    posts: Post[] = [];
    tags: { [key: string]: string } = {};
@@ -241,6 +242,33 @@ class PhotoBlog {
          }
          p = p.previous;
       }
+   }
+
+   feedJSON(): AtomFeed {
+      return {
+         id: '',
+         title: 'Main Title',
+         subtitle: '',
+         link: {
+            href: ''
+         },
+         author: {
+            name: 'Who'
+         },
+         entry: this.posts.map(p => ({
+            id: p.id,
+            title: p.title,
+            link: { href: '' },
+            published: new Date(),
+            updated: new Date(),
+            summary: '',
+            contributor: {
+               name: 'Who'
+            },
+            content: ''
+         })
+
+      };
    }
 }
 

@@ -45,6 +45,7 @@
       "tabWidth": 3
    },
    "dependencies": {
+      "@toba/feed": "^1.0.1",
       "@toba/json-ld": "^1.0.5",
       "@toba/map": "^1.0.4",
       "@toba/tools": "^1.16.0"
