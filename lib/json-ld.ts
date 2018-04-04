@@ -23,13 +23,6 @@ const configPage = (path: string = '') => webPage(pathUrl(path));
 const configOrg = () =>
    organization(config.site.title, config.site.companyLogo);
 
-export abstract class LinkDataModel<T extends JsonLD.Thing> {
-   abstract linkDataJSON(): T;
-   linkDataString(): string {
-      return serialize(this.linkDataJSON());
-   }
-}
-
 export function owner(): JsonLD.Person {
    return ld<JsonLD.Person>('Person', {
       name: config.owner.name,

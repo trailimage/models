@@ -7,7 +7,7 @@ import { Post, Category, Photo, EXIF } from '../';
  * "album" in most providers) that are in turn assigned categories. Additional
  * library methods are added by the factory.
  */
-class PhotoBlog implements ISyndicate {
+export class PhotoBlog implements ISyndicate {
    categories: { [key: string]: Category } = {};
    posts: Post[] = [];
    tags: { [key: string]: string } = {};
@@ -266,8 +266,7 @@ class PhotoBlog implements ISyndicate {
                name: 'Who'
             },
             content: ''
-         })
-
+         }))
       };
    }
 }

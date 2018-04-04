@@ -1,6 +1,6 @@
 {
    "name": "@trailimage/models",
-   "version": "1.0.0-alpha.2",
+   "version": "1.0.0-alpha.4",
    "description": "Trail Image models",
    "private": false,
    "author": {
@@ -16,6 +16,7 @@
       "category.ts",
       "config.ts",
       "exif.ts",
+      "factory.ts",
       "json-ld.ts",
       "photo-blog.ts",
       "photo-size.ts",

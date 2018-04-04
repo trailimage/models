@@ -1,12 +1,12 @@
-import { is } from '@toba/tools';
-import { JsonLD } from '@toba/json-ld';
-import { forCategory, LinkDataModel } from './json-ld';
+import { is, removeItem } from '@toba/tools';
+import { JsonLD, LinkData } from '@toba/json-ld';
+import { forCategory } from './json-ld';
 import { Post } from '../index';
 
 /**
  * Post category.
  */
-export class Category extends LinkDataModel<any> {
+export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
    title: string = null;
    key: string = null;
    subcategories: Category[] = [];
@@ -50,10 +50,7 @@ export class Category extends LinkDataModel<any> {
     * Remove post from category and subcategories (primarily for testing)
     */
    removePost(post: Post): Category {
-      const index = this.posts.indexOf(post);
-      if (index >= 0) {
-         this.posts.splice(index, 1);
-      }
+      removeItem(this.posts, post);
       this.subcategories.forEach(s => {
          s.removePost(post);
       });

@@ -1,7 +1,7 @@
-import { JsonLD } from '@toba/json-ld';
-import { forVideo, LinkDataModel } from './json-ld';
+import { JsonLD, LinkData } from '@toba/json-ld';
+import { forVideo } from './json-ld';
 
-export class VideoInfo extends LinkDataModel<JsonLD.VideoObject> {
+export class VideoInfo extends LinkData<JsonLD.VideoObject> {
    id: string = null;
    width: number = 0;
    height: number = 0;

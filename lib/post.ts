@@ -1,11 +1,11 @@
-import { JsonLD } from '@toba/json-ld';
+import { JsonLD, LinkData } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
 import { measure, MapBounds } from '@toba/map';
 import { Photo, VideoInfo, config } from '../';
-import { forPost, LinkDataModel } from './json-ld';
+import { forPost } from './json-ld';
 // import { fromTimeStamp } from '../util/time';
 
-export class Post extends LinkDataModel<JsonLD.BlogPosting> {
+export class Post extends LinkData<JsonLD.BlogPosting> {
    id: string = null;
    key: string = null;
    title: string = null;

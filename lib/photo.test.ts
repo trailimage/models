@@ -1,4 +1,4 @@
-import { Post, Photo, photoBlog } from '../';
+import { Photo } from '../';
 import { sizes } from './photo-size.test';
 
 interface TestData {
