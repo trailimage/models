@@ -1,5 +1,5 @@
 export { Post } from './lib/post';
-export { Photo } from './lib/photo';
+export { Photo, identifyOutliers } from './lib/photo';
 export { Category } from './lib/category';
 export { PhotoSize } from './lib/photo-size';
 export { photoBlog } from './lib/photo-blog';

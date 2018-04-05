@@ -27,19 +27,27 @@ export interface Configuration {
     * Character(s) to be placed between post titles and subtitles.
     */
    subtitleSeparator: string;
+
    /**
     * Regular expression to match photo artists whose EXIF should be normalized.
     */
    artistNamePattern?: RegExp;
+
+   /**
+    * Maximum number of photograph markers to render on map.
+    */
+   maxPhotoMarkersOnMap: number;
+
    site: SiteConfig;
    owner: OwnerConfig;
 }
 
 /**
- * Configuration singleton.
+ * `Configuration` singleton.
  */
 export const config: Configuration = {
    subtitleSeparator: ':',
+   maxPhotoMarkersOnMap: 100,
    site: null,
    owner: null
 };

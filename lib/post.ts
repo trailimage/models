@@ -1,6 +1,6 @@
 import { JsonLD, LinkData } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
-import { measure, MapBounds } from '@toba/map';
+import { measure, MapBounds, Location } from '@toba/map';
 import { Photo, VideoInfo, config } from '../';
 import { forPost } from './json-ld';
 // import { fromTimeStamp } from '../util/time';
@@ -27,9 +27,12 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    photos: Photo[] = [];
    photoCount: number = 0;
    photoTagList: string = null;
-   /** Photo coordinates stored as longitude, latitude */
+   /**
+    * Photo coordinates stored as longitude and latitude used to invoke map
+    * APIs.
+    */
    photoLocations: number[][];
-   /** Top left and bottom right coordinates */
+   /** Top left and bottom right coordinates of photos. */
    bounds: MapBounds;
    /** Center of photo */
    centroid: Location = null;
@@ -146,7 +149,7 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    }
 
    /**
-    * Coordinates used on Mapbox maps stored in longitude, latitude order.
+    * Update cached photo coordinates and overall bounds from photo objets.
     *
     * https://www.mapbox.com/api-documentation/#static
     */
@@ -156,13 +159,13 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
       const locations: number[][] = [];
       const bounds: MapBounds = { sw: [0, 0], ne: [0, 0] };
 
-      // if (total > config.map.maxMarkers) {
-      //    start = 5; // skip the first few which are often just prep shots
-      //    total = config.map.maxMarkers + 5;
-      //    if (total > this.photos.length) {
-      //       total = this.photos.length;
-      //    }
-      // }
+      if (total > config.maxPhotoMarkersOnMap) {
+         start = 5; // skip the first few which are often just prep shots
+         total = config.maxPhotoMarkersOnMap + 5;
+         if (total > this.photos.length) {
+            total = this.photos.length;
+         }
+      }
 
       for (let i = start; i < total; i++) {
          const img = this.photos[i];
@@ -187,7 +190,7 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
       }
       this.photoLocations = locations.length > 0 ? locations : null;
       this.bounds = bounds;
-      //this.centroid = measure.centroid(locations);
+      this.centroid = measure.centroid(locations);
    }
 
    linkDataJSON(): JsonLD.BlogPosting {
