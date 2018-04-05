@@ -1,6 +1,6 @@
 {
    "name": "@trailimage/models",
-   "version": "1.0.0-beta.1",
+   "version": "1.0.0-beta.2",
    "description": "Trail Image models",
    "private": false,
    "author": {
@@ -13,16 +13,17 @@
    },
    "main": "index.ts",
    "files": [
-      "category.ts",
-      "config.ts",
-      "exif.ts",
-      "factory.ts",
-      "json-ld.ts",
-      "photo-blog.ts",
-      "photo-size.ts",
-      "photo.ts",
-      "post.ts",
-      "video-info.ts"
+      "index.ts",
+      "lib/category.ts",
+      "lib/config.ts",
+      "lib/exif.ts",
+      "lib/factory.ts",
+      "lib/json-ld.ts",
+      "lib/photo-blog.ts",
+      "lib/photo-size.ts",
+      "lib/photo.ts",
+      "lib/post.ts",
+      "lib/video-info.ts"
    ],
    "scripts": {
       "test": "jest --coverage"
