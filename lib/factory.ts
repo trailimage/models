@@ -5,7 +5,7 @@ import { EXIF, Photo, Post, photoBlog } from '../';
  * Main load method and lazy-load methos for particular data.
  */
 export interface ModelFactory {
-   load(emptyIfLoaded?: boolean): PhotoBlog;
+   load(emptyIfLoaded?: boolean): Promise<PhotoBlog>;
    getEXIF(photoID: string): Promise<EXIF>;
    getPostWithPhoto(this: PhotoBlog, photo: Photo | string): Promise<Post>;
    getPhotosWithTags(tags: string | string[]): Promise<Photo[]>;
