@@ -1,6 +1,9 @@
 import { is } from '@toba/tools';
 import { config } from './config';
 
+/**
+ * EXIF data for a photo.
+ */
 export class EXIF {
    artist: string = null;
    compensation: string = null;
@@ -23,7 +26,7 @@ export class EXIF {
          is.value(config.artistNamePattern) &&
          config.artistNamePattern.test(this.artist)
       ) {
-         // only sanitize EXIF for photos shot by known artists
+         // only sanitize EXIF for photos shot by configured artists
          this.model = camera(this.model);
          this.lens = lens(this.lens, this.model);
          this.compensation = compensation(this.compensation);
@@ -41,6 +44,10 @@ export class EXIF {
 }
 
 const numericRange = /\d\-\d/;
+
+/**
+ * Normalize camera name.
+ */
 const camera = (text: string) =>
    is.empty(text)
       ? ''
@@ -53,6 +60,9 @@ const camera = (text: string) =>
            .replace('XT1060', 'Motorola Moto X')
            .replace('TG-4', 'Olympus Tough TG-3');
 
+/**
+ * Normalize lens name.
+ */
 const lens = (text: string, camera: string) =>
    is.empty(text)
       ? ''
@@ -94,6 +104,9 @@ const lens = (text: string, camera: string) =>
               'Voigtländer Heliar 15mm ƒ4.5 III'
            );
 
+/**
+ * Normalize software name.
+ */
 const software = (text: string) =>
    is.empty(text)
       ? ''
@@ -101,5 +114,8 @@ const software = (text: string) =>
            .replace('Photoshop Lightroom', 'Lightroom')
            .replace(/\s*\(Windows\)/, '');
 
+/**
+ * Normalize compensation value.
+ */
 const compensation = (text: string | number) =>
    text == '0' ? 'No' : text.toString();

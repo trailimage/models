@@ -1,8 +1,7 @@
 import { removeItem, is } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
-import { Post, Category, Photo, EXIF, config } from '../';
-
-const provider = config.providers.post;
+import { Post, Category, Photo, EXIF, config, PostProvider } from '../';
+import { MissingProviderError } from './providers';
 
 /**
  * Singleton collection of photos grouped into "posts" (called a "set" or
@@ -21,20 +20,22 @@ export class PhotoBlog implements ISyndicate {
     */
    changedKeys: string[];
 
-   constructor() {
-      if (is.value(photoBlog)) {
-         throw 'bad';
+   private get load(): PostProvider {
+      if (is.value(config.providers.post)) {
+         return config.providers.post;
+      } else {
+         throw MissingProviderError();
       }
    }
 
    /**
     * @param emptyIfLoaded Whether to reset the library before loading
     */
-   load(emptyIfLoaded = false): Promise<PhotoBlog> {
+   loader(emptyIfLoaded = false): Promise<PhotoBlog> {
       if (this.loaded && emptyIfLoaded) {
          this.empty();
       }
-      return provider.loadPhotoBlog(this);
+      return this.load.photoBlog(this);
    }
 
    /** All photos in all posts */
@@ -45,7 +46,7 @@ export class PhotoBlog implements ISyndicate {
    }
 
    getEXIF(photoID: string): Promise<EXIF> {
-      return provider.loadEXIF(photoID);
+      return this.load.exif(photoID);
    }
 
    /**
@@ -119,14 +120,14 @@ export class PhotoBlog implements ISyndicate {
    }
 
    /**
-    * Find post with given ID
+    * Find post with given ID.
     */
    postWithID(id: string): Post {
       return is.value(id) ? this.posts.find(p => p.id == id) : null;
    }
 
    /**
-    * Find post with given slug
+    * Find post with given slug.
     */
    postWithKey(key: string, partKey: string = null): Post {
       if (is.value(partKey)) {
@@ -162,12 +163,17 @@ export class PhotoBlog implements ISyndicate {
          typeof photo == is.Type.String
             ? (photo as string)
             : (photo as Photo).id;
-      const postID = await provider.loadPostIdWithPhotoId(id);
+      const postID = await this.load.postIdWithPhotoId(id);
 
       return this.postWithID(postID);
    }
 
-   getPhotosWithTags: (tags: string | string[]) => Promise<Photo[]>;
+   /**
+    * All photos with given tags.
+    */
+   getPhotosWithTags(tags: string | string[]): Promise<Photo[]> {
+      return this.load.photosWithTags(tags);
+   }
 
    /**
     * Get unique list of tags used on photos in the post and update photo tags

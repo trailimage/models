@@ -58,7 +58,7 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
    }
 
    /**
-    * Ensure photos and information are loaded for all posts
+    * Ensure photos and information are loaded for all posts.
     */
    ensureLoaded(): Promise<any> {
       return Promise.all(

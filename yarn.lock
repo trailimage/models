@@ -146,7 +146,7 @@
   dependencies:
     "@toba/tools" "^1.18.0"
 
-"@toba/json-ld@^1.0.5":
+"@toba/json-ld@^1.1.0":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@toba/json-ld/-/json-ld-1.1.1.tgz#12a494b879c588f9a98f7eb504459af062fc42ec"
 

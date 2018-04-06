@@ -1,11 +1,10 @@
 import { JsonLD, LinkData } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
 import { measure, MapBounds, Location } from '@toba/map';
-import { Photo, VideoInfo, config } from '../';
+import { Photo, VideoInfo, config, PostProvider } from '../';
+import { MissingProviderError } from './providers';
 import { forPost } from './json-ld';
 // import { fromTimeStamp } from '../util/time';
-
-const provider = config.providers.post;
 
 export class Post extends LinkData<JsonLD.BlogPosting> {
    id: string = null;
@@ -66,14 +65,33 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    partKey: string = null;
    video: VideoInfo = null;
 
+   private _load: PostProvider = null;
+
+   private get load(): PostProvider {
+      if (is.value(config.providers.post)) {
+         return config.providers.post;
+      } else {
+         throw MissingProviderError();
+      }
+   }
+
+   /**
+    * Retrieve post photos.
+    */
    async getPhotos(): Promise<Photo[]> {
-      return this.photosLoaded ? this.photos : provider.loadPostPhotos(this);
+      return this.photosLoaded ? this.photos : this.load.postPhotos(this);
    }
 
+   /**
+    * Retrieve post details like title and description.
+    */
    async getInfo(): Promise<Post> {
-      return this.infoLoaded ? this : provider.loadPostInfo(this);
+      return this.infoLoaded ? this : this.load.postInfo(this);
    }
 
+   /**
+    * Whether post is in any categories.
+    */
    get hasCategories() {
       return Object.keys(this.categories).length > 0;
    }
@@ -98,7 +116,7 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    }
 
    /**
-    * Flag post as the start of a series
+    * Flag post as the start of a series.
     */
    makeSeriesStart() {
       this.isSeriesStart = true;
@@ -120,7 +138,7 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    }
 
    /**
-    * Remove post details to force reload from data provider
+    * Remove post details to force reload from data provider.
     */
    empty(): this {
       // from updateInfo()
@@ -148,7 +166,7 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    }
 
    /**
-    * Title and optional subtitle
+    * Title and optional subtitle.
     */
    name(): string {
       return (
