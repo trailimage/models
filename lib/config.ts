@@ -1,3 +1,5 @@
+import { MapProvider, PostProvider, VideoProvider } from '../';
+
 export interface ImageConfig {
    url: string;
    height: number;
@@ -38,6 +40,12 @@ export interface Configuration {
     */
    maxPhotoMarkersOnMap: number;
 
+   providers: {
+      post: PostProvider;
+      video: VideoProvider;
+      map: MapProvider;
+   };
+
    site: SiteConfig;
    owner: OwnerConfig;
 }
@@ -49,5 +57,6 @@ export const config: Configuration = {
    subtitleSeparator: ':',
    maxPhotoMarkersOnMap: 100,
    site: null,
-   owner: null
+   owner: null,
+   providers: { post: null, video: null, map: null }
 };

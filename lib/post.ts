@@ -5,6 +5,8 @@ import { Photo, VideoInfo, config } from '../';
 import { forPost } from './json-ld';
 // import { fromTimeStamp } from '../util/time';
 
+const provider = config.providers.post;
+
 export class Post extends LinkData<JsonLD.BlogPosting> {
    id: string = null;
    key: string = null;
@@ -64,8 +66,13 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    partKey: string = null;
    video: VideoInfo = null;
 
-   getPhotos: () => Promise<Photo[]> = () => Promise.resolve([]);
-   getInfo: () => Promise<Post> = () => Promise.resolve(this);
+   async getPhotos(): Promise<Photo[]> {
+      return this.photosLoaded ? this.photos : provider.loadPostPhotos(this);
+   }
+
+   async getInfo(): Promise<Post> {
+      return this.infoLoaded ? this : provider.loadPostInfo(this);
+   }
 
    get hasCategories() {
       return Object.keys(this.categories).length > 0;
@@ -108,14 +115,14 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
       );
    }
 
-   ensureLoaded() {
+   ensureLoaded(): Promise<[Post, Photo[]]> {
       return Promise.all([this.getInfo(), this.getPhotos()]);
    }
 
    /**
     * Remove post details to force reload from data provider
     */
-   empty() {
+   empty(): this {
       // from updateInfo()
       this.video = null;
       this.createdOn = null;
@@ -136,6 +143,8 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
       this.photoLocations = null;
       this.longDescription = null;
       this.photosLoaded = false;
+
+      return this;
    }
 
    /**

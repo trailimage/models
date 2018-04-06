@@ -2,8 +2,13 @@ export { Post } from './lib/post';
 export { Photo, identifyOutliers } from './lib/photo';
 export { Category } from './lib/category';
 export { PhotoSize } from './lib/photo-size';
-export { photoBlog } from './lib/photo-blog';
+export { photoBlog, PhotoBlog } from './lib/photo-blog';
 export { VideoInfo } from './lib/video-info';
 export { EXIF } from './lib/exif';
-export { ModelFactory } from './lib/factory';
-export { OwnerConfig, SiteConfig, config } from './lib/config';
+export { PostProvider, MapProvider, VideoProvider } from './lib/providers';
+export {
+   Configuration as ModelConfig,
+   OwnerConfig,
+   SiteConfig,
+   config
+} from './lib/config';

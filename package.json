@@ -17,12 +17,12 @@
       "lib/category.ts",
       "lib/config.ts",
       "lib/exif.ts",
-      "lib/factory.ts",
       "lib/json-ld.ts",
       "lib/photo-blog.ts",
       "lib/photo-size.ts",
       "lib/photo.ts",
       "lib/post.ts",
+      "lib/providers.ts",
       "lib/video-info.ts"
    ],
    "scripts": {
@@ -48,8 +48,8 @@
    },
    "dependencies": {
       "@toba/feed": "^1.0.1",
-      "@toba/json-ld": "^1.0.5",
+      "@toba/json-ld": "^1.1.0",
       "@toba/map": "^1.0.4",
-      "@toba/tools": "^1.16.0"
+      "@toba/tools": "^1.18.0"
    }
 }

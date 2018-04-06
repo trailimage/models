@@ -1,6 +1,8 @@
 import { removeItem, is } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
-import { Post, Category, Photo, EXIF } from '../';
+import { Post, Category, Photo, EXIF, config } from '../';
+
+const provider = config.providers.post;
 
 /**
  * Singleton collection of photos grouped into "posts" (called a "set" or
@@ -19,6 +21,22 @@ export class PhotoBlog implements ISyndicate {
     */
    changedKeys: string[];
 
+   constructor() {
+      if (is.value(photoBlog)) {
+         throw 'bad';
+      }
+   }
+
+   /**
+    * @param emptyIfLoaded Whether to reset the library before loading
+    */
+   load(emptyIfLoaded = false): Promise<PhotoBlog> {
+      if (this.loaded && emptyIfLoaded) {
+         this.empty();
+      }
+      return provider.loadPhotoBlog(this);
+   }
+
    /** All photos in all posts */
    getPhotos(): Promise<Photo[]> {
       return Promise.all(this.posts.map(p => p.getPhotos())).then(photos =>
@@ -26,7 +44,9 @@ export class PhotoBlog implements ISyndicate {
       );
    }
 
-   getEXIF: (photoID: string) => Promise<EXIF>;
+   getEXIF(photoID: string): Promise<EXIF> {
+      return provider.loadEXIF(photoID);
+   }
 
    /**
     * Add post to library and link with adjacent posts.
@@ -102,7 +122,7 @@ export class PhotoBlog implements ISyndicate {
     * Find post with given ID
     */
    postWithID(id: string): Post {
-      return this.posts.find(p => p.id == id);
+      return is.value(id) ? this.posts.find(p => p.id == id) : null;
    }
 
    /**
@@ -125,7 +145,7 @@ export class PhotoBlog implements ISyndicate {
    /**
     * Remove all blog data.
     */
-   empty(): PhotoBlog {
+   empty(): this {
       this.categories = {};
       this.posts = [];
       this.tags = {};
@@ -134,7 +154,19 @@ export class PhotoBlog implements ISyndicate {
       return this;
    }
 
-   getPostWithPhoto: (photo: Photo | string) => Promise<Post>;
+   /**
+    * Get first post that includes the given photo.
+    */
+   async postWithPhoto(photo: Photo | string): Promise<Post> {
+      const id: string =
+         typeof photo == is.Type.String
+            ? (photo as string)
+            : (photo as Photo).id;
+      const postID = await provider.loadPostIdWithPhotoId(id);
+
+      return this.postWithID(postID);
+   }
+
    getPhotosWithTags: (tags: string | string[]) => Promise<Photo[]>;
 
    /**
