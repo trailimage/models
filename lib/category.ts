@@ -28,12 +28,15 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
       return this.subcategories.find(c => c.title === key || c.key === key);
    }
 
+   /**
+    * Whether subcategory is present with given key.
+    */
    has(key: string): boolean {
       return this.getSubcategory(key) !== undefined;
    }
 
    /**
-    * Add nested category and update its key to include parent
+    * Add subcategory and update its key to include parent.
     */
    add(subcat: Category) {
       if (is.value(subcat)) {

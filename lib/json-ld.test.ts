@@ -3,7 +3,7 @@ import './config.test';
 import { mockPosts } from './post.test';
 import { mockCategories } from './category.test';
 
-test('creates link data for posts', () => {
+test('Creates link data for posts', () => {
    const schema = mockPosts[0].linkDataJSON();
 
    expect(schema).toHaveAllProperties(

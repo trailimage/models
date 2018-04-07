@@ -25,6 +25,6 @@ config.owner = {
    urls: ['http://testsite1.com', 'http://testsite2.com']
 };
 
-test('set singleton configuration', () => {
+test('Creates singleton configuration', () => {
    expect(config.owner).toHaveProperty('name', 'Test Person');
 });

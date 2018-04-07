@@ -48,12 +48,12 @@ export class PhotoBlog implements ISyndicate {
     * All photos in all posts without de-duplication. Photos are loaded from
     * data provider as needed.
     */
-   async getPhotos(): Promise<Photo[]> {
+   async photos(): Promise<Photo[]> {
       /** Array of post photo arrays */
       const photos: Photo[][] = await Promise.all(
          this.posts.map(p => p.getPhotos())
       );
-      // combine arrays into single array
+      // combine post arrays into single array
       return photos.reduce((all, p) => all.concat(p), [] as Photo[]);
    }
 

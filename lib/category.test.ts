@@ -28,13 +28,13 @@ export const mockCategories: Category[] = ([
    [] as Category[]
 );
 
-test('assigns subcategories', () => {
+test('Assigns subcategories', () => {
    expect(mockCategories[0]).toBeDefined();
    expect(mockCategories[0].isParent).toBe(true);
    expect(mockCategories[0].subcategories[0].isChild).toBe(true);
 });
 
-test('finds subcategories', () => {
+test('Finds subcategories', () => {
    expect(mockCategories[0].getSubcategory('key0/key2')).toBeDefined();
    expect(mockCategories[0].getSubcategory('key0/key8')).not.toBeDefined();
 
