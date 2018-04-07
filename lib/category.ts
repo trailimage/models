@@ -8,6 +8,10 @@ import { Post } from '../index';
  */
 export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
    title: string = null;
+   /**
+    * Slug style key that represents path to category.
+    * @example parent/child
+    */
    key: string = null;
    subcategories: Category[] = [];
    posts: Post[] = [];
@@ -47,9 +51,9 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
    }
 
    /**
-    * Remove post from category and subcategories (primarily for testing)
+    * Remove post from category and subcategories (primarily for testing).
     */
-   removePost(post: Post): Category {
+   removePost(post: Post): this {
       removeItem(this.posts, post);
       this.subcategories.forEach(s => {
          s.removePost(post);
@@ -66,10 +70,16 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
       );
    }
 
+   /**
+    * Whether category is a child as opposed to root category.
+    */
    get isChild() {
       return this.key.includes('/');
    }
 
+   /**
+    * Whether category contains subcategories.
+    */
    get isParent() {
       return this.subcategories.length > 0;
    }

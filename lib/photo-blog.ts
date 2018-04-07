@@ -9,26 +9,33 @@ import { ensurePostProvider } from './providers';
  * library methods are added by the factory.
  */
 export class PhotoBlog implements ISyndicate {
+   /** All categories indexed by their (slug-style) key. */
    categories: { [key: string]: Category } = {};
    posts: Post[] = [];
-   /** Map tag abbreviations (slugs) to their full names. */
+   /** Slug-style photo tag abbreviations mapped to their full names. */
    tags: { [key: string]: string } = {};
    /** Whether categories and post summaries have been loaded. */
    loaded: boolean = false;
-   /** Whether post details have been loaded. */
+   /** Whether all post details have been loaded. */
    postInfoLoaded: boolean = false;
    /**
-    * Keys of posts and categories that changed when data were reload from the
+    * Keys of posts and categories that changed when data were reloaded from the
     * provider (can be used for cache invalidation).
     */
    changedKeys: string[];
+
+   constructor() {
+      if (is.value(photoBlog)) {
+         throw new Error('PhotoBlog instance already exists');
+      }
+   }
 
    private get load(): PostProvider {
       return ensurePostProvider();
    }
 
    /**
-    * @param emptyIfLoaded Whether to reset the blog before loading.
+    * @param emptyIfLoaded Whether to empty all blog data before loading.
     */
    loader(emptyIfLoaded = false): Promise<PhotoBlog> {
       if (this.loaded && emptyIfLoaded) {
