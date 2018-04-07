@@ -1,10 +1,14 @@
-import { EXIF, Photo, Post, PhotoBlog } from '../';
+import { is } from '@toba/tools';
+import { ProviderConfig } from './config';
+import { EXIF, Photo, Post, PhotoBlog, config } from '../';
 
 /**
  * Methods to load post-related data.
  */
 export interface PostProvider {
+   /** Populate categories and post summaries in current blog instance. */
    photoBlog(photoBlog: PhotoBlog): Promise<PhotoBlog>;
+   /** Retrieve EXIF for single photo. */
    exif(photoID: string): Promise<EXIF>;
    postIdWithPhotoId(photoID: string): Promise<string>;
    photosWithTags(tags: string | string[]): Promise<Photo[]>;
@@ -22,5 +26,28 @@ export interface MapProvider {}
  */
 export interface VideoProvider {}
 
-export const MissingProviderError = () =>
-   new ReferenceError('Provider is undefined');
+/**
+ * Return configured post provider or throw a reference error.
+ */
+export const ensurePostProvider = (): PostProvider => ensureProvider('post');
+
+/**
+ * Return configured map provider or throw a reference error.
+ */
+export const ensureMapProvider = (): MapProvider => ensureProvider('map');
+
+/**
+ * Return configured video provider or throw a reference error.
+ */
+export const ensureVideoProvider = (): VideoProvider => ensureProvider('video');
+
+/**
+ * Return provider or throw a reference error.
+ */
+function ensureProvider<K extends keyof ProviderConfig>(key: K) {
+   if (is.value(config.providers[key])) {
+      return config.providers[key];
+   } else {
+      throw new ReferenceError(key + ' provider is undefined');
+   }
+}

@@ -1,3 +1,4 @@
+import '@toba/test';
 import { config, ImageConfig } from './config';
 
 const imageConfig: ImageConfig = {

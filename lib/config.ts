@@ -24,6 +24,15 @@ export interface SiteConfig {
    companyLogo: ImageConfig;
 }
 
+/**
+ * Data providers the models will use to populate themselves.
+ */
+export interface ProviderConfig {
+   post: PostProvider;
+   video: VideoProvider;
+   map: MapProvider;
+}
+
 export interface Configuration {
    /**
     * Character(s) to be placed between post titles and subtitles.
@@ -33,18 +42,18 @@ export interface Configuration {
    /**
     * Regular expression to match photo artists whose EXIF should be normalized.
     */
-   artistNamePattern?: RegExp;
+   artistsToNormalize?: RegExp;
 
    /**
-    * Maximum number of photograph markers to render on map.
+    * Maximum number of photograph markers to render on map, useful to
+    * accomodate performance or API limitations.
     */
    maxPhotoMarkersOnMap: number;
 
-   providers: {
-      post: PostProvider;
-      video: VideoProvider;
-      map: MapProvider;
-   };
+   /**
+    * Data providers the models will use to populate themselves.
+    */
+   providers: ProviderConfig;
 
    site: SiteConfig;
    owner: OwnerConfig;

@@ -1,7 +1,8 @@
+import '@toba/test';
 import { EXIF, config } from '../';
 import './config.test';
 
-config.artistNamePattern = /^Artist (0|1)/;
+config.artistsToNormalize = /^Artist (0|1)/;
 
 interface TestData {
    artist: string;
@@ -15,7 +16,7 @@ interface TestData {
    software: string;
 }
 
-export const exif: EXIF[] = ([
+export const mockEXIF: EXIF[] = ([
    {
       artist: 'Artist 0',
       compensation: '0',
@@ -74,11 +75,13 @@ export const exif: EXIF[] = ([
    return x.sanitize();
 });
 
-test('does somethin', () => {
-   expect(exif[0].artist).toBe('Artist 0');
-   expect(exif[0].model).toBe('Sony α7ʀ II');
-   expect(exif[0].software).toBe('Lightroom');
-   expect(exif[0].compensation).toBe('No');
+test('Sanitizes values for configured artists', () => {
+   expect(mockEXIF[0].artist).toBe('Artist 0');
+   expect(mockEXIF[0].model).toBe('Sony α7ʀ II');
+   expect(mockEXIF[0].software).toBe('Lightroom');
+   expect(mockEXIF[0].compensation).toBe('No');
+});
 
-   expect(exif[2].model).toBe('ILCE-7RM2');
+test('Leaves values unchanged for unconfigured artists', () => {
+   expect(mockEXIF[2].model).toBe('ILCE-7RM2');
 });

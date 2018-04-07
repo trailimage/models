@@ -1,3 +1,4 @@
+import '@toba/test';
 import { PhotoSize } from '../';
 
 interface TestData {
@@ -6,7 +7,7 @@ interface TestData {
    height: number;
 }
 
-export const sizes: PhotoSize[] = ([
+export const mockSizes: PhotoSize[] = ([
    { url: 'url0', width: 100, height: 200 },
    { url: 'url1', width: 110, height: 210 },
    { url: 'url2', width: 120, height: 220 },
@@ -15,6 +16,6 @@ export const sizes: PhotoSize[] = ([
 ] as TestData[]).map(d => new PhotoSize(d.width, d.height, d.url));
 
 test('identifies invalid images', () => {
-   expect(sizes[0].isEmpty).toBe(false);
-   expect(sizes[4].isEmpty).toBe(true);
+   expect(mockSizes[0].isEmpty).toBe(false);
+   expect(mockSizes[4].isEmpty).toBe(true);
 });

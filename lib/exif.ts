@@ -23,8 +23,8 @@ export class EXIF {
 
       if (
          is.value(this.artist) &&
-         is.value(config.artistNamePattern) &&
-         config.artistNamePattern.test(this.artist)
+         is.value(config.artistsToNormalize) &&
+         config.artistsToNormalize.test(this.artist)
       ) {
          // only sanitize EXIF for photos shot by configured artists
          this.model = camera(this.model);

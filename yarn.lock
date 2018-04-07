@@ -150,6 +150,15 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@toba/json-ld/-/json-ld-1.1.1.tgz#12a494b879c588f9a98f7eb504459af062fc42ec"
 
+"@toba/logger@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@toba/logger/-/logger-1.0.3.tgz#d9d0b80048cb53b6aef42a66fe1074269dfa1ccd"
+  dependencies:
+    "@toba/tools" "^1.8.0"
+    chalk "^2.3.0"
+    flat "^4.0.0"
+    logfmt "^1.2.0"
+
 "@toba/map@^1.0.4":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@toba/map/-/map-1.0.7.tgz#76a4c3d76a65c458cc41a7d14a991794a1b530e3"
@@ -160,18 +169,19 @@
     xmldom "^0.1.27"
 
 "@toba/test@^1.9.0":
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.9.4.tgz#b1db4862d893f0696f72ee52472ca22509d3634c"
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.10.0.tgz#adca5d14544ff939f3ee079f35588814451bb9cf"
   dependencies:
-    "@toba/tools" "^1.12.0"
+    "@toba/logger" "^1.0.3"
+    "@toba/tools" "^1.18.0"
     "@types/jest" "^22.2.0"
-    "@types/node" "^9.4.7"
+    "@types/node" "^9.6.0"
     "@types/node-fetch" "^1.6.7"
     jest "^22.4.0"
     jest-localstorage-mock "^2.2.0"
     ts-jest "^22.4.0"
 
-"@toba/tools@^1.12.0", "@toba/tools@^1.16.0", "@toba/tools@^1.18.0":
+"@toba/tools@^1.16.0", "@toba/tools@^1.18.0", "@toba/tools@^1.8.0":
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-1.18.0.tgz#9f729fd69e162149e73df4172f65ed7b1ade4f87"
   dependencies:
@@ -191,7 +201,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^9.4.7":
+"@types/node@*", "@types/node@^9.6.0":
   version "9.6.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
 
@@ -762,8 +772,8 @@ camelcase@^4.1.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
 caniuse-lite@^1.0.30000817, caniuse-lite@^1.0.30000821:
-  version "1.0.30000823"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000823.tgz#b79842a5b5a48eaa416b73f5a5d7a23f52d26014"
+  version "1.0.30000824"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000824.tgz#de3bc1ba0bff4937302f8cb2a8632a8cc1c07f9a"
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -1446,6 +1456,12 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
+flat@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/flat/-/flat-4.0.0.tgz#3abc7f3b588e64ce77dc42fd59aa35806622fea8"
+  dependencies:
+    is-buffer "~1.1.5"
+
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -1909,7 +1925,7 @@ is-binary-path@^1.0.0:
   dependencies:
     binary-extensions "^1.0.0"
 
-is-buffer@^1.1.4, is-buffer@^1.1.5:
+is-buffer@^1.1.4, is-buffer@^1.1.5, is-buffer@~1.1.5:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
 
@@ -2702,11 +2718,23 @@ lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.2.0:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
+lodash@~2.4.1:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-2.4.2.tgz#fadd834b9683073da179b3eae6d9c0d15053f73e"
+
 log-symbols@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/log-symbols/-/log-symbols-2.2.0.tgz#5740e1c5d6f0dfda4ad9323b5332107ef6b4c40a"
   dependencies:
     chalk "^2.0.1"
+
+logfmt@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/logfmt/-/logfmt-1.2.0.tgz#1ccc067c1cfe65f3ecf5856c09d2654f69203572"
+  dependencies:
+    lodash "~2.4.1"
+    split "0.2.x"
+    through "2.3.x"
 
 longest-streak@^2.0.1:
   version "2.0.2"
@@ -3910,6 +3938,12 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
+split@0.2.x:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/split/-/split-0.2.10.tgz#67097c601d697ce1368f418f06cd201cf0521a57"
+  dependencies:
+    through "2"
+
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
@@ -4178,6 +4212,10 @@ throat@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/throat/-/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
 
+through@2, through@2.3.x:
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
+
 tmpl@1.0.x:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/tmpl/-/tmpl-1.0.4.tgz#23640dd7b42d00433911140820e5cf440e521dd1"
@@ -4292,8 +4330,8 @@ tslint@^5.9.0:
     tsutils "^2.12.1"
 
 tsutils@^2.12.1, tsutils@^2.24.0:
-  version "2.26.0"
-  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.26.0.tgz#706240d63bcf1ae1797d1716738d6c6be0d0848b"
+  version "2.26.1"
+  resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.26.1.tgz#9e4a0cb9ff173863f34c22a961969081270d1878"
   dependencies:
     tslib "^1.8.1"
 

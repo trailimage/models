@@ -1,3 +1,4 @@
+import '@toba/test';
 import { Category } from '../';
 
 interface TestData {
@@ -6,7 +7,7 @@ interface TestData {
    parentKey?: string;
 }
 
-export const categories: Category[] = ([
+export const mockCategories: Category[] = ([
    { key: 'key0', title: 'Title 1' },
    { key: 'key1', title: 'Title 2' },
    { key: 'key2', title: 'Title 3', parentKey: 'key0' },
@@ -28,15 +29,15 @@ export const categories: Category[] = ([
 );
 
 test('assigns subcategories', () => {
-   expect(categories[0]).toBeDefined();
-   expect(categories[0].isParent).toBe(true);
-   expect(categories[0].subcategories[0].isChild).toBe(true);
+   expect(mockCategories[0]).toBeDefined();
+   expect(mockCategories[0].isParent).toBe(true);
+   expect(mockCategories[0].subcategories[0].isChild).toBe(true);
 });
 
 test('finds subcategories', () => {
-   expect(categories[0].getSubcategory('key0/key2')).toBeDefined();
-   expect(categories[0].getSubcategory('key0/key8')).not.toBeDefined();
+   expect(mockCategories[0].getSubcategory('key0/key2')).toBeDefined();
+   expect(mockCategories[0].getSubcategory('key0/key8')).not.toBeDefined();
 
-   expect(categories[0].has('key0/key2')).toBe(true);
-   expect(categories[0].has('key0/key9')).toBe(false);
+   expect(mockCategories[0].has('key0/key2')).toBe(true);
+   expect(mockCategories[0].has('key0/key9')).toBe(false);
 });

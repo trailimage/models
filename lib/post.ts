@@ -2,23 +2,24 @@ import { JsonLD, LinkData } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
 import { measure, MapBounds, Location } from '@toba/map';
 import { Photo, VideoInfo, config, PostProvider } from '../';
-import { MissingProviderError } from './providers';
+import { ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
-// import { fromTimeStamp } from '../util/time';
 
 export class Post extends LinkData<JsonLD.BlogPosting> {
+   /** Provider ID */
    id: string = null;
+   /**  */
    key: string = null;
    title: string = null;
-   subTitle: string = null;
+   subTitle?: string = null;
    description: string = null;
    longDescription: string = null;
    happenedOn: Date;
    createdOn: Date;
    updatedOn: Date;
    /**
-    * Whether post pictures occurred at a specific point in time (exceptions
-    * are themed sets)
+    * Whether post pictures occurred sequentially in a specific time range as
+    * opposed to, for example, a themed set of images from various times.
     */
    chronological: boolean = true;
    originalTitle: string = null;
@@ -38,41 +39,44 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    /** Center of photo */
    centroid: Location = null;
    coverPhoto: Photo = null;
-   /** Whether posts is featured in main navigation */
+   /** Whether post is featured in main navigation */
    feature: boolean = false;
    /** Category titles mapped to category keys */
    categories: { [key: string]: string } = {};
+   /**
+    * Whether post information has been loaded. If not then post only contains
+    * summary data supplied by its category.
+    */
    infoLoaded: boolean = false;
-   /** Whether attempt was made to load GPX track */
+   /**
+    * Whether attempt was made to load GPX track. This can be used to prevent
+    * unecessarily retrying track retrieval.
+    */
    triedTrack: boolean = false;
-   /** Whether GPX track was found for the post */
+   /** Whether GPX track was found for the post. */
    hasTrack: boolean = false;
+   /** Next chronological post. */
    next: Post = null;
+   /** Previous chronological post. */
    previous: Post = null;
-   /** Position of this post in a series */
+   /** Position of this post in a series or 0 if it's not in a series. */
    part: number = 0;
-   /** Whether post is part of a series */
+   /** Whether post is part of a series. */
    isPartial: boolean = false;
-   /** Whether next post is part of the same series */
+   /** Whether next post is part of the same series. */
    nextIsPart: boolean = false;
-   /** Whether previous post is part of the same series */
+   /** Whether previous post is part of the same series. */
    previousIsPart: boolean = false;
-   /** Total number of posts in the series */
+   /** Total number of posts in the series. */
    totalParts: number = 0;
-   /** Whether this post is the first in a series */
+   /** Whether this post is the first in a series. */
    isSeriesStart: boolean = false;
    seriesKey: string = null;
    partKey: string = null;
    video: VideoInfo = null;
 
-   private _load: PostProvider = null;
-
    private get load(): PostProvider {
-      if (is.value(config.providers.post)) {
-         return config.providers.post;
-      } else {
-         throw MissingProviderError();
-      }
+      return ensurePostProvider();
    }
 
    /**
@@ -97,9 +101,10 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    }
 
    /**
-    * For post titles that looked like part of a series (had a colon separator)
-    * but had no other parts. This does not handle ungrouping from a legitimate
-    * series.
+    * Ungroup posts that were incorrectly identified as part of a series because
+    * of a title that coincidentally matched a series pattern. This does not
+    * correctly handle ungrouping posts that are a legitimate series member
+    * since other series members are not also updated.
     */
    ungroup() {
       this.title = this.originalTitle;
@@ -133,6 +138,9 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
       );
    }
 
+   /**
+    * Ensure post details and photos are loaded.
+    */
    ensureLoaded(): Promise<[Post, Photo[]]> {
       return Promise.all([this.getInfo(), this.getPhotos()]);
    }

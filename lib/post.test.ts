@@ -1,6 +1,8 @@
+import '@toba/test';
 import { Post } from '../';
 import { photos } from './photo.test';
-import { categories } from './category.test';
+import { mockCategories } from './category.test';
+import './provider.test';
 
 interface TestData {
    key: string;
@@ -8,7 +10,7 @@ interface TestData {
    seriesKey?: string;
 }
 
-export const posts: Post[] = ([
+export const mockPosts: Post[] = ([
    { key: 'key0', title: 'Title 1', seriesKey: 'series1' },
    { key: 'key1', title: 'Title 2', seriesKey: 'series1' },
    { key: 'key2', title: 'Title 3', seriesKey: 'series1' },
@@ -20,7 +22,7 @@ export const posts: Post[] = ([
    p.photos = photos;
    if (index != 3) {
       // assign no categories to key3
-      p.categories = categories.reduce(
+      p.categories = mockCategories.reduce(
          (hash, c) => {
             hash[c.key] = c.title;
             return hash;
@@ -42,13 +44,13 @@ export const posts: Post[] = ([
 // });
 
 test('can be matched to a key', () => {
-   expect(posts[0].hasKey('blah')).toBe(false);
-   expect(posts[1].hasKey('key1')).toBe(true);
+   expect(mockPosts[0].hasKey('blah')).toBe(false);
+   expect(mockPosts[1].hasKey('key1')).toBe(true);
 });
 
 test('identifies category membership', () => {
-   expect(posts[0].hasCategories).toBe(true);
-   expect(posts[3].hasCategories).toBe(false);
+   expect(mockPosts[0].hasCategories).toBe(true);
+   expect(mockPosts[3].hasCategories).toBe(false);
 });
 
 // test('is linked to next and previous posts', () => {
@@ -89,6 +91,6 @@ test('identifies category membership', () => {
 // });
 
 test('can be emptied', () => {
-   posts[0].empty();
-   expect(posts[0].updatedOn).toBeNull();
+   mockPosts[0].empty();
+   expect(mockPosts[0].updatedOn).toBeNull();
 });

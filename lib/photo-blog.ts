@@ -1,7 +1,7 @@
 import { removeItem, is } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
-import { Post, Category, Photo, EXIF, config, PostProvider } from '../';
-import { MissingProviderError } from './providers';
+import { Post, Category, Photo, EXIF, PostProvider } from '../';
+import { ensurePostProvider } from './providers';
 
 /**
  * Singleton collection of photos grouped into "posts" (called a "set" or
@@ -11,25 +11,24 @@ import { MissingProviderError } from './providers';
 export class PhotoBlog implements ISyndicate {
    categories: { [key: string]: Category } = {};
    posts: Post[] = [];
+   /** Map tag abbreviations (slugs) to their full names. */
    tags: { [key: string]: string } = {};
+   /** Whether categories and post summaries have been loaded. */
    loaded: boolean = false;
+   /** Whether post details have been loaded. */
    postInfoLoaded: boolean = false;
    /**
-    * Track keys of posts and categories that change on library reload
-    * (can be used for cache invalidation)
+    * Keys of posts and categories that changed when data were reload from the
+    * provider (can be used for cache invalidation).
     */
    changedKeys: string[];
 
    private get load(): PostProvider {
-      if (is.value(config.providers.post)) {
-         return config.providers.post;
-      } else {
-         throw MissingProviderError();
-      }
+      return ensurePostProvider();
    }
 
    /**
-    * @param emptyIfLoaded Whether to reset the library before loading
+    * @param emptyIfLoaded Whether to reset the blog before loading.
     */
    loader(emptyIfLoaded = false): Promise<PhotoBlog> {
       if (this.loaded && emptyIfLoaded) {
@@ -38,13 +37,23 @@ export class PhotoBlog implements ISyndicate {
       return this.load.photoBlog(this);
    }
 
-   /** All photos in all posts */
-   getPhotos(): Promise<Photo[]> {
-      return Promise.all(this.posts.map(p => p.getPhotos())).then(photos =>
-         photos.reduce((all, p) => all.concat(p), [] as Photo[])
+   /**
+    * All photos in all posts without de-duplication. Photos are loaded from
+    * data provider as needed.
+    */
+   async getPhotos(): Promise<Photo[]> {
+      /** Array of post photo arrays */
+      const photos: Photo[][] = await Promise.all(
+         this.posts.map(p => p.getPhotos())
       );
+      // combine arrays into single array
+      return photos.reduce((all, p) => all.concat(p), [] as Photo[]);
    }
 
+   /**
+    * EXIF data for single photo. This method is also present on a photo
+    * instance but is useful here when the instance isn't available.
+    */
    getEXIF(photoID: string): Promise<EXIF> {
       return this.load.exif(photoID);
    }

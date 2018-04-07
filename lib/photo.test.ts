@@ -1,5 +1,5 @@
 import { Photo } from '../';
-import { sizes } from './photo-size.test';
+import { mockSizes } from './photo-size.test';
 
 interface TestData {
    id: string;
@@ -16,10 +16,10 @@ export const photos: Photo[] = ([
    const p = new Photo(data.id, index);
    p.title = data.title;
    p.tags = data.tags;
-   p.size['small'] = sizes[0];
-   p.size['medium'] = sizes[1];
-   p.size['large'] = sizes[2];
-   p.preview = sizes[3];
+   p.size['small'] = mockSizes[0];
+   p.size['medium'] = mockSizes[1];
+   p.size['large'] = mockSizes[2];
+   p.preview = mockSizes[3];
    return p;
 });
 
