@@ -1,5 +1,6 @@
 import { removeItem, is } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
+import { geoJSON } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider } from '../';
 import { ensurePostProvider } from './providers';
 
@@ -55,6 +56,21 @@ export class PhotoBlog implements ISyndicate {
       );
       // combine post arrays into single array
       return photos.reduce((all, p) => all.concat(p), [] as Photo[]);
+   }
+
+   /**
+    * Append blog photo GeoFeatures to GeoJSON.
+    */
+   async makePhotoFeatures(
+      geo: GeoJSON.FeatureCollection<
+         GeoJSON.GeometryObject
+      > = geoJSON.features()
+   ): Promise<GeoJSON.FeatureCollection<any>> {
+      const photos = await this.photos();
+      geo.features = geo.features.concat(
+         photos.filter(p => p.latitude > 0).map(p => p.geoJSON())
+      );
+      return geo;
    }
 
    /**
