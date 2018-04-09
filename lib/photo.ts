@@ -13,7 +13,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
    title: string = null;
    description: string = null;
    /** Tags applied to the photo. */
-   tags: string[] = [];
+   tags: Set<string> = new Set();
    dateTaken: Date;
    latitude: number;
    longitude: number;
@@ -52,7 +52,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
     * Comma-delimited list of all tags applied to the photo.
     */
    get tagList(): string {
-      return this.tags.join(',');
+      return Array.from(this.tags).join(',');
    }
 
    async EXIF(): Promise<EXIF> {

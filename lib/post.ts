@@ -42,7 +42,7 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
    /** Whether post is featured in main navigation */
    feature: boolean = false;
    /** Category titles mapped to category keys */
-   categories: { [key: string]: string } = {};
+   categories: Map<string, string> = new Map();
    /**
     * Whether post information has been loaded. If not then post only contains
     * summary data supplied by its category.
@@ -97,7 +97,7 @@ export class Post extends LinkData<JsonLD.BlogPosting> {
     * Whether post is in any categories.
     */
    get hasCategories() {
-      return Object.keys(this.categories).length > 0;
+      return this.categories.size > 0;
    }
 
    /**

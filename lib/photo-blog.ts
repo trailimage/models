@@ -1,4 +1,4 @@
-import { removeItem, is } from '@toba/tools';
+import { removeItem, is, mapSet, findInSet } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
 import { geoJSON } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider } from '../';
@@ -10,11 +10,15 @@ import { ensurePostProvider } from './providers';
  * library methods are added by the factory.
  */
 export class PhotoBlog implements ISyndicate {
-   /** All categories indexed by their (slug-style) key. */
-   categories: { [key: string]: Category } = {};
+   /** All categories mapped to their (slug-style) key. */
+   categories: Map<string, Category> = new Map();
+   /**
+    * All posts in the blog. These must be stored as an indexed list (`Array`)
+    * rather than `Set` so they can be managed as a linked list.
+    */
    posts: Post[] = [];
-   /** Slug-style photo tag abbreviations mapped to their full names. */
-   tags: { [key: string]: string } = {};
+   /** Photo tags mapped to their slug-style abbreviations. */
+   tags: Map<string, string> = new Map();
    /** Whether categories and post summaries have been loaded. */
    loaded: boolean = false;
    /** Whether all post details have been loaded. */
@@ -106,8 +110,7 @@ export class PhotoBlog implements ISyndicate {
    categoryWithKey(key: string): Category {
       const rootKey = key.includes('/') ? key.split('/')[0] : key;
 
-      for (const name in this.categories) {
-         const cat = this.categories[name];
+      for (const [key, cat] of this.categories) {
          if (cat.key == rootKey) {
             return key != rootKey ? cat.getSubcategory(key) : cat;
          }
@@ -127,8 +130,7 @@ export class PhotoBlog implements ISyndicate {
             filterList = [filterList];
          }
          for (const filterName of filterList) {
-            for (const name in this.categories) {
-               const category = this.categories[name];
+            for (const category of this.categories.values()) {
                const subcat = category.getSubcategory(filterName);
 
                if (name == filterName) {
@@ -140,8 +142,7 @@ export class PhotoBlog implements ISyndicate {
          }
       } else {
          // get keys for all categories
-         for (const name in this.categories) {
-            const category = this.categories[name];
+         for (const category of this.categories.values()) {
             keys.push(category.key);
             category.subcategories.forEach(s => {
                keys.push(s.key);
@@ -179,9 +180,9 @@ export class PhotoBlog implements ISyndicate {
     * Remove all blog data.
     */
    empty(): this {
-      this.categories = {};
+      this.categories.clear();
       this.posts = [];
-      this.tags = {};
+      this.tags.clear();
       this.loaded = false;
       this.postInfoLoaded = false;
       return this;
@@ -208,43 +209,25 @@ export class PhotoBlog implements ISyndicate {
    }
 
    /**
-    * Get unique list of tags used on photos in the post and update photo tags
-    * to use full names.
+    * Get tag abbreviations applied to photos and replace them with their full
+    * names.
     */
    photoTagList(photos: Photo[]): string {
-      // all photo tags in the post
-      const postTags = [];
+      // all photo tags in the blog
+      const postTags: Set<string> = new Set();
 
       for (const p of photos) {
-         // tag slugs to remove from photo
-         const toRemove = [];
-
-         for (let i = 0; i < p.tags.length; i++) {
-            const tagSlug = p.tags[i];
+         for (const tagSlug of p.tags) {
             // lookup full tag name from its slug
-            const tagName = this.tags[tagSlug];
-
+            const tagName = this.tags.get(tagSlug);
+            p.tags.delete(tagSlug);
             if (is.value(tagName)) {
-               // replace tag slug in photo with tag name
-               p.tags[i] = tagName;
-               if (postTags.indexOf(tagName) == -1) {
-                  postTags.push(tagName);
-               }
-            } else {
-               // remove tag slug from list
-               // this can happen if a photo has tags intentionally excluded from the library
-               toRemove.push(tagSlug);
-            }
-         }
-
-         for (const tagSlug of toRemove) {
-            const index = p.tags.indexOf(tagSlug);
-            if (index >= 0) {
-               p.tags.splice(index, 1);
+               p.tags.add(tagName);
+               postTags.add(tagName);
             }
          }
       }
-      return postTags.length > 0 ? postTags.join(', ') : null;
+      return postTags.size > 0 ? Array.from(postTags).join(', ') : null;
    }
 
    /**
@@ -267,9 +250,9 @@ export class PhotoBlog implements ISyndicate {
       for (const k of keys) {
          const p = this.postWithKey(k);
          if (removeItem(this.posts, p)) {
-            for (const key in this.categories) {
-               this.categories[key].removePost(p);
-            }
+            this.categories.forEach(cat => {
+               cat.removePost(p);
+            });
          }
       }
    }

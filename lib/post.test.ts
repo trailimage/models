@@ -22,13 +22,10 @@ export const mockPosts: Post[] = ([
    p.photos = photos;
    if (index != 3) {
       // assign no categories to key3
-      p.categories = mockCategories.reduce(
-         (hash, c) => {
-            hash[c.key] = c.title;
-            return hash;
-         },
-         {} as { [key: string]: string }
-      );
+      p.categories = mockCategories.reduce((hash, c) => {
+         hash.set(c.key, c.title);
+         return hash;
+      }, new Map<string, string>());
    }
    return p;
 });

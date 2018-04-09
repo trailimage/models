@@ -1,4 +1,4 @@
-import { is, removeItem } from '@toba/tools';
+import { is, mapSet, findInSet } from '@toba/tools';
 import { JsonLD, LinkData } from '@toba/json-ld';
 import { forCategory } from './json-ld';
 import { Post } from '../index';
@@ -13,8 +13,8 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
     * @example parent/child
     */
    key: string = null;
-   subcategories: Category[] = [];
-   posts: Post[] = [];
+   subcategories: Set<Category> = new Set();
+   posts: Set<Post> = new Set();
 
    constructor(key: string, title: string) {
       super();
@@ -25,7 +25,10 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
    //unload(keys:string|string[]):void;
 
    getSubcategory(key: string): Category {
-      return this.subcategories.find(c => c.title === key || c.key === key);
+      return findInSet(
+         this.subcategories,
+         c => c.title === key || c.key === key
+      );
    }
 
    /**
@@ -43,12 +46,12 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
          const oldKey = subcat.key;
 
          subcat.key = this.key + '/' + subcat.key;
-         this.subcategories.push(subcat);
+         this.subcategories.add(subcat);
 
-         // update posts that reference the tag by its old key
+         // update posts that reference the category by its old key
          for (const p of subcat.posts) {
-            delete p.categories[oldKey];
-            p.categories[subcat.key] = subcat.title;
+            p.categories.delete(oldKey);
+            p.categories.set(subcat.key, subcat.title);
          }
       }
    }
@@ -57,7 +60,7 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
     * Remove post from category and subcategories (primarily for testing).
     */
    removePost(post: Post): this {
-      removeItem(this.posts, post);
+      this.posts.delete(post);
       this.subcategories.forEach(s => {
          s.removePost(post);
       });
@@ -69,7 +72,7 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
     */
    ensureLoaded(): Promise<any> {
       return Promise.all(
-         this.posts.map(p => p.getInfo().then(p => p.getPhotos()))
+         mapSet(this.posts, p => p.getInfo().then(p => p.getPhotos()))
       );
    }
 
@@ -84,7 +87,7 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
     * Whether category contains subcategories.
     */
    get isParent() {
-      return this.subcategories.length > 0;
+      return this.subcategories.size > 0;
    }
 
    linkDataJSON(): JsonLD.Blog | JsonLD.WebPage {

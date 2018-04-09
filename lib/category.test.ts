@@ -31,7 +31,9 @@ export const mockCategories: Category[] = ([
 test('Assigns subcategories', () => {
    expect(mockCategories[0]).toBeDefined();
    expect(mockCategories[0].isParent).toBe(true);
-   expect(mockCategories[0].subcategories[0].isChild).toBe(true);
+   mockCategories[0].subcategories.forEach(s => {
+      expect(s.isChild).toBe(true);
+   });
 });
 
 test('Finds subcategories', () => {
