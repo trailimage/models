@@ -1,4 +1,4 @@
-import { removeItem, is, mapSet, findInSet } from '@toba/tools';
+import { removeItem, is } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
 import { geoJSON } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider } from '../';

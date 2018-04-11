@@ -151,10 +151,10 @@
   resolved "https://registry.yarnpkg.com/@toba/json-ld/-/json-ld-1.1.1.tgz#12a494b879c588f9a98f7eb504459af062fc42ec"
 
 "@toba/logger@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@toba/logger/-/logger-1.0.3.tgz#d9d0b80048cb53b6aef42a66fe1074269dfa1ccd"
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@toba/logger/-/logger-1.0.4.tgz#55c0f43dfb772de2fc3c3dda53b45baea802dc10"
   dependencies:
-    "@toba/tools" "^1.8.0"
+    "@toba/tools" "^1.19.0"
     chalk "^2.3.0"
     flat "^4.0.0"
     logfmt "^1.2.0"
@@ -181,9 +181,9 @@
     jest-localstorage-mock "^2.2.0"
     ts-jest "^22.4.0"
 
-"@toba/tools@^1.18.0", "@toba/tools@^1.8.0":
-  version "1.19.1"
-  resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-1.19.1.tgz#72358ed31d812b322daf798f2e32a1c09ef72f7b"
+"@toba/tools@^1.18.0", "@toba/tools@^1.19.0":
+  version "1.19.3"
+  resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-1.19.3.tgz#adda53def86c2093eb25a79a58c6d61f1417eabd"
   dependencies:
     zlib "^1.0.5"
 
@@ -202,8 +202,8 @@
     "@types/node" "*"
 
 "@types/node@*", "@types/node@^9.6.0":
-  version "9.6.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
+  version "9.6.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.4.tgz#0ef7b4cfc3499881c81e0ea1ce61a23f6f4f5b42"
 
 abab@^1.0.4:
   version "1.0.4"
@@ -771,8 +771,8 @@ camelcase@^4.1.0:
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
 
 caniuse-lite@^1.0.30000817, caniuse-lite@^1.0.30000821:
-  version "1.0.30000824"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000824.tgz#de3bc1ba0bff4937302f8cb2a8632a8cc1c07f9a"
+  version "1.0.30000827"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000827.tgz#2dad2354e4810c3c9bb1cfc57f655c270c25fa52"
 
 caseless@~0.12.0:
   version "0.12.0"
