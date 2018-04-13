@@ -1,4 +1,4 @@
-import { removeItem, is } from '@toba/tools';
+import { removeItem, is, mapSet } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
 import { geoJSON } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider } from '../';
@@ -119,34 +119,29 @@ export class PhotoBlog implements ISyndicate {
    }
 
    /**
-    * Array of all category keys
+    * Array of all category keys.
+    * @param withNames Only get keys for named categories
     */
-   categoryKeys(filterList: string[] = []): string[] {
+   categoryKeys(...withNames: string[]): string[] {
       const keys: string[] = [];
 
-      if (filterList.length > 0) {
+      if (withNames.length > 0) {
          // get keys only for named categories
-         if (!is.array(filterList)) {
-            filterList = [filterList];
-         }
-         for (const filterName of filterList) {
-            for (const category of this.categories.values()) {
-               const subcat = category.getSubcategory(filterName);
+         for (const name of withNames) {
+            for (const c of this.categories.values()) {
+               const s = c.getSubcategory(name);
 
-               if (name == filterName) {
-                  keys.push(category.key);
-               } else if (is.value(subcat)) {
-                  keys.push(subcat.key);
+               if (c.title == name) {
+                  keys.push(c.key);
+               } else if (is.value(s)) {
+                  keys.push(s.key);
                }
             }
          }
       } else {
          // get keys for all categories
-         for (const category of this.categories.values()) {
-            keys.push(category.key);
-            category.subcategories.forEach(s => {
-               keys.push(s.key);
-            });
+         for (const c of this.categories.values()) {
+            keys.push(c.key, ...mapSet(c.subcategories, s => s.key));
          }
       }
       return keys;
