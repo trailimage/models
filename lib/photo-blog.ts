@@ -105,12 +105,12 @@ export class PhotoBlog implements ISyndicate {
    }
 
    /**
-    * Find category with given key
+    * Find category with given key.
     */
    categoryWithKey(key: string): Category {
       const rootKey = key.includes('/') ? key.split('/')[0] : key;
 
-      for (const [key, cat] of this.categories) {
+      for (const cat of this.categories.values()) {
          if (cat.key == rootKey) {
             return key != rootKey ? cat.getSubcategory(key) : cat;
          }

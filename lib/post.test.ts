@@ -1,34 +1,6 @@
 import '@toba/test';
-import { Post } from '../';
-import { photos } from './photo.test';
-import { mockCategories } from './category.test';
+import { mockPosts } from './test-data';
 import './provider.test';
-
-interface TestData {
-   key: string;
-   title: string;
-   seriesKey?: string;
-}
-
-export const mockPosts: Post[] = ([
-   { key: 'key0', title: 'Title 1', seriesKey: 'series1' },
-   { key: 'key1', title: 'Title 2', seriesKey: 'series1' },
-   { key: 'key2', title: 'Title 3', seriesKey: 'series1' },
-   { key: 'key3', title: 'Title 4' }
-] as TestData[]).map((d, index) => {
-   const p = new Post();
-   p.key = d.key;
-   p.title = d.title;
-   p.photos = photos;
-   if (index != 3) {
-      // assign no categories to key3
-      p.categories = mockCategories.reduce((hash, c) => {
-         hash.set(c.key, c.title);
-         return hash;
-      }, new Map<string, string>());
-   }
-   return p;
-});
 
 // test.skip('normalizes provider values', () => {
 //    // mock Flickr response values are all the same

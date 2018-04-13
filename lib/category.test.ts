@@ -1,32 +1,5 @@
 import '@toba/test';
-import { Category } from '../';
-
-interface TestData {
-   key: string;
-   title: string;
-   parentKey?: string;
-}
-
-export const mockCategories: Category[] = ([
-   { key: 'key0', title: 'Title 1' },
-   { key: 'key1', title: 'Title 2' },
-   { key: 'key2', title: 'Title 3', parentKey: 'key0' },
-   { key: 'key3', title: 'Title 4', parentKey: 'key0' }
-] as TestData[]).reduce(
-   (out, d) => {
-      const c = new Category(d.key, d.title);
-      if (d.parentKey) {
-         const parent = out.find(c => c.key == d.parentKey);
-         if (parent) {
-            parent.add(c);
-         }
-      } else {
-         out.push(c);
-      }
-      return out;
-   },
-   [] as Category[]
-);
+import { mockCategories } from './test-data';
 
 test('Assigns subcategories', () => {
    expect(mockCategories[0]).toBeDefined();

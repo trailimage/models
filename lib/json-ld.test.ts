@@ -1,7 +1,5 @@
 import '@toba/test';
-import './config.test';
-import { mockPosts } from './post.test';
-import { mockCategories } from './category.test';
+import { mockCategories, mockPosts } from './test-data';
 
 test('Creates link data for posts', () => {
    const schema = mockPosts[0].linkDataJSON();
