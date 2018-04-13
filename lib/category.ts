@@ -24,18 +24,21 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
 
    //unload(keys:string|string[]):void;
 
-   getSubcategory(key: string): Category {
+   /**
+    * Category with matching key or title.
+    */
+   getSubcategory(keyOrTitle: string): Category {
       return findInSet(
          this.subcategories,
-         c => c.title === key || c.key === key
+         c => c.title === keyOrTitle || c.key === keyOrTitle
       );
    }
 
    /**
-    * Whether subcategory is present with given key.
+    * Whether subcategory is present with given key or title.
     */
-   has(key: string): boolean {
-      return this.getSubcategory(key) !== undefined;
+   has(keyOrTitle: string): boolean {
+      return this.getSubcategory(keyOrTitle) !== undefined;
    }
 
    /**
