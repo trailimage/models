@@ -169,8 +169,8 @@
     xmldom "^0.1.27"
 
 "@toba/test@^1.9.0":
-  version "1.12.4"
-  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.12.4.tgz#b7d4c65ceac4b3b7d116331703cfdfa1a3c15e4a"
+  version "1.12.8"
+  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.12.8.tgz#d7d401ec381af1a9f170866af95bcae3de401308"
   dependencies:
     "@toba/logger" "^1.0.4"
     "@toba/tools" "^1.20.0"
