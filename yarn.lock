@@ -169,19 +169,18 @@
     xmldom "^0.1.27"
 
 "@toba/test@^1.9.0":
-  version "1.12.3"
-  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.12.3.tgz#246f932b2012c04208883dbc3dad04603a0cbd21"
+  version "1.12.4"
+  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.12.4.tgz#b7d4c65ceac4b3b7d116331703cfdfa1a3c15e4a"
   dependencies:
     "@toba/logger" "^1.0.4"
-    "@toba/tools" "^1.19.0"
+    "@toba/tools" "^1.20.0"
     "@types/jest" "^22.2.0"
     "@types/node" "^9.6.0"
-    "@types/node-fetch" "^1.6.7"
     jest "^22.4.0"
     jest-localstorage-mock "^2.2.0"
     ts-jest "^22.4.0"
 
-"@toba/tools@^1.18.0", "@toba/tools@^1.19.0":
+"@toba/tools@^1.18.0", "@toba/tools@^1.19.0", "@toba/tools@^1.20.0":
   version "1.20.0"
   resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-1.20.0.tgz#77f0c6b6c4443a42f5167ca1ce75426e3bbd7ad9"
   dependencies:
@@ -195,13 +194,7 @@
   version "22.2.3"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.3.tgz#0157c0316dc3722c43a7b71de3fdf3acbccef10d"
 
-"@types/node-fetch@^1.6.7":
-  version "1.6.8"
-  resolved "https://registry.yarnpkg.com/@types/node-fetch/-/node-fetch-1.6.8.tgz#a59d8c75b300ddc3ca3eef23d449d677f9486c3d"
-  dependencies:
-    "@types/node" "*"
-
-"@types/node@*", "@types/node@^9.6.0":
+"@types/node@^9.6.0":
   version "9.6.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.5.tgz#ee700810fdf49ac1c399fc5980b7559b3e5a381d"
 
