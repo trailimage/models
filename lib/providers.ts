@@ -1,4 +1,5 @@
 import { is } from '@toba/tools';
+import { TrackFeatures } from '@toba/map';
 import { ProviderConfig } from './config';
 import { EXIF, Photo, Post, PhotoBlog, config } from '../';
 
@@ -19,7 +20,9 @@ export interface PostProvider {
 /**
  * Methods to load map-related data like GPX tracks.
  */
-export interface MapProvider {}
+export interface MapProvider {
+   track(postKey: string): Promise<TrackFeatures>;
+}
 
 /**
  * Methods to load videos associated with a post.
