@@ -1,11 +1,13 @@
 import { JsonLD, LinkData } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
+import { geoJSON, IMappable } from '@toba/map';
 import { measure, MapBounds, Location } from '@toba/map';
 import { Photo, VideoInfo, config, PostProvider } from '../';
 import { ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
 
-export class Post extends LinkData<JsonLD.BlogPosting> {
+export class Post extends LinkData<JsonLD.BlogPosting>
+   implements IMappable<GeoJSON.Feature> {
    /** Provider ID */
    id: string = null;
    /**  */
