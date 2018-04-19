@@ -1,5 +1,5 @@
 import '@toba/test';
-import { mockEXIF } from './test-data';
+import { mockEXIF } from './.test-data';
 
 test('Sanitizes values for configured artists', () => {
    expect(mockEXIF[0].artist).toBe('Artist 0');

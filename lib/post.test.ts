@@ -1,5 +1,5 @@
 import '@toba/test';
-import { mockPosts } from './test-data';
+import { mockPosts } from './.test-data';
 import './provider.test';
 
 // test.skip('normalizes provider values', () => {

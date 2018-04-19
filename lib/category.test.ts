@@ -1,5 +1,5 @@
 import '@toba/test';
-import { mockCategories } from './test-data';
+import { mockCategories } from './.test-data';
 
 test('Assigns subcategories', () => {
    expect(mockCategories[0]).toBeDefined();

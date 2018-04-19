@@ -30,7 +30,7 @@ export class PhotoBlog implements ISyndicate {
    changedKeys: string[];
 
    constructor() {
-      if (is.value(photoBlog)) {
+      if (is.value(blog)) {
          throw new Error('PhotoBlog instance already exists');
       }
    }
@@ -88,7 +88,7 @@ export class PhotoBlog implements ISyndicate {
    /**
     * Add post to library and link with adjacent posts.
     */
-   addPost(p: Post) {
+   addPost(p: Post): this {
       // exit if post with same ID is already present
       if (this.posts.filter(e => e.id === p.id).length > 0) {
          return;
@@ -102,6 +102,7 @@ export class PhotoBlog implements ISyndicate {
             next.previous = p;
          }
       }
+      return this;
    }
 
    /**
@@ -228,7 +229,7 @@ export class PhotoBlog implements ISyndicate {
    /**
     * Unload particular posts to force refresh from source
     */
-   unload(...keys: string[]) {
+   unload(...keys: string[]): this {
       for (const k of keys) {
          const p = this.postWithKey(k);
          // removing post details will force it to reload on next access
@@ -236,12 +237,13 @@ export class PhotoBlog implements ISyndicate {
             p.empty();
          }
       }
+      return this;
    }
 
    /**
     * Remove posts (primarily for testing)
     */
-   remove(...keys: string[]) {
+   remove(...keys: string[]): this {
       for (const k of keys) {
          const p = this.postWithKey(k);
          if (removeItem(this.posts, p)) {
@@ -250,6 +252,7 @@ export class PhotoBlog implements ISyndicate {
             });
          }
       }
+      return this;
    }
 
    /**
@@ -322,4 +325,4 @@ export class PhotoBlog implements ISyndicate {
 /**
  * `PhotoBlog` singleton
  */
-export const photoBlog = new PhotoBlog();
+export const blog = new PhotoBlog();
