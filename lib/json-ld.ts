@@ -1,15 +1,14 @@
 import {
    JsonLD,
-   ld,
-   image,
    breadcrumb,
+   image,
+   ld,
    organization,
-   webPage,
    place,
-   serialize
+   webPage
 } from '@toba/json-ld';
 import { is } from '@toba/tools';
-import { Category, Post, photoBlog, VideoInfo, config } from '../';
+import { Category, Post, VideoInfo, blog, config } from '../';
 
 export { serialize } from '@toba/json-ld';
 
@@ -83,7 +82,7 @@ export function forCategory(
       if (category.key.includes('/')) {
          // implies category is a subscategory
          const rootKey = category.key.split('/')[0];
-         const rootCategory = photoBlog.categoryWithKey(rootKey);
+         const rootCategory = blog.categoryWithKey(rootKey);
          schema.breadcrumb.push(
             breadcrumb(
                config.site.url + '/' + rootCategory.key,
@@ -123,9 +122,7 @@ export function forVideo(v: VideoInfo): JsonLD.VideoObject {
  * https://developers.google.com/structured-data/rich-snippets/articles
  */
 export function forPost(p: Post): JsonLD.BlogPosting {
-   const categoryTitle = Object.keys(p.categories).map(
-      key => p.categories[key]
-   );
+   const categoryTitle = Array.from(p.categories.keys());
    const schema: JsonLD.BlogPosting = {
       author: owner(),
       name: p.title,

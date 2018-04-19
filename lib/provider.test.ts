@@ -1,5 +1,5 @@
 import '@toba/test';
-import { postProvider } from './test-data';
+import { postProvider } from './.test-data';
 import { PostProvider, MapProvider } from '../';
 import { ensurePostProvider, ensureMapProvider } from './providers';
 

@@ -1,5 +1,5 @@
 import '@toba/test';
-import { mockPhotos } from './test-data';
+import { mockPhotos } from './.test-data';
 
 test('produces list of photo tags', () => {
    expect(mockPhotos[0].tagList).toBe('tag1,tag2,tag3');

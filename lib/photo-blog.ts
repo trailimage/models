@@ -30,7 +30,7 @@ export class PhotoBlog implements ISyndicate {
    changedKeys: string[];
 
    constructor() {
-      if (is.value(photoBlog)) {
+      if (is.value(blog)) {
          throw new Error('PhotoBlog instance already exists');
       }
    }
@@ -322,4 +322,4 @@ export class PhotoBlog implements ISyndicate {
 /**
  * `PhotoBlog` singleton
  */
-export const photoBlog = new PhotoBlog();
+export const blog = new PhotoBlog();
