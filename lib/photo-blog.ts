@@ -42,7 +42,7 @@ export class PhotoBlog implements ISyndicate {
    /**
     * @param emptyIfLoaded Whether to empty all blog data before loading.
     */
-   loader(emptyIfLoaded = false): Promise<PhotoBlog> {
+   build(emptyIfLoaded = false): Promise<PhotoBlog> {
       if (this.loaded && emptyIfLoaded) {
          this.empty();
       }

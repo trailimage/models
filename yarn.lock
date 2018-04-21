@@ -168,7 +168,7 @@
     jszip "^3.1.5"
     xmldom "^0.1.27"
 
-"@toba/test@^1.9.0":
+"@toba/test@^1.12.0":
   version "1.12.8"
   resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.12.8.tgz#d7d401ec381af1a9f170866af95bcae3de401308"
   dependencies:
@@ -183,6 +183,12 @@
 "@toba/tools@^1.18.0", "@toba/tools@^1.19.0", "@toba/tools@^1.20.0":
   version "1.20.0"
   resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-1.20.0.tgz#77f0c6b6c4443a42f5167ca1ce75426e3bbd7ad9"
+  dependencies:
+    zlib "^1.0.5"
+
+"@toba/tools@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-2.0.0.tgz#88bc2c1cbcccdf61fdab3559de963c26b80b2eb1"
   dependencies:
     zlib "^1.0.5"
 
