@@ -65,7 +65,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
    /**
     * Generate GeoJSON for photo feature.
     */
-   async geoJSON(partKey?: string): Promise<GeoJSON.Feature<GeoJSON.Point>> {
+   geoJSON(partKey?: string): GeoJSON.Feature<GeoJSON.Point> {
       const properties: MapPhoto = { url: this.size.preview.url };
 
       if (partKey !== undefined) {

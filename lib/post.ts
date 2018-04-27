@@ -4,7 +4,6 @@ import { geoJSON, IMappable } from '@toba/map';
 import { measure, MapBounds, Location } from '@toba/map';
 import { Photo, VideoInfo, config, PostProvider, MapProvider } from '../';
 import { ensureMapProvider, ensurePostProvider } from './providers';
-
 import { forPost } from './json-ld';
 
 export class Post extends LinkData<JsonLD.BlogPosting>
@@ -119,15 +118,17 @@ export class Post extends LinkData<JsonLD.BlogPosting>
       if (!this.triedTrack) {
          collection = await this.geo.track(this.key);
          this.triedTrack = true;
-         if (is.value(collection)) {
-            this.hasTrack = true;
-         }
       }
-      this.photos.forEach(async p => {
-         const point = await p.geoJSON(this.partKey);
-         collection.features.push(point);
-      });
 
+      this.hasTrack = is.value(collection);
+
+      if (!this.hasTrack) {
+         collection = geoJSON.features();
+      }
+
+      collection.features.push(
+         ...this.photos.map(p => p.geoJSON(this.partKey))
+      );
       return collection;
    }
 
