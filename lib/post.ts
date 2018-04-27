@@ -2,15 +2,21 @@ import { JsonLD, LinkData } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
 import { measure, MapBounds, Location } from '@toba/map';
-import { Photo, VideoInfo, config, PostProvider } from '../';
-import { ensurePostProvider } from './providers';
+import { Photo, VideoInfo, config, PostProvider, MapProvider } from '../';
+import { ensureMapProvider, ensurePostProvider } from './providers';
+
 import { forPost } from './json-ld';
 
 export class Post extends LinkData<JsonLD.BlogPosting>
-   implements IMappable<GeoJSON.Feature> {
+   implements IMappable<GeoJSON.GeometryObject> {
    /** Provider ID */
    id: string = null;
-   /**  */
+   /**
+    * Unique identifer used as the URL slug. If post is part of a series then
+    * the key is compound.
+    *
+    * @example brother-ride/day-10
+    */
    key: string = null;
    title: string = null;
    subTitle?: string = null;
@@ -73,12 +79,24 @@ export class Post extends LinkData<JsonLD.BlogPosting>
    totalParts: number = 0;
    /** Whether this post is the first in a series. */
    isSeriesStart: boolean = false;
+   /**
+    * Portion of key that is common among series members. For example, with
+    * `brother-ride/day-10` the `seriesKey` is `brother-ride`.
+    */
    seriesKey: string = null;
+   /**
+    * Portion of key that is unique among series members. For example, with
+    * `brother-ride/day-10` the `partKey` is `day-10`.
+    */
    partKey: string = null;
    video: VideoInfo = null;
 
    private get load(): PostProvider {
       return ensurePostProvider();
+   }
+
+   private get geo(): MapProvider {
+      return ensureMapProvider();
    }
 
    /**
@@ -93,6 +111,24 @@ export class Post extends LinkData<JsonLD.BlogPosting>
     */
    async getInfo(): Promise<Post> {
       return this.infoLoaded ? this : this.load.postInfo(this);
+   }
+
+   async geoJSON() {
+      let collection: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>;
+
+      if (!this.triedTrack) {
+         collection = await this.geo.track(this.key);
+         this.triedTrack = true;
+         if (is.value(collection)) {
+            this.hasTrack = true;
+         }
+      }
+      this.photos.forEach(async p => {
+         const point = await p.geoJSON(this.partKey);
+         collection.features.push(point);
+      });
+
+      return collection;
    }
 
    /**

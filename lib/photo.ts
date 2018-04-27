@@ -62,7 +62,10 @@ export class Photo implements IMappable<GeoJSON.Point> {
       return this._exif;
    }
 
-   geoJSON(partKey?: string): GeoJSON.Feature<GeoJSON.Point> {
+   /**
+    * Generate GeoJSON for photo feature.
+    */
+   async geoJSON(partKey?: string): Promise<GeoJSON.Feature<GeoJSON.Point>> {
       const properties: MapPhoto = { url: this.size.preview.url };
 
       if (partKey !== undefined) {
@@ -84,8 +87,8 @@ export class Photo implements IMappable<GeoJSON.Point> {
 /**
  * Simplistic outlier calculation.
  *
- * https://en.wikipedia.org/wiki/Outlier
- * http://www.wikihow.com/Calculate-Outliers
+ * @see https://en.wikipedia.org/wiki/Outlier
+ * @see http://www.wikihow.com/Calculate-Outliers
  */
 export function identifyOutliers(photos: Photo[]) {
    const median = (values: number[]) => {
