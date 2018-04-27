@@ -159,7 +159,7 @@
     flat "^4.0.0"
     logfmt "^1.2.0"
 
-"@toba/map@^1.0.4":
+"@toba/map@^1.2.0":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@toba/map/-/map-1.2.1.tgz#71e2aef27d9e6216a937a8e9cdfefd9c0c2de46a"
   dependencies:
