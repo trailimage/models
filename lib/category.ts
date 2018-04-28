@@ -6,7 +6,7 @@ import { Post } from '../index';
 /**
  * Post category.
  */
-export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
+export class Category implements LinkData<JsonLD.Blog | JsonLD.WebPage> {
    title: string = null;
    /**
     * Slug style key that represents path to category.
@@ -17,7 +17,6 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
    posts: Set<Post> = new Set();
 
    constructor(key: string, title: string) {
-      super();
       this.key = key;
       this.title = title;
    }
@@ -93,7 +92,7 @@ export class Category extends LinkData<JsonLD.Blog | JsonLD.WebPage> {
       return this.subcategories.size > 0;
    }
 
-   linkDataJSON(): JsonLD.Blog | JsonLD.WebPage {
+   jsonLD(): JsonLD.Blog | JsonLD.WebPage {
       return forCategory(this);
    }
 }

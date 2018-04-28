@@ -141,14 +141,14 @@
     tslint-consistent-codestyle "^1.13.0"
 
 "@toba/feed@^1.0.1":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@toba/feed/-/feed-1.0.2.tgz#2b9a47e30974b60fef079fd5107a752211eaf8a2"
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@toba/feed/-/feed-1.0.3.tgz#b4a0496dd655348f0a70fa509942004b74545361"
   dependencies:
-    "@toba/tools" "^1.20.0"
+    "@toba/tools" "^2.2.0"
 
 "@toba/json-ld@^1.1.0":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@toba/json-ld/-/json-ld-1.1.1.tgz#12a494b879c588f9a98f7eb504459af062fc42ec"
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@toba/json-ld/-/json-ld-1.2.1.tgz#933cfcdff9f7d90cb9c42c50f68ca24a58ee66bf"
 
 "@toba/logger@^1.0.4":
   version "1.0.4"
@@ -186,9 +186,9 @@
   dependencies:
     zlib "^1.0.5"
 
-"@toba/tools@^2.0.0":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-2.0.1.tgz#c5b3b7330588e1d4338f436ff8c81038801f21ef"
+"@toba/tools@^2.0.0", "@toba/tools@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-2.2.0.tgz#dd3090ccab75de546e5b6e37fa6fcd1836350790"
   dependencies:
     zlib "^1.0.5"
 
@@ -418,8 +418,8 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
 atob@^2.0.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.0.tgz#ab2b150e51d7b122b9efc8d7340c06b6c41076bc"
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.1.tgz#ae2d5a729477f289d60dd7f96a6314a22dd6c22a"
 
 autoprefixer@^8.0.0:
   version "8.3.0"
@@ -449,8 +449,8 @@ babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
     js-tokens "^3.0.2"
 
 babel-core@^6.0.0, babel-core@^6.26.0:
-  version "6.26.2"
-  resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.26.2.tgz#b67a120521dcd6baf1a2ecceeceb595e223da06c"
+  version "6.26.3"
+  resolved "https://registry.yarnpkg.com/babel-core/-/babel-core-6.26.3.tgz#b2e2f09e342d0f0c88e2f02e067794125e75c207"
   dependencies:
     babel-code-frame "^6.26.0"
     babel-generator "^6.26.0"
@@ -1490,8 +1490,8 @@ fs.realpath@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
 
 fsevents@^1.0.0, fsevents@^1.1.1:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.2.2.tgz#4f598f0f69b273188ef4a62ca4e9e08ace314bbf"
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-1.2.3.tgz#08292982e7059f6674c93d8b829c1e8604979ac0"
   dependencies:
     nan "^2.9.2"
     node-pre-gyp "^0.9.0"
@@ -2914,8 +2914,8 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
 
 needle@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/needle/-/needle-2.2.0.tgz#f14efc69cee1024b72c8b21c7bdf94a731dc12fa"
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/needle/-/needle-2.2.1.tgz#b5e325bd3aae8c2678902fa296f729455d1d3a7d"
   dependencies:
     debug "^2.1.2"
     iconv-lite "^0.4.4"

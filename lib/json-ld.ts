@@ -19,11 +19,11 @@ const postPlace = (post: Post) =>
 
 const configPage = (path: string = '') => webPage(pathUrl(path));
 
-const configOrg = () =>
+const configOrg = (): JsonLD.Organization =>
    organization(config.site.title, config.site.companyLogo);
 
 export function owner(): JsonLD.Person {
-   return ld<JsonLD.Person>('Person', {
+   return ld<JsonLD.Person>(JsonLD.Type.Person, {
       name: config.owner.name,
       url: config.site.url + '/about',
       sameAs: config.owner.urls,
@@ -41,14 +41,14 @@ export function searchAction(): JsonLD.SearchAction {
    const qi = 'query-input';
    const placeHolder = 'search_term_string';
 
-   return ld<JsonLD.SearchAction>('SearchAction', {
+   return ld<JsonLD.SearchAction>(JsonLD.Type.SearchAction, {
       target: config.site.url + '/search?q={' + placeHolder + '}',
       [qi]: 'required name=' + placeHolder
    });
 }
 
 export function discoverAction(post: Post): JsonLD.DiscoverAction {
-   return ld<JsonLD.DiscoverAction>('DiscoverAction', {
+   return ld<JsonLD.DiscoverAction>(JsonLD.Type.DiscoverAction, {
       target: config.site.url + '/' + post.key + '/map'
    });
 }
@@ -62,7 +62,7 @@ export function forCategory(
    homePage = false
 ): JsonLD.Blog | JsonLD.WebPage {
    if (homePage) {
-      return ld<JsonLD.Blog>('Blog', {
+      return ld<JsonLD.Blog>(JsonLD.Type.Blog, {
          url: config.site.url,
          name: config.site.title,
          author: owner(),
@@ -108,7 +108,7 @@ export function forCategory(
 export function forVideo(v: VideoInfo): JsonLD.VideoObject {
    return v === null || v.empty
       ? null
-      : ld<JsonLD.VideoObject>('VideoObject', {
+      : ld<JsonLD.VideoObject>(JsonLD.Type.VideoObject, {
            contentUrl: 'https://www.youtube.com/watch?v=' + v.id,
            videoFrameSize: v.width + 'x' + v.height,
            description: null,
@@ -158,5 +158,5 @@ export function forPost(p: Post): JsonLD.BlogPosting {
       );
    }
 
-   return ld<JsonLD.BlogPosting>('BlogPosting', schema);
+   return ld<JsonLD.BlogPosting>(JsonLD.Type.BlogPosting, schema);
 }

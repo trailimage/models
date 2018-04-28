@@ -2,7 +2,7 @@ import '@toba/test';
 import { mockCategories, mockPosts } from './.test-data';
 
 test('Creates link data for posts', () => {
-   const schema = mockPosts[0].linkDataJSON();
+   const schema = mockPosts[0].jsonLD();
 
    expect(schema).toHaveAllProperties(
       'author',
@@ -20,7 +20,7 @@ test('Creates link data for posts', () => {
 });
 
 test('creates link data for categories', () => {
-   expect(mockCategories[0].linkDataJSON()).toMatchSnapshot();
+   expect(mockCategories[0].jsonLD()).toMatchSnapshot();
 });
 
 // test('serializes link data', () => {

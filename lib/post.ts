@@ -6,8 +6,7 @@ import { Photo, VideoInfo, config, PostProvider, MapProvider } from '../';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
 
-export class Post extends LinkData<JsonLD.BlogPosting>
-   implements IMappable<GeoJSON.GeometryObject> {
+export class Post implements LinkData<JsonLD.BlogPosting> {
    /** Provider ID */
    id: string = null;
    /**
@@ -267,7 +266,7 @@ export class Post extends LinkData<JsonLD.BlogPosting>
       this.centroid = measure.centroid(locations);
    }
 
-   linkDataJSON(): JsonLD.BlogPosting {
+   jsonLD(): JsonLD.BlogPosting {
       return forPost(this);
    }
 }

@@ -1,13 +1,12 @@
 import { JsonLD, LinkData } from '@toba/json-ld';
 import { forVideo } from './json-ld';
 
-export class VideoInfo extends LinkData<JsonLD.VideoObject> {
+export class VideoInfo implements LinkData<JsonLD.VideoObject> {
    id: string = null;
    width: number = 0;
    height: number = 0;
 
    constructor(id: string, width: number, height: number) {
-      super();
       this.id = id;
       this.width = width;
       this.height = height;
@@ -17,7 +16,7 @@ export class VideoInfo extends LinkData<JsonLD.VideoObject> {
       return this.width === 0 || this.height === 0;
    }
 
-   linkDataJSON(): JsonLD.VideoObject {
+   jsonLD(): JsonLD.VideoObject {
       return forVideo(this);
    }
 }
