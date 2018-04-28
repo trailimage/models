@@ -1,5 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Creates link data for posts 1`] = `
+Object {
+  "@context": "http://schema.org",
+  "@type": "BlogPosting",
+  "articleSection": "key0,key1",
+  "author": Object {
+    "@context": "http://schema.org",
+    "@type": "Person",
+    "image": Object {
+      "@context": "http://schema.org",
+      "@type": "ImageObject",
+      "height": 100,
+      "url": "http://test.com/image.jpg",
+      "width": 100,
+    },
+    "mainEntityOfPage": Object {
+      "@context": "http://schema.org",
+      "@id": "about",
+      "@type": "WebPage",
+    },
+    "name": "Test Person",
+    "sameAs": Array [
+      "http://testsite1.com",
+      "http://testsite2.com",
+    ],
+    "url": "http://www.test.com/about",
+  },
+  "dateModified": undefined,
+  "datePublished": undefined,
+  "description": null,
+  "headline": "Title 1",
+  "image": undefined,
+  "mainEntityOfPage": Object {
+    "@context": "http://schema.org",
+    "@id": "http://www.test.com/key0",
+    "@type": "WebPage",
+  },
+  "name": "Title 1",
+  "publisher": Object {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "logo": Object {
+      "@context": "http://schema.org",
+      "@type": "ImageObject",
+      "height": 100,
+      "url": "http://test.com/image.jpg",
+      "width": 100,
+    },
+    "name": "Test Site",
+  },
+}
+`;
+
 exports[`creates link data for categories 1`] = `
 Object {
   "@context": "http://schema.org",
@@ -8,7 +61,7 @@ Object {
   "breadcrumb": Array [
     Object {
       "@context": "http://schema.org",
-      "@type": "BreadcrumbList",
+      "@type": "Breadcrumb",
       "item": Object {
         "id": "http://www.test.com",
         "name": "Home",
@@ -17,7 +70,7 @@ Object {
     },
     Object {
       "@context": "http://schema.org",
-      "@type": "BreadcrumbList",
+      "@type": "Breadcrumb",
       "item": Object {
         "id": "http://www.test.com/key0",
         "name": "Title 1",

@@ -17,8 +17,14 @@ const pathUrl = (path: string) => config.site.url + '/' + path;
 const postPlace = (post: Post) =>
    place(config.site.url + '/' + post.key + '/map');
 
+/**
+ * Page prefixed with configured URL.
+ */
 const configPage = (path: string = '') => webPage(pathUrl(path));
 
+/**
+ * Configured organization.
+ */
 const configOrg = (): JsonLD.Organization =>
    organization(config.site.title, config.site.companyLogo);
 
@@ -33,9 +39,9 @@ export function owner(): JsonLD.Person {
 }
 
 /**
- * http://schema.org/docs/actions.html
- * http://schema.org/SearchAction
- * https://developers.google.com/structured-data/slsb-overview
+ * @see http://schema.org/docs/actions.html
+ * @see http://schema.org/SearchAction
+ * @see https://developers.google.com/structured-data/slsb-overview
  */
 export function searchAction(): JsonLD.SearchAction {
    const qi = 'query-input';
@@ -54,7 +60,8 @@ export function discoverAction(post: Post): JsonLD.DiscoverAction {
 }
 
 /**
- * https://developers.google.com/structured-data/breadcrumbs
+ * Link Data for a blog category.
+ * @see https://developers.google.com/structured-data/breadcrumbs
  */
 export function forCategory(
    category: Category,
@@ -118,8 +125,9 @@ export function forVideo(v: VideoInfo): JsonLD.VideoObject {
 }
 
 /**
- * https://developers.google.com/structured-data/testing-tool/
- * https://developers.google.com/structured-data/rich-snippets/articles
+ * Linked Data for a blog post.
+ * @see https://developers.google.com/structured-data/testing-tool/
+ * @see https://developers.google.com/structured-data/rich-snippets/articles
  */
 export function forPost(p: Post): JsonLD.BlogPosting {
    const categoryTitle = Array.from(p.categories.keys());

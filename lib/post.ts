@@ -6,7 +6,8 @@ import { Photo, VideoInfo, config, PostProvider, MapProvider } from '../';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
 
-export class Post implements LinkData<JsonLD.BlogPosting> {
+export class Post
+   implements LinkData<JsonLD.BlogPosting>, IMappable<GeoJSON.GeometryObject> {
    /** Provider ID */
    id: string = null;
    /**

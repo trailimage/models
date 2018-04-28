@@ -11,7 +11,9 @@ test('Creates link data for posts', () => {
       'headline',
       'articleSection'
    );
+   // schema will contain redundant context properties until serialized
    expect(schema).toHaveProperty('@context', 'http://schema.org');
+   expect(schema).toMatchSnapshot();
    // expect(schema.name).toBe('Spring Fish & Chips');
    // expect(schema.headline).toBe(schema.name);
    // expect(schema.author).toHaveProperty('name', 'Jason Abbott');
