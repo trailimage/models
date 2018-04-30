@@ -11,6 +11,7 @@ export interface PostProvider {
    photoBlog(photoBlog: PhotoBlog): Promise<PhotoBlog>;
    /** Retrieve EXIF for single photo. */
    exif(photoID: string): Promise<EXIF>;
+   /** Find ID of Post that contains photo with given ID. */
    postIdWithPhotoId(photoID: string): Promise<string>;
    photosWithTags(tags: string | string[]): Promise<Photo[]>;
    postInfo(p: Post): Promise<Post>;

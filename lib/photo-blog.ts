@@ -1,15 +1,15 @@
 import { removeItem, is, mapSet } from '@toba/tools';
 import { ISyndicate, AtomFeed } from '@toba/feed';
 import { geoJSON } from '@toba/map';
-import { Post, Category, Photo, EXIF, PostProvider } from '../';
+import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
 import { ensurePostProvider } from './providers';
 
 /**
  * Singleton collection of photos grouped into "posts" (called a "set" or
  * "album" in most providers) that are in turn assigned categories. Additional
- * library methods are added by the factory.
+ * blog methods are added by the factory.
  */
-export class PhotoBlog implements ISyndicate {
+export class PhotoBlog implements ISyndicate<AtomFeed> {
    /** All categories mapped to their (slug-style) key. */
    categories: Map<string, Category> = new Map();
    /**
@@ -188,10 +188,9 @@ export class PhotoBlog implements ISyndicate {
     * Get first post that includes the given photo.
     */
    async postWithPhoto(photo: Photo | string): Promise<Post> {
-      const id: string =
-         typeof photo == is.Type.String
-            ? (photo as string)
-            : (photo as Photo).id;
+      const id: string = is.text(photo)
+         ? (photo as string)
+         : (photo as Photo).id;
       const postID = await this.load.postIdWithPhotoId(id);
 
       return this.postWithID(postID);
@@ -227,7 +226,8 @@ export class PhotoBlog implements ISyndicate {
    }
 
    /**
-    * Unload particular posts to force refresh from source
+    * Unload particular posts to force refresh from source.
+    * @param keys Post keys
     */
    unload(...keys: string[]): this {
       for (const k of keys) {
@@ -241,7 +241,8 @@ export class PhotoBlog implements ISyndicate {
    }
 
    /**
-    * Remove posts (primarily for testing)
+    * Remove posts (primarily for testing).
+    * @param keys Post keys
     */
    remove(...keys: string[]): this {
       for (const k of keys) {
@@ -256,7 +257,7 @@ export class PhotoBlog implements ISyndicate {
    }
 
    /**
-    * Match posts that are part of a series
+    * Match posts that are part of a series.
     */
    correlatePosts() {
       let p = this.posts[0];
@@ -295,10 +296,10 @@ export class PhotoBlog implements ISyndicate {
       }
    }
 
-   feedJSON(): AtomFeed {
+   rssJSON(): AtomFeed {
       return {
          id: '',
-         title: 'Main Title',
+         title: config.site.title,
          subtitle: '',
          link: {
             href: ''
@@ -306,18 +307,7 @@ export class PhotoBlog implements ISyndicate {
          author: {
             name: 'Who'
          },
-         entry: this.posts.map(p => ({
-            id: p.id,
-            title: p.title,
-            link: { href: '' },
-            published: new Date(),
-            updated: new Date(),
-            summary: '',
-            contributor: {
-               name: 'Who'
-            },
-            content: ''
-         }))
+         entry: this.posts.map(p => p.rssJSON())
       };
    }
 }

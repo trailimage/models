@@ -1,13 +1,17 @@
 import { JsonLD, LinkData } from '@toba/json-ld';
 import { slug, is } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
+import { ISyndicate, AtomEntry, AtomPerson } from '@toba/feed';
 import { measure, MapBounds, Location } from '@toba/map';
-import { Photo, VideoInfo, config, PostProvider, MapProvider } from '../';
+import { Photo, VideoInfo, config, PostProvider } from '../';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
 
 export class Post
-   implements LinkData<JsonLD.BlogPosting>, IMappable<GeoJSON.GeometryObject> {
+   implements
+      LinkData<JsonLD.BlogPosting>,
+      IMappable<GeoJSON.GeometryObject>,
+      ISyndicate<AtomEntry> {
    /** Provider ID */
    id: string = null;
    /**
@@ -94,10 +98,6 @@ export class Post
       return ensurePostProvider();
    }
 
-   private get geo(): MapProvider {
-      return ensureMapProvider();
-   }
-
    /**
     * Retrieve post photos.
     */
@@ -110,26 +110,6 @@ export class Post
     */
    async getInfo(): Promise<Post> {
       return this.infoLoaded ? this : this.load.postInfo(this);
-   }
-
-   async geoJSON() {
-      let collection: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>;
-
-      if (!this.triedTrack) {
-         collection = await this.geo.track(this.key);
-         this.triedTrack = true;
-      }
-
-      this.hasTrack = is.value(collection);
-
-      if (!this.hasTrack) {
-         collection = geoJSON.features();
-      }
-
-      collection.features.push(
-         ...this.photos.map(p => p.geoJSON(this.partKey))
-      );
-      return collection;
    }
 
    /**
@@ -225,7 +205,7 @@ export class Post
    /**
     * Update cached photo coordinates and overall bounds from photo objets.
     *
-    * https://www.mapbox.com/api-documentation/#static
+    * @see https://www.mapbox.com/api-documentation/#static
     */
    updatePhotoLocations() {
       let start = 1; // always skip first photo
@@ -267,7 +247,60 @@ export class Post
       this.centroid = measure.centroid(locations);
    }
 
+   /**
+    * Map information for post.
+    */
+   async geoJSON() {
+      let collection: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>;
+
+      if (!this.triedTrack) {
+         collection = await ensureMapProvider().track(this.key);
+         this.triedTrack = true;
+      }
+
+      this.hasTrack = is.value(collection);
+
+      if (!this.hasTrack) {
+         collection = geoJSON.features();
+      }
+
+      collection.features.push(
+         ...this.photos.map(p => p.geoJSON(this.partKey))
+      );
+      return collection;
+   }
+
+   /**
+    * Link Data for post.
+    */
    jsonLD(): JsonLD.BlogPosting {
       return forPost(this);
+   }
+
+   /**
+    * Details for RSS/Atom feed.
+    */
+   rssJSON(): AtomEntry {
+      const author: AtomPerson = {
+         name: config.owner.name
+      };
+
+      if (is.array(config.owner.urls, 1)) {
+         author.uri = config.owner.urls[0];
+      }
+
+      return {
+         id: this.id,
+         title: this.title,
+         link: { href: 'http://' + config.site.domain },
+         published: this.createdOn,
+         updated: this.updatedOn,
+         rights: `'Copyright © ${new Date().getFullYear()}
+         ${config.owner.name}. All rights reserved.`,
+         summary: this.description,
+         author: author,
+         contributor: [author],
+         content: config.site.url + '/' + this.key
+      };
    }
 }
