@@ -8,6 +8,24 @@
          "type": "shell",
          "group": "test",
          "problemMatcher": []
+      },
+      {
+         "label": "Update Docs",
+         "command": "./node_modules/.bin/typedoc",
+         "args": [
+            "--out",
+            "./doc/",
+            "./lib/",
+            "--mode",
+            "modules",
+            "--tsconfig",
+            "tdconfig.json",
+            "--readme",
+            "README.md"
+         ],
+         "type": "shell",
+         "group": "test",
+         "problemMatcher": []
       }
    ]
 }
