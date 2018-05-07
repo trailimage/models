@@ -1,5 +1,5 @@
 import '@toba/test';
-import { is } from '@toba/tools';
+import { is, median, boundary } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
 import { PhotoSize, EXIF, PostProvider } from '../';
 import { ensurePostProvider } from './providers';
@@ -91,33 +91,6 @@ export class Photo implements IMappable<GeoJSON.Point> {
  * @see http://www.wikihow.com/Calculate-Outliers
  */
 export function identifyOutliers(photos: Photo[]) {
-   const median = (values: number[]) => {
-      const half = Math.floor(values.length / 2);
-      return values.length % 2 !== 0
-         ? values[half]
-         : (values[half - 1] + values[half]) / 2.0;
-   };
-
-   const boundary = (values: number[], distance?: number) => {
-      if (!is.array(values) || values.length === 0) {
-         return null;
-      }
-      if (distance === undefined) {
-         distance = 3;
-      }
-
-      // sort lowest to highest
-      values.sort((d1, d2) => d1 - d2);
-      const half = Math.floor(values.length / 2);
-      const q1 = median(values.slice(0, half));
-      const q3 = median(values.slice(half));
-      const range = q3 - q1;
-
-      return {
-         min: (q1 - range * distance) as number,
-         max: (q3 + range * distance) as number
-      };
-   };
    const fence = boundary(photos.map(p => p.dateTaken.getTime()));
 
    if (fence !== null) {
