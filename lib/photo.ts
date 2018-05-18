@@ -1,5 +1,5 @@
 import '@toba/test';
-import { is, median, boundary } from '@toba/tools';
+import { boundary } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
 import { PhotoSize, EXIF, PostProvider } from '../';
 import { ensurePostProvider } from './providers';

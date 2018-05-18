@@ -51,6 +51,6 @@
       "@toba/feed": "^1.2.0",
       "@toba/json-ld": "^1.2.0",
       "@toba/map": "^1.2.0",
-      "@toba/tools": "^3.0.0"
+      "@toba/tools": "^3.1.0"
    }
 }
