@@ -14,6 +14,7 @@ export class EXIF {
    lens: string = null;
    model: string = null;
    software: string = null;
+   /** Whether raw values have been formatted. */
    sanitized: boolean = false;
 
    sanitize(): EXIF {
