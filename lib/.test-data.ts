@@ -110,6 +110,8 @@ export const mockPosts: Post[] = ([
    p.title = d.title;
    p.subTitle = d.subTitle;
    p.photos = mockPhotos;
+   p.createdOn = new Date();
+   p.updatedOn = new Date();
 
    if (index != 3) {
       // assign no categories to key3

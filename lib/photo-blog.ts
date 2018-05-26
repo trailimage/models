@@ -1,5 +1,5 @@
 import { removeItem, is, mapSet } from '@toba/tools';
-import { ISyndicate, AtomFeed } from '@toba/feed';
+import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
 import { geoJSON } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
 import { ensurePostProvider } from './providers';
@@ -297,16 +297,24 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
    }
 
    rssJSON(): AtomFeed {
+      const author: AtomPerson = {
+         name: config.owner.name
+      };
+
       return {
-         id: '',
+         id: config.site.url,
          title: config.site.title,
-         subtitle: '',
+         subtitle: config.site.subtitle,
          link: {
-            href: ''
+            href: config.site.url
          },
-         author: {
-            name: 'Who'
+         author: author,
+         contributor: author,
+         generator: {
+            name: 'Toba',
+            uri: 'https://github.com/toba'
          },
+         updated: new Date(),
          entry: this.posts.map(p => p.rssJSON())
       };
    }

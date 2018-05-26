@@ -278,7 +278,7 @@ export class Post
    }
 
    /**
-    * Details for RSS/Atom feed.
+    * Details for RSS/Atom feed. Rights default to full copyright.
     */
    rssJSON(): AtomEntry {
       const author: AtomPerson = {
@@ -291,7 +291,7 @@ export class Post
 
       return {
          id: this.id,
-         title: this.title,
+         title: this.name(),
          link: { href: 'http://' + config.site.domain },
          published: this.createdOn,
          updated: this.updatedOn,
