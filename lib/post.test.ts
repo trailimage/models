@@ -1,5 +1,6 @@
 import '@toba/test';
 import { mockPosts } from './.test-data';
+import { config } from '../';
 
 const [post1, post2, post3, post4] = mockPosts;
 
@@ -26,7 +27,7 @@ test('identifies category membership', () => {
 test('writes RSS data', () => {
    const entry1 = post1.rssJSON();
 
-   expect(entry1.id).toBe(post1.id);
+   expect(entry1.id).toBe(config.site.url + '/' + post1.id);
    expect(entry1.summary).toBe(post1.description);
    expect(entry1.title).toBe(post1.name());
 });

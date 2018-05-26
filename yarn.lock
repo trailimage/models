@@ -55,10 +55,10 @@
     tslint-consistent-codestyle "^1.13.0"
 
 "@toba/feed@^1.2.0":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@toba/feed/-/feed-1.2.3.tgz#f180f7ecd9db1afbeb11f9cd51e3a33d78ffb52f"
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/@toba/feed/-/feed-1.2.5.tgz#c306fcfd3e877a98c9266d0fb99366ad5c109119"
   dependencies:
-    "@toba/tools" "^3.0.0"
+    "@toba/tools" "^3.1.0"
 
 "@toba/json-ld@^1.2.0":
   version "1.2.3"
