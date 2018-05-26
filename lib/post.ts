@@ -6,7 +6,7 @@ import { measure, MapBounds, Location } from '@toba/map';
 import { Photo, VideoInfo, config, PostProvider } from '../';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
-import { seriesKeySeparator } from './photo-blog';
+import { seriesKeySeparator } from '../';
 
 export class Post
    implements
