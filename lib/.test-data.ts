@@ -16,6 +16,8 @@ const imageConfig: ImageConfig = {
    height: 100
 };
 
+const someDate = new Date(1973, 15, 3, 12, 0, 0);
+
 export const postProvider: PostProvider = {
    async photoBlog(instance: PhotoBlog): Promise<PhotoBlog> {
       return instance;
@@ -110,8 +112,8 @@ export const mockPosts: Post[] = ([
    p.title = d.title;
    p.subTitle = d.subTitle;
    p.photos = mockPhotos;
-   p.createdOn = new Date();
-   p.updatedOn = new Date();
+   p.createdOn = someDate;
+   p.updatedOn = someDate;
 
    if (index != 3) {
       // assign no categories to key3
