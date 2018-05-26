@@ -5,6 +5,12 @@ import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
 import { ensurePostProvider } from './providers';
 
 /**
+ * Slug and cache key which probably differs from the seperator used to display
+ * the title : subtitle.
+ */
+export const seriesKeySeparator = '/';
+
+/**
  * Singleton collection of photos grouped into "posts" (called a "set" or
  * "album" in most providers) that are in turn assigned categories. Additional
  * blog methods are added by the factory.
@@ -160,7 +166,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     */
    postWithKey(key: string, partKey: string = null): Post {
       if (is.value(partKey)) {
-         key += '/' + partKey;
+         key += seriesKeySeparator + partKey;
       }
       return this.posts.find(p => p.hasKey(key));
    }

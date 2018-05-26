@@ -6,6 +6,7 @@ import { measure, MapBounds, Location } from '@toba/map';
 import { Photo, VideoInfo, config, PostProvider } from '../';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
+import { seriesKeySeparator } from './photo-blog';
 
 export class Post
    implements
@@ -24,6 +25,7 @@ export class Post
    title: string = null;
    subTitle?: string = null;
    description: string = null;
+   /** Description that includes computed photo and video count. */
    longDescription: string = null;
    happenedOn: Date;
    createdOn: Date;
@@ -153,7 +155,8 @@ export class Post
    hasKey(key: string): boolean {
       return (
          this.key == key ||
-         (is.value(this.partKey) && key == this.seriesKey + '-' + this.partKey)
+         (is.value(this.partKey) &&
+            key == this.seriesKey + seriesKeySeparator + this.partKey)
       );
    }
 
@@ -300,7 +303,6 @@ export class Post
          }. All rights reserved.`,
          summary: this.description,
          author: author,
-         contributor: [author],
          content: config.site.url + '/' + this.key
       };
    }
