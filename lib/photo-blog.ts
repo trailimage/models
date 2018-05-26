@@ -91,15 +91,15 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
    addPost(p: Post): this {
       // exit if post with same ID is already present
       if (this.posts.filter(e => e.id === p.id).length > 0) {
-         return;
+         return this;
       }
       this.posts.push(p);
 
       if (p.chronological && this.posts.length > 1) {
-         const next = this.posts[this.posts.length - 2];
-         if (next.chronological) {
-            p.next = next;
-            next.previous = p;
+         const prev = this.posts[this.posts.length - 2];
+         if (prev.chronological) {
+            p.previous = prev;
+            prev.next = p;
          }
       }
       return this;
@@ -260,11 +260,11 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * Match posts that are part of a series.
     */
    correlatePosts() {
-      let p = this.posts[0];
+      let p = this.posts[this.posts.length - 1];
       let parts = [];
 
       while (p != null && p.previous != null) {
-         if (p.subTitle !== null) {
+         if (is.value(p.subTitle)) {
             parts.push(p);
 
             while (p.previous != null && p.previous.title == p.title) {

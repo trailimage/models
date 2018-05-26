@@ -95,19 +95,22 @@ export const mockCategories: Category[] = ([
 interface PostData {
    key: string;
    title: string;
+   subTitle?: string;
    seriesKey?: string;
 }
 
 export const mockPosts: Post[] = ([
-   { key: 'key0', title: 'Title 1', seriesKey: 'series1' },
-   { key: 'key1', title: 'Title 2', seriesKey: 'series1' },
-   { key: 'key2', title: 'Title 3', seriesKey: 'series1' },
-   { key: 'key3', title: 'Title 4' }
+   { key: 'key0', title: 'Series 1', subTitle: 'Part 1', seriesKey: 'series1' },
+   { key: 'key1', title: 'Series 1', subTitle: 'Part 2', seriesKey: 'series1' },
+   { key: 'key2', title: 'Series 1', subTitle: 'Part 3', seriesKey: 'series1' },
+   { key: 'key3', title: 'Title 4', subTitle: null }
 ] as PostData[]).map((d, index) => {
    const p = new Post();
-   p.key = d.key;
+   p.id = p.key = d.key;
    p.title = d.title;
+   p.subTitle = d.subTitle;
    p.photos = mockPhotos;
+
    if (index != 3) {
       // assign no categories to key3
       p.categories = mockCategories.reduce((hash, c) => {

@@ -1,10 +1,19 @@
 import '@toba/test';
-import { PhotoBlog } from '../';
+import { PhotoBlog, blog } from '../';
 import { mockPosts } from './.test-data';
 
 const [post1, post2, post3, post4] = mockPosts;
 
-test('Ensures only one instance exists', () => {
+beforeAll(() => {
+   blog
+      .addPost(post1)
+      .addPost(post2)
+      .addPost(post3)
+      .addPost(post4)
+      .correlatePosts();
+});
+
+test('ensures only one instance exists', () => {
    let e: Error;
    let b: PhotoBlog;
    try {
@@ -17,31 +26,31 @@ test('Ensures only one instance exists', () => {
    expect(e.message).toBe('PhotoBlog instance already exists');
 });
 
-test('is linked to next and previous posts', () => {
+test('links sequential posts', () => {
    expect(post1.previous).toBeNull();
-   expect(post2.previous).toBe(post1);
+   expect(post2.previous.key).toEqual(post1.key);
    expect(post1.next).toBe(post2);
    expect(post2.next).toBeDefined();
 });
 
-// test('is connected to parts of a series', () => {
-//    expect(post1.totalParts).toBe(0);
-//    expect(post2.totalParts).toBe(2);
-//    expect(post1.part).toBe(0);
-//    expect(post2.part).toBe(2);
-//    expect(post1.subTitle).toBeNull();
-//    expect(post2.subTitle).toBe('Lowlands');
-//    expect(post1.previousIsPart).toBe(false);
-//    expect(post2.previousIsPart).toBe(true);
-//    expect(post1.isPartial).toBe(false);
-//    expect(post2.isPartial).toBe(true);
-//    expect(post2.isSeriesStart).toBe(false);
-//    expect(post2.previous.isSeriesStart).toBe(true);
-// });
+test('is connected to parts of a series', () => {
+   expect(post1.totalParts).toBe(3);
+   expect(post4.totalParts).toBe(0);
+   expect(post2.part).toBe(2);
+   expect(post4.part).toBe(0);
+   expect(post4.subTitle).toBeNull();
+   expect(post2.subTitle).toBe('Part 2');
+   expect(post1.previousIsPart).toBe(false);
+   expect(post2.previousIsPart).toBe(true);
+   expect(post4.isPartial).toBe(false);
+   expect(post2.isPartial).toBe(true);
+   expect(post2.isSeriesStart).toBe(false);
+   expect(post2.previous.isSeriesStart).toBe(true);
+});
 
-// test('combines series and post ttestle', () => {
-//    expect(post2.name()).toBe('Owyhee Snow and Sand: Lowlands');
-// });
+test('combines series and post title', () => {
+   expect(post2.name()).toBe('Series 1: Part 2');
+});
 
 test('can be removed from a series', () => {
    post2.ungroup();

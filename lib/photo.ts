@@ -85,7 +85,8 @@ export class Photo implements IMappable<GeoJSON.Point> {
 }
 
 /**
- * Simplistic outlier calculation.
+ * Simplistic outlier calculation identifies photos that are likely not part of
+ * the main sequence.
  *
  * @see https://en.wikipedia.org/wiki/Outlier
  * @see http://www.wikihow.com/Calculate-Outliers
