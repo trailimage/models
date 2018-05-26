@@ -16,7 +16,7 @@ const imageConfig: ImageConfig = {
    height: 100
 };
 
-const someDate = new Date(1973, 15, 3, 12, 0, 0);
+const someDate = new Date(Date.UTC(1973, 2, 15, 0, 0, 0));
 
 export const postProvider: PostProvider = {
    async photoBlog(instance: PhotoBlog): Promise<PhotoBlog> {
