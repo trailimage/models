@@ -290,13 +290,14 @@ export class Post
       }
 
       return {
-         id: this.id,
+         id: config.site.url + '/' + this.key,
          title: this.name(),
-         link: { href: 'http://' + config.site.domain },
+         link: 'http://' + config.site.domain,
          published: this.createdOn,
          updated: this.updatedOn,
-         rights: `'Copyright © ${new Date().getFullYear()}
-         ${config.owner.name}. All rights reserved.`,
+         rights: `'Copyright © ${new Date().getFullYear()} ${
+            config.owner.name
+         }. All rights reserved.`,
          summary: this.description,
          author: author,
          contributor: [author],
