@@ -117,8 +117,18 @@ export class Post
    /**
     * Whether post is in any categories.
     */
-   get hasCategories() {
+   get hasCategories(): boolean {
       return this.categories.size > 0;
+   }
+
+   /**
+    * Reset post to initial load state without correlation to other posts,
+    * meaning no groups (series) or previous/next links.
+    */
+   reset(): this {
+      this.previous = null;
+      this.next = null;
+      return this.ungroup();
    }
 
    /**
@@ -127,7 +137,7 @@ export class Post
     * correctly handle ungrouping posts that are a legitimate series member
     * since other series members are not also updated.
     */
-   ungroup() {
+   ungroup(): this {
       this.title = this.originalTitle;
       this.subTitle = null;
       this.key = slug(this.originalTitle);
@@ -139,14 +149,18 @@ export class Post
       this.previousIsPart = false;
       this.seriesKey = null;
       this.partKey = null;
+      return this;
    }
 
    /**
-    * Flag post as the start of a series.
+    * Flag post as the start of a series. Unlike other parts in the series, the
+    * first part key is simply the series key.
     */
-   makeSeriesStart() {
+   makeSeriesStart(): this {
       this.isSeriesStart = true;
+      this.partKey = this.key;
       this.key = this.seriesKey;
+      return this;
    }
 
    /**

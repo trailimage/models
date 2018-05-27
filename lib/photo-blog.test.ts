@@ -2,10 +2,11 @@ import '@toba/test';
 import { PhotoBlog, blog } from '../';
 import { mockPosts } from './.test-data';
 
-const [post1, post2, post3, post4] = mockPosts;
+const [post1, post2, post3, post4] = mockPosts();
 
 beforeAll(() => {
    blog
+      .empty()
       .addPost(post1)
       .addPost(post2)
       .addPost(post3)

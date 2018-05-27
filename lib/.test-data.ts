@@ -101,29 +101,46 @@ interface PostData {
    seriesKey?: string;
 }
 
-export const mockPosts: Post[] = ([
-   { key: 'key0', title: 'Series 1', subTitle: 'Part 1', seriesKey: 'series1' },
-   { key: 'key1', title: 'Series 1', subTitle: 'Part 2', seriesKey: 'series1' },
-   { key: 'key2', title: 'Series 1', subTitle: 'Part 3', seriesKey: 'series1' },
-   { key: 'key3', title: 'Title 4', subTitle: null }
-] as PostData[]).map((d, index) => {
-   const p = new Post();
-   p.id = p.key = d.key;
-   p.title = d.title;
-   p.subTitle = d.subTitle;
-   p.photos = mockPhotos;
-   p.createdOn = someDate;
-   p.updatedOn = someDate;
+export const mockPosts = (): Post[] =>
+   ([
+      {
+         key: 'key0',
+         title: 'Series 1',
+         subTitle: 'Part 1',
+         seriesKey: 'series1'
+      },
+      {
+         key: 'key1',
+         title: 'Series 1',
+         subTitle: 'Part 2',
+         seriesKey: 'series1'
+      },
+      {
+         key: 'key2',
+         title: 'Series 1',
+         subTitle: 'Part 3',
+         seriesKey: 'series1'
+      },
+      { key: 'key3', title: 'Title 4', subTitle: null }
+   ] as PostData[]).map((d, index) => {
+      const p = new Post();
+      p.id = p.key = d.key;
+      p.seriesKey = d.seriesKey;
+      p.title = d.title;
+      p.subTitle = d.subTitle;
+      p.photos = mockPhotos;
+      p.createdOn = someDate;
+      p.updatedOn = someDate;
 
-   if (index != 3) {
-      // assign no categories to key3
-      p.categories = mockCategories.reduce((hash, c) => {
-         hash.set(c.key, c.title);
-         return hash;
-      }, new Map<string, string>());
-   }
-   return p;
-});
+      if (index != 3) {
+         // assign no categories to key3
+         p.categories = mockCategories.reduce((hash, c) => {
+            hash.set(c.key, c.title);
+            return hash;
+         }, new Map<string, string>());
+      }
+      return p;
+   });
 
 interface SizeData {
    url: string;

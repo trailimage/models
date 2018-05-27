@@ -1,8 +1,8 @@
 import '@toba/test';
 import { mockPosts } from './.test-data';
-import { config } from '../';
+import { config, blog } from '../';
 
-const [post1, post2, post3, post4] = mockPosts;
+const [post1, post2, post3, post4] = mockPosts();
 
 // test.skip('normalizes provider values', () => {
 //    // mock Flickr response values are all the same
@@ -13,6 +13,16 @@ const [post1, post2, post3, post4] = mockPosts;
 //    expect(post2.originalTitle).toBe('Owyhee Snow and Sand: Lowlands');
 //    expect(post2.photoCount).toBe(13);
 // });
+
+beforeAll(() => {
+   blog
+      .empty()
+      .addPost(post1)
+      .addPost(post2)
+      .addPost(post3)
+      .addPost(post4)
+      .correlatePosts();
+});
 
 test('can be matched to a key', () => {
    expect(post1.hasKey('blah')).toBe(false);
@@ -25,14 +35,20 @@ test('identifies category membership', () => {
 });
 
 test('writes RSS data', () => {
-   const entry1 = post1.rssJSON();
+   const entry2 = post2.rssJSON();
 
-   expect(entry1.id).toBe(config.site.url + '/' + post1.id);
-   expect(entry1.summary).toBe(post1.description);
-   expect(entry1.title).toBe(post1.name());
+   expect(entry2.id).toBe(config.site.url + '/' + post2.key);
+   expect(entry2.summary).toBe(post2.description);
+   expect(entry2.title).toBe(post2.name());
 });
 
 test('can be emptied', () => {
    post1.empty();
    expect(post1.updatedOn).toBeNull();
+});
+
+test('can be reset', () => {
+   expect(post2.next).not.toBeNull();
+   post2.reset();
+   expect(post2.next).toBeNull();
 });

@@ -1,8 +1,10 @@
 import '@toba/test';
 import { mockCategories, mockPosts } from './.test-data';
 
+const [post1] = mockPosts();
+
 test('Creates link data for posts', () => {
-   const schema = mockPosts[0].jsonLD();
+   const schema = post1.jsonLD();
 
    expect(schema).toHaveAllProperties(
       'author',
