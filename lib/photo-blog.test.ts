@@ -33,7 +33,7 @@ test('links sequential posts', () => {
    expect(post2.next).toBeDefined();
 });
 
-test('is connected to parts of a series', () => {
+test('connects posts in a series', () => {
    expect(post1.totalParts).toBe(3);
    expect(post4.totalParts).toBe(0);
    expect(post2.part).toBe(2);
@@ -51,8 +51,17 @@ test('is connected to parts of a series', () => {
 test('combines series and post title', () => {
    expect(post2.name()).toBe('Series 1: Part 2');
 });
+test('removes a post', () => {
+   expect(post3.next.key).toBe(post4.key);
 
-test('can be removed from a series', () => {
+   blog.remove(post4.key);
+
+   expect(blog.postWithKey(post4.key)).toBeUndefined();
+   expect(post4.previous.key).toBe(post3.key);
+   expect(post3.next).toBeNull();
+});
+
+test('ungroups posts from a series', () => {
    post2.ungroup();
 
    expect(post2.subTitle).toBeNull();

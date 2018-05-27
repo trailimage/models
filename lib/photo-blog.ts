@@ -155,14 +155,14 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
    }
 
    /**
-    * Find post with given ID.
+    * Find post with given ID. Return `undefined` if not found.
     */
    postWithID(id: string): Post {
-      return is.value(id) ? this.posts.find(p => p.id == id) : null;
+      return is.value(id) ? this.posts.find(p => p.id == id) : undefined;
    }
 
    /**
-    * Find post with given slug.
+    * Find post with given slug. Return `undefined` if not found.
     */
    postWithKey(key: string, partKey: string = null): Post {
       if (is.value(partKey)) {
@@ -254,6 +254,13 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       for (const k of keys) {
          const p = this.postWithKey(k);
          if (removeItem(this.posts, p)) {
+            if (is.value(p.next)) {
+               p.next.previous = null;
+            }
+            if (is.value(p.previous)) {
+               p.previous.next = null;
+            }
+
             this.categories.forEach(cat => {
                cat.removePost(p);
             });
