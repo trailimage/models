@@ -94,8 +94,8 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
    }
 
    /**
-    * Correlate posts and identify changes compared to any posts and categories
-    * loaded before.
+    * Correlate posts and identify changes compared to any previously loaded
+    * posts and categories.
     *
     * This method is not safe for concurrent usage. The data provider should
     * ensure synchronicity.
@@ -125,6 +125,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
          this.hadPostKeys = [];
       }
       this.isLoading = false;
+      this.loaded = true;
       this.postCache = [];
 
       return this;
