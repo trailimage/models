@@ -166,13 +166,17 @@ export class Post
     */
    makeSeriesStart(): this {
       this.isSeriesStart = true;
-      this.partKey = slug(this.originalTitle);
       this.key = this.seriesKey;
       return this;
    }
 
    /**
     * Whether key matches series or non-series post.
+    *
+    * Match should still succeed if searching for a compound key even though
+    * first post in a series doesn't include the subtitle slug. For example,
+    * searching `series-1/title-1` should match the first post in "Series 1"
+    * even though it's key is simply `series-1`.
     */
    hasKey(key: string): boolean {
       return (

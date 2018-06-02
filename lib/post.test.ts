@@ -32,8 +32,11 @@ test('infers titles, subtitles and keys', () => {
    expect(p.key).toBe(`series-name${seriesKeySeparator}part-name`);
 });
 
-test('can be matched to a key', () => {
+test('can be matched to series or part key', () => {
    expect(post1.hasKey('blah')).toBe(false);
+   expect(post1.hasKey('series-1')).toBe(true);
+   expect(post1.hasKey('series-1/part-1')).toBe(true);
+   expect(post1.hasKey('part-1')).toBe(false);
    expect(post2.hasKey('series-1/part-2')).toBe(true);
 });
 
