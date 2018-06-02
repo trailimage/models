@@ -1,17 +1,12 @@
 import '@toba/test';
 import { PhotoBlog, blog } from '../';
 import { mockPosts } from './.test-data';
+import { Post } from './post';
 
-const [post1, post2, post3, post4] = mockPosts();
+const [post1, post2, post3, post4, post5] = mockPosts();
 
-beforeAll(() => {
-   blog
-      .empty()
-      .addPost(post1)
-      .addPost(post2)
-      .addPost(post3)
-      .addPost(post4)
-      .correlatePosts();
+beforeEach(() => {
+   blog.empty().addAll(post1, post2, post3, post4, post5);
 });
 
 test('ensures only one instance exists', () => {
@@ -49,6 +44,18 @@ test('connects posts in a series', () => {
    expect(post2.previous.isSeriesStart).toBe(true);
 });
 
+test('recognizes posts that have series-like title but no other members', () => {
+   expect(post5.isPartial).toBe(false);
+   expect(post5.key).toBe('not-a-series-subtitle');
+});
+
+test('creates composite post key for posts in series', () => {
+   expect(post1.key).toBe('series-1'); // first post in series has only the series key
+   expect(post2.key).toBe('series-1/part-2');
+   expect(post3.key).toBe('series-1/part-3');
+   expect(post4.key).toBe('title-4');
+});
+
 test('combines series and post title', () => {
    expect(post2.name()).toBe('Series 1: Part 2');
 });
@@ -69,6 +76,63 @@ test('ungroups posts from a series', () => {
    expect(post2.isPartial).toBe(false);
    expect(post2.totalParts).toBe(0);
    expect(post2.part).toBe(0);
-   expect(post2.title).toBe(post2.originalTitle);
+   expect(post2.title).toBe('Series 1: Part 2');
    expect(post2.previousIsPart).toBe(false);
+});
+
+test('identifies changed keys when loading blog', () => {
+   expect(blog.posts).toHaveLength(5);
+   blog.remove(post4.key);
+   expect(blog.posts).toHaveLength(4);
+
+   blog.beginLoad();
+   expect(blog.posts).toHaveLength(0);
+   expect(blog.changedKeys).toHaveLength(0);
+
+   blog
+      .addPost(post1)
+      .addPost(post2)
+      .addPost(post3)
+      .addPost(post4)
+      .addPost(post5)
+      .finishLoad();
+
+   expect(blog.changedKeys).toContain(post4.key);
+});
+
+test('does not count re-adding post as changed key', () => {
+   blog.beginLoad();
+   expect(blog.posts).toHaveLength(0);
+
+   blog.addPost(post4).finishLoad();
+
+   expect(blog.changedKeys).toHaveLength(0);
+});
+
+test('finds cached posts while in loading state', () => {
+   blog.beginLoad();
+   const p1 = blog.postWithID(post1.id);
+   expect(p1).toBeDefined();
+
+   const p2 = blog.postWithKey(post2.key);
+   expect(p2).toBeDefined();
+
+   blog.finishLoad();
+
+   expect(blog.postWithID(post1.id)).toBeUndefined();
+});
+
+test('adds posts to cache while loading', () => {
+   blog.beginLoad();
+
+   const p = new Post();
+   p.id = 'new-id';
+
+   blog.addPost(p);
+   // post should be found in cache
+   expect(blog.postWithID(p.id)).toBeDefined();
+
+   blog.finishLoad();
+   // should still work but now getting post from main posts list
+   expect(blog.postWithID(p.id)).toBeDefined();
 });

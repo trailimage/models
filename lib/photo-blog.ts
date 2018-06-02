@@ -1,4 +1,5 @@
 import { removeItem, is, mapSet } from '@toba/tools';
+import { log } from '@toba/logger';
 import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
 import { geoJSON } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
@@ -23,17 +24,39 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * rather than `Set` so they can be managed as a linked list.
     */
    posts: Post[] = [];
+
+   /**
+    * Store previous posts in cache while loading so potential new post sequence
+    * can be correctly correlated without having to rebuild each post.
+    */
+   private postCache: Post[] = [];
+
    /** Photo tags mapped to their slug-style abbreviations. */
    tags: Map<string, string> = new Map();
+
    /** Whether categories and post summaries have been loaded. */
    loaded: boolean = false;
-   /** Whether all post details have been loaded. */
+
+   /**
+    * Whether blog is currently being loaded by a provider. This determines
+    * whether posts should be found in the temporary cache.
+    */
+   private isLoading: boolean = false;
+
+   /**
+    * Whether all post details have been loaded. Depending on the data provider,
+    * the basic blog load may only include post metadata.
+    */
    postInfoLoaded: boolean = false;
+
+   /** Post keys present prior to current data load. */
+   private hadPostKeys: string[];
+
    /**
     * Keys of posts and categories that changed when data were reloaded from the
     * provider (can be used for cache invalidation).
     */
-   changedKeys: string[];
+   changedKeys: string[] = [];
 
    constructor() {
       if (is.value(blog)) {
@@ -41,18 +64,70 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       }
    }
 
-   private get load(): PostProvider {
+   private get provide(): PostProvider {
       return ensurePostProvider();
    }
 
    /**
+    * Load blog data using currently configured provider.
     * @param emptyIfLoaded Whether to empty all blog data before loading.
     */
-   build(emptyIfLoaded = false): Promise<PhotoBlog> {
+   load(emptyIfLoaded = false): Promise<PhotoBlog> {
       if (this.loaded && emptyIfLoaded) {
          this.empty();
       }
-      return this.load.photoBlog(this);
+      return this.provide.photoBlog(this);
+   }
+
+   /**
+    * Prepare blog for loading by setting aside existing post data and comparing
+    * those post keys to identify changes — expected to be used by data
+    * provider.
+    */
+   beginLoad(): this {
+      this.isLoading = true;
+      // record post keys before resetting them
+      this.hadPostKeys = this.posts.map(p => p.key);
+      this.postCache = this.posts.map(p => p.reset());
+      this.posts = [];
+      return this;
+   }
+
+   /**
+    * Correlate posts and identify changes compared to any posts and categories
+    * loaded before.
+    *
+    * This method is not safe for concurrent usage. The data provider should
+    * ensure synchronicity.
+    */
+   finishLoad(): this {
+      this.correlatePosts();
+
+      if (this.hadPostKeys.length > 0) {
+         let changedKeys: string[] = [];
+         this.posts
+            .filter(p => this.hadPostKeys.indexOf(p.key) == -1)
+            .forEach(p => {
+               log.info(`Found new post "${p.title}"`, { key: p.key });
+               // all post categories will need to be refreshed
+               changedKeys = changedKeys.concat(
+                  Array.from(p.categories.keys())
+               );
+               // update adjecent posts to correct next/previous links
+               if (is.value(p.next)) {
+                  changedKeys.push(p.next.key);
+               }
+               if (is.value(p.previous)) {
+                  changedKeys.push(p.previous.key);
+               }
+            });
+         this.changedKeys = changedKeys;
+         this.hadPostKeys = [];
+      }
+      this.isLoading = false;
+      this.postCache = [];
+
+      return this;
    }
 
    /**
@@ -88,18 +163,38 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * instance but is useful here when the instance isn't available.
     */
    getEXIF(photoID: string): Promise<EXIF> {
-      return this.load.exif(photoID);
+      return this.provide.exif(photoID);
    }
 
    /**
-    * Add post to library and link with adjacent posts.
+    * Add all posts, first resetting existing data, and identify changes in
+    * `changedKeys`.
+    */
+   addAll(...posts: Post[]): this {
+      this.beginLoad();
+      posts.forEach(p => this.addPost(p));
+      return this.finishLoad();
+   }
+
+   /**
+    * Add post to blog and link with adjacent posts. If a post with the same
+    * `ID` is already present then no change will be made.
     */
    addPost(p: Post): this {
-      // exit if post with same ID is already present
-      if (this.posts.filter(e => e.id === p.id).length > 0) {
+      if (this.posts.findIndex(e => e.id === p.id) >= 0) {
+         // post with same ID has already been added
          return this;
       }
       this.posts.push(p);
+
+      if (
+         this.isLoading &&
+         this.postCache.findIndex(e => e.id === p.id) == -1
+      ) {
+         // during load the cache is used to look-up posts so ensure it too
+         // references the post
+         this.postCache.push(p);
+      }
 
       if (p.chronological && this.posts.length > 1) {
          const prev = this.posts[this.posts.length - 2];
@@ -158,7 +253,11 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * Find post with given ID. Return `undefined` if not found.
     */
    postWithID(id: string): Post {
-      return is.value(id) ? this.posts.find(p => p.id == id) : undefined;
+      if (is.value(id)) {
+         const searchIn = this.isLoading ? this.postCache : this.posts;
+         return searchIn.find(p => p.id == id);
+      }
+      return undefined;
    }
 
    /**
@@ -168,7 +267,8 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       if (is.value(partKey)) {
          key += seriesKeySeparator + partKey;
       }
-      return this.posts.find(p => p.hasKey(key));
+      const searchIn = this.isLoading ? this.postCache : this.posts;
+      return searchIn.find(p => p.hasKey(key));
    }
 
    /**
@@ -197,7 +297,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       const id: string = is.text(photo)
          ? (photo as string)
          : (photo as Photo).id;
-      const postID = await this.load.postIdWithPhotoId(id);
+      const postID = await this.provide.postIdWithPhotoId(id);
 
       return this.postWithID(postID);
    }
@@ -206,7 +306,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * All photos with given tags.
     */
    getPhotosWithTags(tags: string | string[]): Promise<Photo[]> {
-      return this.load.photosWithTags(tags);
+      return this.provide.photosWithTags(tags);
    }
 
    /**
@@ -270,9 +370,13 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
    }
 
    /**
-    * Match posts that are part of a series.
+    * Match posts that are part of a series based on them having the same title,
+    * only differing by subtitle. This assumes that `this.posts` is already in
+    * the correct sequence and titles have been parsed.
+    *
+    * This method is called internally by `finishLoad()`.
     */
-   correlatePosts() {
+   correlatePosts(): this {
       let p = this.posts[this.posts.length - 1];
       let parts = [];
 
@@ -307,6 +411,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
          }
          p = p.previous;
       }
+      return this;
    }
 
    rssJSON(): AtomFeed {

@@ -34,7 +34,7 @@ Object {
   "image": undefined,
   "mainEntityOfPage": Object {
     "@context": "http://schema.org",
-    "@id": "http://www.test.com/key0",
+    "@id": "http://www.test.com/series-1/part-1",
     "@type": "WebPage",
   },
   "name": "Series 1",

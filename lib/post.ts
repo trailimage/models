@@ -35,7 +35,7 @@ export class Post
     * opposed to, for example, a themed set of images from various times.
     */
    chronological: boolean = true;
-   originalTitle: string = null;
+   private originalTitle: string = null;
    photosLoaded: boolean = false;
    bigThumbURL: string = null;
    smallThumbURL: string = null;
@@ -126,9 +126,23 @@ export class Post
     * meaning no groups (series) or previous/next links.
     */
    reset(): this {
+      this.inferTitleAndKey(this.originalTitle);
       this.previous = null;
       this.next = null;
-      return this.ungroup();
+      return this.removeFromSeries();
+   }
+
+   /**
+    * Remove post from a series but leave next/previous, title and keys as is.
+    */
+   private removeFromSeries(): this {
+      this.part = 0;
+      this.totalParts = 0;
+      this.isSeriesStart = false;
+      this.isPartial = false;
+      this.nextIsPart = false;
+      this.previousIsPart = false;
+      return this;
    }
 
    /**
@@ -141,15 +155,9 @@ export class Post
       this.title = this.originalTitle;
       this.subTitle = null;
       this.key = slug(this.originalTitle);
-      this.part = 0;
-      this.totalParts = 0;
-      this.isSeriesStart = false;
-      this.isPartial = false;
-      this.nextIsPart = false;
-      this.previousIsPart = false;
       this.seriesKey = null;
       this.partKey = null;
-      return this;
+      return this.removeFromSeries();
    }
 
    /**
@@ -158,7 +166,7 @@ export class Post
     */
    makeSeriesStart(): this {
       this.isSeriesStart = true;
-      this.partKey = this.key;
+      this.partKey = slug(this.originalTitle);
       this.key = this.seriesKey;
       return this;
    }
@@ -172,6 +180,29 @@ export class Post
          (is.value(this.partKey) &&
             key == this.seriesKey + seriesKeySeparator + this.partKey)
       );
+   }
+
+   /**
+    * Set original provider title and infer series and subtitles based on
+    * presence of configured subtitle separator (default is `:`). Then generate
+    * key slug(s) from title(s).
+    */
+   inferTitleAndKey(title: string): this {
+      this.originalTitle = title;
+      const re = new RegExp(config.subtitleSeparator + '\\s*', 'g');
+      const parts = title.split(re);
+
+      this.title = parts[0];
+
+      if (parts.length > 1) {
+         this.subTitle = parts[1];
+         this.seriesKey = slug(this.title);
+         this.partKey = slug(this.subTitle);
+         this.key = this.seriesKey + seriesKeySeparator + this.partKey;
+      } else {
+         this.key = slug(title);
+      }
+      return this;
    }
 
    /**

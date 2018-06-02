@@ -1,8 +1,9 @@
 import '@toba/test';
 import { mockPosts } from './.test-data';
-import { config, blog } from '../';
+import { config, blog, seriesKeySeparator } from '../';
+import { Post } from './post';
 
-const [post1, post2, post3, post4] = mockPosts();
+const [post1, post2, post3, post4, post5] = mockPosts();
 
 // test.skip('normalizes provider values', () => {
 //    // mock Flickr response values are all the same
@@ -14,19 +15,26 @@ const [post1, post2, post3, post4] = mockPosts();
 //    expect(post2.photoCount).toBe(13);
 // });
 
-beforeAll(() => {
-   blog
-      .empty()
-      .addPost(post1)
-      .addPost(post2)
-      .addPost(post3)
-      .addPost(post4)
-      .correlatePosts();
+beforeEach(() => {
+   blog.empty().addAll(post1, post2, post3, post4, post5);
+});
+
+test('infers titles, subtitles and keys', () => {
+   const p = new Post();
+   p.inferTitleAndKey('Simple Title');
+   expect(p.title).toBe('Simple Title');
+   expect(p.key).toBe('simple-title');
+   expect(p.subTitle).toBeNull();
+
+   p.inferTitleAndKey('Series Name: Part Name');
+   expect(p.title).toBe('Series Name');
+   expect(p.subTitle).toBe('Part Name');
+   expect(p.key).toBe(`series-name${seriesKeySeparator}part-name`);
 });
 
 test('can be matched to a key', () => {
    expect(post1.hasKey('blah')).toBe(false);
-   expect(post2.hasKey('key1')).toBe(true);
+   expect(post2.hasKey('series-1/part-2')).toBe(true);
 });
 
 test('identifies category membership', () => {

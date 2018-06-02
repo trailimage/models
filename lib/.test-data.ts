@@ -95,39 +95,21 @@ export const mockCategories: Category[] = ([
 );
 
 interface PostData {
-   key: string;
+   id: string;
    title: string;
-   subTitle?: string;
-   seriesKey?: string;
 }
 
 export const mockPosts = (): Post[] =>
    ([
-      {
-         key: 'key0',
-         title: 'Series 1',
-         subTitle: 'Part 1',
-         seriesKey: 'series1'
-      },
-      {
-         key: 'key1',
-         title: 'Series 1',
-         subTitle: 'Part 2',
-         seriesKey: 'series1'
-      },
-      {
-         key: 'key2',
-         title: 'Series 1',
-         subTitle: 'Part 3',
-         seriesKey: 'series1'
-      },
-      { key: 'key3', title: 'Title 4', subTitle: null }
+      { id: 'id0', title: 'Series 1: Part 1' },
+      { id: 'id1', title: 'Series 1: Part 2' },
+      { id: 'id2', title: 'Series 1: Part 3' },
+      { id: 'id3', title: 'Title 4' },
+      { id: 'id4', title: 'Not a Series: Subtitle' }
    ] as PostData[]).map((d, index) => {
       const p = new Post();
-      p.id = p.key = d.key;
-      p.seriesKey = d.seriesKey;
-      p.title = d.title;
-      p.subTitle = d.subTitle;
+      p.id = d.id;
+      p.inferTitleAndKey(d.title);
       p.photos = mockPhotos;
       p.createdOn = someDate;
       p.updatedOn = someDate;
