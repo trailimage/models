@@ -8,7 +8,7 @@ import { EXIF, Photo, Post, PhotoBlog, config } from '../';
  */
 export interface PostProvider {
    /** Populate categories and post summaries in current blog instance. */
-   photoBlog(photoBlog: PhotoBlog): Promise<PhotoBlog>;
+   photoBlog(async: boolean): Promise<PhotoBlog>;
    /** Retrieve EXIF for single photo. */
    exif(photoID: string): Promise<EXIF>;
    /** Find ID of Post that contains photo with given ID. */
