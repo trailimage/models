@@ -109,6 +109,8 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
             .filter(p => this.hadPostKeys.indexOf(p.key) == -1)
             .forEach(p => {
                log.info(`Found new post "${p.title}"`, { key: p.key });
+               changedKeys.push(p.key);
+
                // all post categories will need to be refreshed
                changedKeys = changedKeys.concat(
                   Array.from(p.categories.keys())

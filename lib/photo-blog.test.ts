@@ -2,6 +2,7 @@ import '@toba/test';
 import { PhotoBlog, blog } from '../';
 import { mockPosts } from './.test-data';
 import { Post } from './post';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 const [post1, post2, post3, post4, post5] = mockPosts();
 
@@ -89,15 +90,20 @@ test('identifies changed keys when loading blog', () => {
    expect(blog.posts).toHaveLength(0);
    expect(blog.changedKeys).toHaveLength(0);
 
+   const post6 = new Post();
+   post6.id = post6.key = 'some-id';
+
    blog
       .addPost(post1)
       .addPost(post2)
       .addPost(post3)
       .addPost(post4)
       .addPost(post5)
+      .addPost(post6)
       .finishLoad();
 
    expect(blog.changedKeys).toContain(post4.key);
+   expect(blog.changedKeys).toContain(post6.key);
 });
 
 test('does not count re-adding post as changed key', () => {
