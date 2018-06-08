@@ -19,6 +19,10 @@ export interface SiteConfig {
    subtitle: string;
    description: string;
    url: string;
+   /**
+    * Generic name for a post (usually just "post") that can be used in a
+    * category page subtitle, e.g. "27 posts" and pluralized with just an `s`.
+    */
    postAlias: string;
    logo: ImageConfig;
    companyLogo: ImageConfig;
