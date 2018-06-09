@@ -1,3 +1,4 @@
+import { is } from '@toba/tools';
 import {
    Category,
    Post,
@@ -7,7 +8,7 @@ import {
    PhotoBlog,
    PostProvider
 } from '../';
-import { config } from '../';
+import { config, blog } from '../';
 import { ImageConfig } from './config';
 
 const imageConfig: ImageConfig = {
@@ -19,8 +20,8 @@ const imageConfig: ImageConfig = {
 const someDate = new Date(Date.UTC(1973, 2, 15, 0, 0, 0));
 
 export const postProvider: PostProvider = {
-   async photoBlog(instance: PhotoBlog): Promise<PhotoBlog> {
-      return instance;
+   async photoBlog(): Promise<PhotoBlog> {
+      return blog;
    },
 
    async exif(_photoID: string): Promise<EXIF> {
@@ -97,6 +98,7 @@ export const mockCategories: Category[] = ([
 interface PostData {
    id: string;
    title: string;
+   chronological?: boolean;
 }
 
 export const mockPosts = (): Post[] =>
@@ -105,7 +107,8 @@ export const mockPosts = (): Post[] =>
       { id: 'id1', title: 'Series 1: Part 2' },
       { id: 'id2', title: 'Series 1: Part 3' },
       { id: 'id3', title: 'Title 4' },
-      { id: 'id4', title: 'Not a Series: Subtitle' }
+      { id: 'id4', title: 'Not a Series: Subtitle' },
+      { id: 'id5', title: 'Highlights', chronological: false }
    ] as PostData[]).map((d, index) => {
       const p = new Post();
       p.id = d.id;
@@ -113,6 +116,10 @@ export const mockPosts = (): Post[] =>
       p.photos = mockPhotos;
       p.createdOn = someDate;
       p.updatedOn = someDate;
+
+      if (is.value<boolean>(d.chronological)) {
+         p.chronological = d.chronological;
+      }
 
       if (index != 3) {
          // assign no categories to key3

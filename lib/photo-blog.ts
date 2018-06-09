@@ -76,7 +76,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       if (this.loaded && emptyIfLoaded) {
          this.empty();
       }
-      return this.provide.photoBlog(this);
+      return this.provide.photoBlog();
    }
 
    /**
@@ -380,31 +380,33 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * This method is called internally by `finishLoad()`.
     */
    correlatePosts(): this {
-      let p = this.posts[this.posts.length - 1];
-      let parts = [];
+      let parts: Post[] = [];
 
-      while (p != null && p.previous != null) {
-         if (is.value(p.subTitle)) {
+      for (let i = this.posts.length - 1; i >= 0; i--) {
+         let p = this.posts[i];
+
+         if (p.previous != null && is.value(p.subTitle)) {
             parts.push(p);
 
             while (p.previous != null && p.previous.title == p.title) {
                p = p.previous;
                parts.unshift(p);
+               i--;
             }
 
             if (parts.length > 1) {
                parts[0].makeSeriesStart();
 
-               for (let i = 0; i < parts.length; i++) {
-                  parts[i].part = i + 1;
-                  parts[i].totalParts = parts.length;
-                  parts[i].isPartial = true;
+               for (let j = 0; j < parts.length; j++) {
+                  parts[j].part = j + 1;
+                  parts[j].totalParts = parts.length;
+                  parts[j].isPartial = true;
 
-                  if (i > 0) {
-                     parts[i].previousIsPart = true;
+                  if (j > 0) {
+                     parts[j].previousIsPart = true;
                   }
-                  if (i < parts.length - 1) {
-                     parts[i].nextIsPart = true;
+                  if (j < parts.length - 1) {
+                     parts[j].nextIsPart = true;
                   }
                }
             } else {
@@ -412,7 +414,6 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
             }
             parts = [];
          }
-         p = p.previous;
       }
       return this;
    }

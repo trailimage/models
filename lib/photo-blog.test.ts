@@ -2,12 +2,11 @@ import '@toba/test';
 import { PhotoBlog, blog } from '../';
 import { mockPosts } from './.test-data';
 import { Post } from './post';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
-const [post1, post2, post3, post4, post5] = mockPosts();
+const [post1, post2, post3, post4, post5, post6] = mockPosts();
 
 beforeEach(() => {
-   blog.empty().addAll(post1, post2, post3, post4, post5);
+   blog.empty().addAll(post1, post2, post3, post4, post5, post6);
 });
 
 test('ensures only one instance exists', () => {
@@ -82,9 +81,9 @@ test('ungroups posts from a series', () => {
 });
 
 test('identifies changed keys when loading blog', () => {
-   expect(blog.posts).toHaveLength(5);
+   expect(blog.posts).toHaveLength(6);
    blog.remove(post4.key);
-   expect(blog.posts).toHaveLength(4);
+   expect(blog.posts).toHaveLength(5);
 
    blog.beginLoad();
    expect(blog.posts).toHaveLength(0);
