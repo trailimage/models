@@ -2,8 +2,16 @@ import { removeItem, is, mapSet } from '@toba/tools';
 import { log } from '@toba/logger';
 import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
 import { geoJSON } from '@toba/map';
-import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
-import { ensurePostProvider } from './providers';
+import {
+   Post,
+   Category,
+   Photo,
+   EXIF,
+   PostProvider,
+   MapProvider,
+   config
+} from '../';
+import { ensurePostProvider, ensureMapProvider } from './providers';
 
 /**
  * Slug and cache key which probably differs from the seperator used to display
@@ -64,8 +72,12 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       }
    }
 
-   private get provide(): PostProvider {
+   private get postStore(): PostProvider {
       return ensurePostProvider();
+   }
+
+   private get mapStore(): MapProvider {
+      return ensureMapProvider();
    }
 
    /**
@@ -76,7 +88,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       if (this.loaded && emptyIfLoaded) {
          this.empty();
       }
-      return this.provide.photoBlog();
+      return this.postStore.photoBlog();
    }
 
    /**
@@ -134,25 +146,35 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
    }
 
    /**
-    * All photos in all posts without de-duplication. Photos are loaded from
-    * data provider as needed.
+    * All photos in all posts. Photos are loaded from data provider as needed.
     */
    async photos(): Promise<Photo[]> {
       /** Array of post photo arrays */
-      const photos: Photo[][] = await Promise.all(
+      const blogPhotos: Photo[][] = await Promise.all(
          this.posts.map(p => p.getPhotos())
       );
-      // combine post arrays into single array
-      return photos.reduce((all, p) => all.concat(p), [] as Photo[]);
+
+      const unique: Photo[] = [];
+
+      blogPhotos.forEach(postPhotos => {
+         postPhotos.forEach(p => {
+            if (unique.findIndex(photo => photo.id == p.id) == -1) {
+               unique.push(p);
+            }
+         });
+      });
+
+      return unique;
    }
 
    /**
-    * Append blog photo GeoFeatures to GeoJSON.
+    * Append blog photo `GeoFeature` `Points` to existing GeoJSON or to a new
+    * feature collection.
     */
-   async makePhotoFeatures(
-      geo: GeoJSON.FeatureCollection<
-         GeoJSON.GeometryObject
-      > = geoJSON.features()
+   async photoPoints(
+      geo: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = geoJSON.features<
+         GeoJSON.Point
+      >()
    ): Promise<GeoJSON.FeatureCollection<any>> {
       const photos = await this.photos();
       geo.features = geo.features.concat(
@@ -166,7 +188,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * instance but is useful here when the instance isn't available.
     */
    getEXIF(photoID: string): Promise<EXIF> {
-      return this.provide.exif(photoID);
+      return this.postStore.exif(photoID);
    }
 
    /**
@@ -300,7 +322,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       const id: string = is.text(photo)
          ? (photo as string)
          : (photo as Photo).id;
-      const postID = await this.provide.postIdWithPhotoId(id);
+      const postID = await this.postStore.postIdWithPhotoId(id);
 
       return this.postWithID(postID);
    }
@@ -309,7 +331,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * All photos with given tags.
     */
    getPhotosWithTags(tags: string | string[]): Promise<Photo[]> {
-      return this.provide.photosWithTags(tags);
+      return this.postStore.photosWithTags(tags);
    }
 
    /**

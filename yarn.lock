@@ -54,7 +54,7 @@
     tslint-config-prettier "^1.10.0"
     tslint-consistent-codestyle "^1.13.0"
 
-"@toba/feed@^1.2.0":
+"@toba/feed@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@toba/feed/-/feed-1.3.0.tgz#8d96706ec82fe219924b6bf7dfa37de34549beb6"
   dependencies:
@@ -82,15 +82,15 @@
     jszip "^3.1.5"
     xmldom "^0.1.27"
 
-"@toba/test@^1.13.0":
-  version "1.13.7"
-  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.13.7.tgz#459422ca404f6830d9d908997b24b3c3ae33b0a4"
+"@toba/test@^1.14.0":
+  version "1.14.3"
+  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.14.3.tgz#0e57414a6542d7dc26df1150279775206e2b78cb"
   dependencies:
     "@toba/logger" "^1.0.4"
     "@toba/tools" "^3.1.0"
-    "@types/jest" "^22.2.0"
-    "@types/node" "^10.1.0"
-    jest "^23.0.0"
+    "@types/jest" "^23.0.0"
+    "@types/node" "^10.3.0"
+    jest "^23.1.0"
     jest-localstorage-mock "^2.2.0"
     ts-jest "^22.4.0"
 
@@ -130,9 +130,9 @@
   version "9.12.2"
   resolved "https://registry.yarnpkg.com/@types/highlight.js/-/highlight.js-9.12.2.tgz#6ee7cd395effe5ec80b515d3ff1699068cd0cd1d"
 
-"@types/jest@^22.2.0":
-  version "22.2.3"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-22.2.3.tgz#0157c0316dc3722c43a7b71de3fdf3acbccef10d"
+"@types/jest@^23.0.0":
+  version "23.0.0"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.0.0.tgz#760cac74f00bb9c3075587716d2b3b4435663bc0"
 
 "@types/lodash@4.14.104":
   version "4.14.104"
@@ -146,9 +146,13 @@
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
 
-"@types/node@*", "@types/node@^10.1.0":
+"@types/node@*":
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.0.tgz#078516315a84d56216b5d4fed8f75d59d3b16cac"
+
+"@types/node@^10.3.0":
+  version "10.3.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.2.tgz#3840ec6c12556fdda6e0e6d036df853101d732a4"
 
 "@types/shelljs@0.7.8":
   version "0.7.8"
@@ -2544,7 +2548,7 @@ jest-worker@^23.0.1:
   dependencies:
     merge-stream "^1.0.1"
 
-jest@^23.0.0:
+jest@^23.1.0:
   version "23.1.0"
   resolved "https://registry.yarnpkg.com/jest/-/jest-23.1.0.tgz#bbb7f893100a11a742dd8bd0d047a54b0968ad1a"
   dependencies:

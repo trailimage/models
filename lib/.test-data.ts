@@ -114,6 +114,7 @@ export const mockPosts = (): Post[] =>
       p.id = d.id;
       p.inferTitleAndKey(d.title);
       p.photos = mockPhotos;
+      p.photosLoaded = true;
       p.createdOn = someDate;
       p.updatedOn = someDate;
 
@@ -149,17 +150,40 @@ interface PhotoData {
    id: string;
    title: string;
    tags: string[];
+   latitude?: number;
+   longitude?: number;
 }
 
 export const mockPhotos: Photo[] = ([
-   { id: 'id1', title: 'Title 1', tags: ['tag1', 'tag2', 'tag3'] },
-   { id: 'id2', title: 'Title 2', tags: ['tag1', 'tag2', 'tag4'] },
-   { id: 'id3', title: 'Title 3', tags: [] },
-   { id: 'id4', title: 'Title 4', tags: ['tag1', 'tag5'] }
+   {
+      id: 'id1',
+      title: 'Title 1',
+      latitude: 100,
+      longitude: 10,
+      tags: ['tag1', 'tag2', 'tag3']
+   },
+   {
+      id: 'id2',
+      title: 'Title 2',
+      latitude: 120,
+      longitude: 20,
+      tags: ['tag1', 'tag2', 'tag4']
+   },
+   { id: 'id3', title: 'Title 3', latitude: 130, longitude: 30, tags: [] },
+   {
+      id: 'id4',
+      title: 'Title 4',
+      latitude: 140,
+      longitude: 40,
+      tags: ['tag1', 'tag5']
+   }
 ] as PhotoData[]).map((data, index) => {
    const p = new Photo(data.id, index);
    p.title = data.title;
    p.tags = new Set<string>(data.tags);
+   p.latitude = data.latitude;
+   p.longitude = data.longitude;
+   p.size['preview'] = mockSizes[3];
    p.size['small'] = mockSizes[0];
    p.size['medium'] = mockSizes[1];
    p.size['large'] = mockSizes[2];

@@ -59,6 +59,14 @@ test('creates composite post key for posts in series', () => {
 test('combines series and post title', () => {
    expect(post2.name()).toBe('Series 1: Part 2');
 });
+
+test('generates GeoJSON point feature collection for photos', async () => {
+   const geo = await blog.photoPoints();
+   expect(geo).toBeDefined();
+   expect(geo).toHaveProperty('features');
+   expect(geo.features).toHaveLength(4);
+});
+
 test('removes a post', () => {
    expect(post3.next.key).toBe(post4.key);
 
