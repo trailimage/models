@@ -64,6 +64,9 @@ export class Photo implements IMappable<GeoJSON.Point> {
 
    /**
     * Generate GeoJSON for photo feature.
+    *
+    * @param partKey Optional series part that photo post belongs to, used to
+    * generate link from map info box back to post URL
     */
    geoJSON(partKey?: string): GeoJSON.Feature<GeoJSON.Point> {
       const properties: MapPhoto = { url: this.size.preview.url };

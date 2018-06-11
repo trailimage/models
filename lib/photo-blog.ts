@@ -2,16 +2,8 @@ import { removeItem, is, mapSet } from '@toba/tools';
 import { log } from '@toba/logger';
 import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
 import { geoJSON } from '@toba/map';
-import {
-   Post,
-   Category,
-   Photo,
-   EXIF,
-   PostProvider,
-   MapProvider,
-   config
-} from '../';
-import { ensurePostProvider, ensureMapProvider } from './providers';
+import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
+import { ensurePostProvider } from './providers';
 
 /**
  * Slug and cache key which probably differs from the seperator used to display
@@ -72,12 +64,8 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       }
    }
 
-   private get postStore(): PostProvider {
+   private get provide(): PostProvider {
       return ensurePostProvider();
-   }
-
-   private get mapStore(): MapProvider {
-      return ensureMapProvider();
    }
 
    /**
@@ -88,7 +76,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       if (this.loaded && emptyIfLoaded) {
          this.empty();
       }
-      return this.postStore.photoBlog();
+      return this.provide.photoBlog();
    }
 
    /**
@@ -188,7 +176,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * instance but is useful here when the instance isn't available.
     */
    getEXIF(photoID: string): Promise<EXIF> {
-      return this.postStore.exif(photoID);
+      return this.provide.exif(photoID);
    }
 
    /**
@@ -322,7 +310,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
       const id: string = is.text(photo)
          ? (photo as string)
          : (photo as Photo).id;
-      const postID = await this.postStore.postIdWithPhotoId(id);
+      const postID = await this.provide.postIdWithPhotoId(id);
 
       return this.postWithID(postID);
    }
@@ -331,7 +319,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * All photos with given tags.
     */
    getPhotosWithTags(tags: string | string[]): Promise<Photo[]> {
-      return this.postStore.photosWithTags(tags);
+      return this.provide.photosWithTags(tags);
    }
 
    /**
