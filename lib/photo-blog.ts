@@ -1,7 +1,7 @@
 import { removeItem, is, mapSet } from '@toba/tools';
 import { log } from '@toba/logger';
 import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
-import { geoJSON } from '@toba/map';
+import { geoJSON, IMappable } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
 import { ensurePostProvider } from './providers';
 
@@ -16,7 +16,8 @@ export const seriesKeySeparator = '/';
  * "album" in most providers) that are in turn assigned categories. Additional
  * blog methods are added by the factory.
  */
-export class PhotoBlog implements ISyndicate<AtomFeed> {
+export class PhotoBlog
+   implements ISyndicate<AtomFeed>, IMappable<GeoJSON.GeometryObject> {
    /** All categories mapped to their (slug-style) key. */
    categories: Map<string, Category> = new Map();
    /**
@@ -159,7 +160,7 @@ export class PhotoBlog implements ISyndicate<AtomFeed> {
     * Append blog photo `GeoFeature` `Points` to existing GeoJSON or to a new
     * feature collection.
     */
-   async photoPoints(
+   async geoJSON(
       geo: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = geoJSON.features<
          GeoJSON.Point
       >()

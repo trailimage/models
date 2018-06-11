@@ -61,7 +61,7 @@ test('combines series and post title', () => {
 });
 
 test('generates GeoJSON point feature collection for photos', async () => {
-   const geo = await blog.photoPoints();
+   const geo = await blog.geoJSON();
    expect(geo).toBeDefined();
    expect(geo).toHaveProperty('features');
    expect(geo.features).toHaveLength(4);
