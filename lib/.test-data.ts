@@ -7,8 +7,8 @@ import {
    EXIF,
    PhotoBlog,
    PostProvider
-} from '../';
-import { config, blog } from '../';
+} from './';
+import { config, blog } from './';
 import { ImageConfig } from './config';
 
 const imageConfig: ImageConfig = {

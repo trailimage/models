@@ -10,6 +10,13 @@
          "problemMatcher": []
       },
       {
+         "label": "Build",
+         "command": "./node_modules/.bin/tsc",
+         "type": "shell",
+         "group": "build",
+         "problemMatcher": ["$tsc"]
+      },
+      {
          "label": "Update Docs",
          "command": "./node_modules/.bin/typedoc",
          "args": [

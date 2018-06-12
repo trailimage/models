@@ -1,7 +1,7 @@
 import { is } from '@toba/tools';
 import { TrackFeatures } from '@toba/map';
 import { ProviderConfig } from './config';
-import { EXIF, Photo, Post, PhotoBlog, config } from '../';
+import { EXIF, Photo, Post, PhotoBlog, config } from './index';
 
 /**
  * Methods to load post-related data.

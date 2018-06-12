@@ -1,4 +1,4 @@
-import { MapProvider, PostProvider, VideoProvider } from '../';
+import { MapProvider, PostProvider, VideoProvider } from './index';
 
 export interface ImageConfig {
    url: string;

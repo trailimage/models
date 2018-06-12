@@ -1,6 +1,6 @@
 import '@toba/test';
 import { postProvider } from './.test-data';
-import { PostProvider, MapProvider } from '../';
+import { PostProvider, MapProvider } from './index';
 import { ensurePostProvider, ensureMapProvider } from './providers';
 
 test('Returns configured provider', () => {

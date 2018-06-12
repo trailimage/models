@@ -3,10 +3,15 @@ import { slug, is } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
 import { ISyndicate, AtomEntry, AtomPerson } from '@toba/feed';
 import { measure, MapBounds, Location } from '@toba/map';
-import { Photo, VideoInfo, config, PostProvider } from '../';
+import {
+   Photo,
+   VideoInfo,
+   config,
+   PostProvider,
+   seriesKeySeparator
+} from './index';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
-import { seriesKeySeparator } from '../';
 
 export class Post
    implements

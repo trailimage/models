@@ -1,7 +1,7 @@
 import '@toba/test';
 import { boundary } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
-import { PhotoSize, EXIF, PostProvider } from '../';
+import { PhotoSize, EXIF, PostProvider } from './index';
 import { ensurePostProvider } from './providers';
 
 export class Photo implements IMappable<GeoJSON.Point> {

@@ -2,7 +2,7 @@ import { removeItem, is, mapSet } from '@toba/tools';
 import { log } from '@toba/logger';
 import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
 import { geoJSON, IMappable } from '@toba/map';
-import { Post, Category, Photo, EXIF, PostProvider, config } from '../';
+import { Post, Category, Photo, EXIF, PostProvider, config } from './index';
 import { ensurePostProvider } from './providers';
 
 /**

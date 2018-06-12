@@ -1,5 +1,5 @@
 import '@toba/test';
-import { PhotoBlog, blog } from '../';
+import { PhotoBlog, blog } from './';
 import { mockPosts } from './.test-data';
 import { Post } from './post';
 

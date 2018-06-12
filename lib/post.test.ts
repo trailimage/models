@@ -1,6 +1,6 @@
 import '@toba/test';
+import { config, blog, seriesKeySeparator } from './';
 import { mockPosts } from './.test-data';
-import { config, blog, seriesKeySeparator } from '../';
 import { Post } from './post';
 
 const [post1, post2, post3, post4, post5] = mockPosts();
