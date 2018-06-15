@@ -44,7 +44,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
       this.index = index;
    }
 
-   private get load(): PostProvider {
+   private get load(): PostProvider<any> {
       return ensurePostProvider();
    }
 

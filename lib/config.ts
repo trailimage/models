@@ -28,9 +28,9 @@ export interface SiteConfig {
  * Data providers the models will use to populate themselves.
  */
 export interface ProviderConfig {
-   post: PostProvider;
-   video: VideoProvider;
-   map: MapProvider;
+   post: PostProvider<any>;
+   video: VideoProvider<any>;
+   map: MapProvider<any>;
 }
 
 export interface Configuration {

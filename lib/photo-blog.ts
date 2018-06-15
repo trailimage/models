@@ -65,7 +65,7 @@ export class PhotoBlog
       }
    }
 
-   private get provide(): PostProvider {
+   private get provide(): PostProvider<any> {
       return ensurePostProvider();
    }
 

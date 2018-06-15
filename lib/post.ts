@@ -101,7 +101,7 @@ export class Post
    partKey: string = null;
    video: VideoInfo = null;
 
-   private get load(): PostProvider {
+   private get load(): PostProvider<any> {
       return ensurePostProvider();
    }
 
