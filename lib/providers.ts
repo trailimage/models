@@ -4,15 +4,26 @@ import { ProviderConfig } from './config';
 import { EXIF, Photo, Post, PhotoBlog, config } from './index';
 import { FeatureCollection, GeometryObject } from 'geojson';
 
+/**
+ * Methods that provide model data.
+ */
 export abstract class DataProvider<T> {
-   private config: T;
-   requiresAuthentication: boolean;
-   isAuthenticated: boolean;
+   config: T;
+   requiresAuthentication: boolean = true;
+   isAuthenticated: boolean = false;
+
+   constructor(baseConfig?: T) {
+      if (baseConfig !== undefined) {
+         this.config = baseConfig;
+      }
+   }
+
+   abstract getAccessToken(codeOrToken: string, verifier?: string): string;
 
    /**
     * Apply configuration
     */
-   configure(newConfig: T) {
+   configure(newConfig: Partial<T>) {
       Object.assign(this.config, newConfig);
    }
 }
@@ -53,7 +64,8 @@ export abstract class VideoProvider<T> extends DataProvider<T> {}
 /**
  * Return configured post provider or throw a reference error.
  */
-export const ensurePostProvider = (): PostProvider<any> => ensureProvider('post');
+export const ensurePostProvider = (): PostProvider<any> =>
+   ensureProvider('post');
 
 /**
  * Return configured map provider or throw a reference error.
@@ -63,7 +75,8 @@ export const ensureMapProvider = (): MapProvider<any> => ensureProvider('map');
 /**
  * Return configured video provider or throw a reference error.
  */
-export const ensureVideoProvider = (): VideoProvider<any> => ensureProvider('video');
+export const ensureVideoProvider = (): VideoProvider<any> =>
+   ensureProvider('video');
 
 /**
  * Return provider or throw a reference error.
