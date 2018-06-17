@@ -18,6 +18,14 @@ export abstract class DataProvider<T> {
       }
    }
 
+   /**
+    * Provider URL to load when user needs to be authenticated.
+    */
+   abstract authorizationURL(): string;
+
+   /**
+    * Exchange code or request token for an access token.
+    */
    abstract getAccessToken(codeOrToken: string, verifier?: string): string;
 
    /**
