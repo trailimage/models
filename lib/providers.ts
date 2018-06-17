@@ -1,4 +1,5 @@
 import { is } from '@toba/tools';
+import { Token } from '@toba/oauth';
 import { IncomingMessage } from 'http';
 import { TrackFeatures, loadSource } from '@toba/map';
 import { ProviderConfig } from './config';
@@ -29,7 +30,7 @@ export abstract class DataProvider<T> {
     * Parse authorization callback to make call that will generate an access
     * token.
     */
-   abstract getAccessToken(req: IncomingMessage): Promise<string>;
+   abstract getAccessToken(req: IncomingMessage): Promise<Token>;
 
    /**
     * Apply configuration.

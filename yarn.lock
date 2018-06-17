@@ -44,7 +44,7 @@
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.0.tgz#50c1e2260ac0ed9439a181de3725a0168d59c48a"
 
-"@toba/build@^1.5.0":
+"@toba/build@^1.7.0":
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/@toba/build/-/build-1.7.2.tgz#bb91e62fde5487005b9fc108eac01427c7b827e5"
   dependencies:
@@ -74,7 +74,7 @@
     flat "^4.0.0"
     logfmt "^1.2.0"
 
-"@toba/map@^1.2.0":
+"@toba/map@^1.3.0":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@toba/map/-/map-1.3.1.tgz#6609cd5f31d155155cb31ee6816c9903f1751a8e"
   dependencies:
@@ -85,9 +85,16 @@
     node-fetch "^2.1.2"
     xmldom "^0.1.27"
 
-"@toba/test@^1.14.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.18.0.tgz#4225a000b52d79bf18a98be5ed65a890f9edd607"
+"@toba/oauth@^1.2.8":
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/@toba/oauth/-/oauth-1.2.8.tgz#62effe66218160f6bbde03df736c236b5613f7b6"
+  dependencies:
+    "@types/oauth" "^0.9.0"
+    oauth "^0.9.15"
+
+"@toba/test@^1.19.0":
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/@toba/test/-/test-1.19.0.tgz#65e62810bf784000a54684cda52879442d360e4e"
   dependencies:
     "@toba/logger" "^1.0.4"
     "@toba/tools" "^3.2.0"
@@ -152,6 +159,12 @@
 "@types/node@*", "@types/node@^10.3.0":
   version "10.3.3"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.3.3.tgz#8798d9e39af2fa604f715ee6a6b19796528e46c3"
+
+"@types/oauth@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@types/oauth/-/oauth-0.9.0.tgz#d6af31f8aa92a964ba061f189880197b456c6667"
+  dependencies:
+    "@types/node" "*"
 
 "@types/shelljs@0.7.8":
   version "0.7.8"
@@ -3122,6 +3135,10 @@ nwsapi@^2.0.0:
 oauth-sign@~0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
+
+oauth@^0.9.15:
+  version "0.9.15"
+  resolved "https://registry.yarnpkg.com/oauth/-/oauth-0.9.15.tgz#bd1fefaf686c96b75475aed5196412ff60cfb9c1"
 
 object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.1"
