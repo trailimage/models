@@ -26,10 +26,13 @@ export abstract class DataProvider<T> {
    /**
     * Exchange code or request token for an access token.
     */
-   abstract getAccessToken(codeOrToken: string, verifier?: string): string;
+   abstract getAccessToken(
+      codeOrToken: string,
+      verifier?: string
+   ): Promise<any>;
 
    /**
-    * Apply configuration
+    * Apply configuration.
     */
    configure(newConfig: Partial<T>) {
       Object.assign(this.config, newConfig);
