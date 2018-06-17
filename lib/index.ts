@@ -6,7 +6,12 @@ export { blog, PhotoBlog, seriesKeySeparator } from './photo-blog';
 export { VideoInfo } from './video-info';
 export { EXIF } from './exif';
 export { owner } from './json-ld';
-export { PostProvider, MapProvider, VideoProvider } from './providers';
+export {
+   PostProvider,
+   MapProvider,
+   VideoProvider,
+   DataProvider
+} from './providers';
 export {
    Configuration as ModelConfig,
    OwnerConfig,
