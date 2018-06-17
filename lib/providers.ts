@@ -1,4 +1,5 @@
 import { is } from '@toba/tools';
+import { IncomingMessage } from 'http';
 import { TrackFeatures, loadSource } from '@toba/map';
 import { ProviderConfig } from './config';
 import { EXIF, Photo, Post, PhotoBlog, config } from './index';
@@ -19,17 +20,16 @@ export abstract class DataProvider<T> {
    }
 
    /**
-    * Provider URL to load when user needs to be authenticated.
+    * Provider URL to load when user needs to be authenticated. The URL will
+    * call back to an endpoint that should use `getAccessToken`.
     */
-   abstract authorizationURL(): string;
+   abstract authorizationURL(): Promise<string>;
 
    /**
-    * Exchange code or request token for an access token.
+    * Parse authorization callback to make call that will generate an access
+    * token.
     */
-   abstract getAccessToken(
-      codeOrToken: string,
-      verifier?: string
-   ): Promise<any>;
+   abstract getAccessToken(req: IncomingMessage): Promise<string>;
 
    /**
     * Apply configuration.
