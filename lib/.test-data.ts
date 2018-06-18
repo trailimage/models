@@ -7,6 +7,7 @@ import {
    PhotoSize,
    EXIF,
    PostProvider,
+   MapProvider,
    config,
    blog
 } from './';
@@ -62,7 +63,22 @@ class MockPostProvider extends PostProvider<MockPostConfig> {
    }
 }
 
+class MockMapProvider extends MapProvider<MockMapConfig> {
+   track(_postKey: string) {
+      return null;
+   }
+
+   authorizationURL() {
+      return null;
+   }
+
+   async getAccessToken(_req: any) {
+      return Promise.resolve(null);
+   }
+}
+
 export const postProvider = new MockPostProvider();
+export const mapProvider = new MockMapProvider();
 
 config.site = {
    domain: 'test.com',
@@ -84,6 +100,7 @@ config.owner = {
 
 config.artistsToNormalize = /^Artist (0|1)/;
 config.providers.post = postProvider;
+config.providers.map = mapProvider;
 
 interface CategoryData {
    key: string;

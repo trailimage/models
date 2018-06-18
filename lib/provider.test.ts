@@ -1,9 +1,18 @@
 import '@toba/test';
-import { postProvider, MockPostConfig, MockMapConfig } from './.test-data';
-import { PostProvider, MapProvider } from './index';
-import { ensurePostProvider, ensureMapProvider } from './providers';
+import {
+   postProvider,
+   mapProvider,
+   MockPostConfig,
+   MockMapConfig
+} from './.test-data';
+import { PostProvider, MapProvider, VideoProvider } from './index';
+import {
+   ensurePostProvider,
+   ensureMapProvider,
+   ensureVideoProvider
+} from './providers';
 
-test('Returns configured provider', () => {
+test('returns configured post provider', () => {
    let p: PostProvider<MockPostConfig>;
    let e: ReferenceError;
    try {
@@ -15,7 +24,7 @@ test('Returns configured provider', () => {
    expect(e).toBeUndefined();
 });
 
-test('Throws error for unconfigured provider', () => {
+test('returns configured map provider', () => {
    let p: MapProvider<MockMapConfig>;
    let e: ReferenceError;
    try {
@@ -23,7 +32,19 @@ test('Throws error for unconfigured provider', () => {
    } catch (err) {
       e = err;
    }
+   expect(p).toBe(mapProvider);
+   expect(e).toBeUndefined();
+});
+
+test('throws error for unconfigured provider', () => {
+   let p: VideoProvider<any>;
+   let e: ReferenceError;
+   try {
+      p = ensureVideoProvider();
+   } catch (err) {
+      e = err;
+   }
    expect(p).toBeUndefined();
    expect(e).toBeDefined();
-   expect(e.message).toBe('map provider is undefined');
+   expect(e.message).toBe('video provider is undefined');
 });
