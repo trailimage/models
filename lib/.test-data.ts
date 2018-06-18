@@ -1,14 +1,15 @@
 import { is } from '@toba/tools';
+import { MapConfig } from '@toba/map';
 import {
    Category,
    Post,
    Photo,
    PhotoSize,
    EXIF,
-   PhotoBlog,
-   PostProvider
+   PostProvider,
+   config,
+   blog
 } from './';
-import { config, blog } from './';
 import { ImageConfig } from './config';
 
 const imageConfig: ImageConfig = {
@@ -19,33 +20,49 @@ const imageConfig: ImageConfig = {
 
 const someDate = new Date(Date.UTC(1973, 2, 15, 0, 0, 0));
 
-export const postProvider: PostProvider = {
-   async photoBlog(): Promise<PhotoBlog> {
-      return blog;
-   },
+export interface MockPostConfig {
+   api: string;
+}
 
-   async exif(_photoID: string): Promise<EXIF> {
-      return mockEXIF[0];
-   },
+export interface MockMapConfig extends MapConfig {
+   api: string;
+}
 
-   async postIdWithPhotoId(_photoID: string): Promise<string> {
-      return '';
-   },
-
-   async photosWithTags(_tags: string | string[]): Promise<Photo[]> {
-      return [];
-   },
-
-   async postInfo(p: Post): Promise<Post> {
-      p.infoLoaded = true;
-      return p;
-   },
-
-   async postPhotos(p: Post): Promise<Photo[]> {
-      p.photosLoaded = true;
-      return [];
+class MockPostProvider extends PostProvider<MockPostConfig> {
+   photoBlog(_async = true) {
+      return Promise.resolve(blog);
    }
-};
+
+   exif(_photoID: string) {
+      return null;
+   }
+
+   postIdWithPhotoId(_photoID: string) {
+      return null;
+   }
+
+   photosWithTags(..._tags: string[]) {
+      return null;
+   }
+
+   postInfo(_p: Post) {
+      return null;
+   }
+
+   postPhotos(_p: Post) {
+      return null;
+   }
+
+   authorizationURL() {
+      return null;
+   }
+
+   getAccessToken(_req: any) {
+      return Promise.resolve(null);
+   }
+}
+
+export const postProvider = new MockPostProvider();
 
 config.site = {
    domain: 'test.com',

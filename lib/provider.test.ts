@@ -1,10 +1,10 @@
 import '@toba/test';
-import { postProvider } from './.test-data';
+import { postProvider, MockPostConfig, MockMapConfig } from './.test-data';
 import { PostProvider, MapProvider } from './index';
 import { ensurePostProvider, ensureMapProvider } from './providers';
 
 test('Returns configured provider', () => {
-   let p: PostProvider;
+   let p: PostProvider<MockPostConfig>;
    let e: ReferenceError;
    try {
       p = ensurePostProvider();
@@ -16,7 +16,7 @@ test('Returns configured provider', () => {
 });
 
 test('Throws error for unconfigured provider', () => {
-   let p: MapProvider;
+   let p: MapProvider<MockMapConfig>;
    let e: ReferenceError;
    try {
       p = ensureMapProvider();
