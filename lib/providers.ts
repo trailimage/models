@@ -1,7 +1,12 @@
 import { is } from '@toba/tools';
 import { Token } from '@toba/oauth';
 import { IncomingMessage } from 'http';
-import { TrackFeatures, loadSource } from '@toba/map';
+import {
+   TrackFeatures,
+   loadSource,
+   MapConfig,
+   config as mapConfig
+} from '@toba/map';
 import { ProviderConfig } from './config';
 import { EXIF, Photo, Post, PhotoBlog, config } from './index';
 import { FeatureCollection, GeometryObject } from 'geojson';
@@ -58,14 +63,36 @@ export abstract class PostProvider<T> extends DataProvider<T> {
 /**
  * Methods to load map-related data like GPX tracks.
  */
-export abstract class MapProvider<T> extends DataProvider<T> {
+export abstract class MapProvider<T extends MapConfig> extends DataProvider<T> {
    abstract track(postKey: string): Promise<TrackFeatures>;
+
+   /**
+    * @param baseConfig Configuration for provider API as well as the map module
+    */
+   constructor(baseConfig?: T) {
+      super(baseConfig);
+
+      if (baseConfig !== undefined) {
+         Object.assign(mapConfig, baseConfig);
+      }
+   }
+
+   /**
+    * Apply new configuration values to the provider API as well as the map
+    * module. Technically, the values will be duplicated to both targets but
+    * unused values will simply be ignored.
+    */
+   configure(newConfig: Partial<T>) {
+      Object.assign(this.config, newConfig);
+      Object.assign(mapConfig, newConfig);
+   }
 
    /**
     * @param sourceKey configured `MapSource` key
     */
-   source = (sourceKey: string): Promise<FeatureCollection<GeometryObject>> =>
-      loadSource(sourceKey);
+   source(sourceKey: string): Promise<FeatureCollection<GeometryObject>> {
+      return loadSource(sourceKey);
+   }
 }
 
 /**
