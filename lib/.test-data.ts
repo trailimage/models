@@ -29,7 +29,7 @@ export interface MockMapConfig extends MapConfig {
    api: string;
 }
 
-class MockPostProvider extends PostProvider<MockPostConfig> {
+export class MockPostProvider extends PostProvider<MockPostConfig> {
    photoBlog(_async = true) {
       return Promise.resolve(blog);
    }
@@ -63,7 +63,7 @@ class MockPostProvider extends PostProvider<MockPostConfig> {
    }
 }
 
-class MockMapProvider extends MapProvider<MockMapConfig> {
+export class MockMapProvider extends MapProvider<MockMapConfig> {
    track(_postKey: string) {
       return null;
    }

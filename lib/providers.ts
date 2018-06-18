@@ -41,7 +41,11 @@ export abstract class DataProvider<T> {
     * Apply configuration.
     */
    configure(newConfig: Partial<T>) {
-      Object.assign(this.config, newConfig);
+      if (is.value(this.config)) {
+         Object.assign(this.config, newConfig);
+      } else {
+         this.config = newConfig as T;
+      }
    }
 }
 
@@ -83,7 +87,7 @@ export abstract class MapProvider<T extends MapConfig> extends DataProvider<T> {
     * unused values will simply be ignored.
     */
    configure(newConfig: Partial<T>) {
-      Object.assign(this.config, newConfig);
+      super.configure(newConfig);
       Object.assign(mapConfig, newConfig);
    }
 

@@ -3,7 +3,9 @@ import {
    postProvider,
    mapProvider,
    MockPostConfig,
-   MockMapConfig
+   MockMapConfig,
+   MockMapProvider,
+   MockPostProvider
 } from './.test-data';
 import { PostProvider, MapProvider, VideoProvider } from './index';
 import {
@@ -47,4 +49,14 @@ test('throws error for unconfigured provider', () => {
    expect(p).toBeUndefined();
    expect(e).toBeDefined();
    expect(e.message).toBe('video provider is undefined');
+});
+
+test('can configure providers after instantiation', () => {
+   const p1 = new MockMapProvider();
+   p1.configure({ api: 'fake' });
+   expect(p1).toBeDefined();
+
+   const p2 = new MockPostProvider();
+   p2.configure({ api: 'fake' });
+   expect(p2).toBeDefined();
 });
