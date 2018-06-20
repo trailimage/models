@@ -1,4 +1,3 @@
-import '@toba/test';
 import { boundary } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
 import { PhotoSize, EXIF, PostProvider } from './index';
