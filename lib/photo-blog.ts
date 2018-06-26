@@ -330,17 +330,18 @@ export class PhotoBlog
    photoTagList(photos: Photo[]): string {
       // all photo tags in the blog
       const postTags: Set<string> = new Set();
+      const photoTags: Set<string> = new Set();
 
       for (const p of photos) {
          for (const tagSlug of p.tags) {
             // lookup full tag name from its slug
             const tagName = this.tags.get(tagSlug);
-            p.tags.delete(tagSlug);
-            if (is.value(tagName)) {
-               p.tags.add(tagName);
+            if (!is.empty(tagName)) {
+               photoTags.add(tagName);
                postTags.add(tagName);
             }
          }
+         p.tags = photoTags;
       }
       return postTags.size > 0 ? Array.from(postTags).join(', ') : null;
    }
