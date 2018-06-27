@@ -330,9 +330,10 @@ export class PhotoBlog
    photoTagList(photos: Photo[]): string {
       // all photo tags in the blog
       const postTags: Set<string> = new Set();
-      const photoTags: Set<string> = new Set();
 
       for (const p of photos) {
+         const photoTags: Set<string> = new Set();
+
          for (const tagSlug of p.tags) {
             // lookup full tag name from its slug
             const tagName = this.tags.get(tagSlug);
