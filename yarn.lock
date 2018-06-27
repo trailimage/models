@@ -110,6 +110,12 @@
   dependencies:
     zlib "^1.0.5"
 
+"@toba/tools@^3.4.0":
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/@toba/tools/-/tools-3.4.0.tgz#7ff0b5a77d601deead27c15e3ae37ceda2e6d41f"
+  dependencies:
+    zlib "^1.0.5"
+
 "@types/events@*":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@types/events/-/events-1.2.0.tgz#81a6731ce4df43619e5c8c945383b3e62a89ea86"

@@ -352,7 +352,7 @@ export class Post
          link: 'http://' + config.site.domain,
          published: this.createdOn,
          updated: this.updatedOn,
-         rights: `'Copyright © ${new Date().getFullYear()} ${
+         rights: `Copyright © ${new Date().getFullYear()} ${
             config.owner.name
          }. All rights reserved.`,
          summary: this.description,
