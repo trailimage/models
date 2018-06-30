@@ -12,6 +12,7 @@ import {
 } from './index';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
+import { Writable } from 'stream';
 
 export class Post
    implements
@@ -325,6 +326,14 @@ export class Post
          ...this.photos.map(p => p.geoJSON(this.partKey))
       );
       return collection;
+   }
+
+   /**
+    * Stream GPX track for post. If the post doesn't have a track then the
+    * stream will be ended without data.
+    */
+   gpx(stream: Writable): void {
+      return ensureMapProvider().gpx(this.key, stream);
    }
 
    /**
