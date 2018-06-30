@@ -10,6 +10,7 @@ import {
 import { ProviderConfig } from './config';
 import { EXIF, Photo, Post, PhotoBlog, config } from './index';
 import { FeatureCollection, GeometryObject } from 'geojson';
+import { Writable } from 'stream';
 
 /**
  * Methods that provide model data.
@@ -69,6 +70,10 @@ export abstract class PostProvider<T> extends DataProvider<T> {
  */
 export abstract class MapProvider<T extends MapConfig> extends DataProvider<T> {
    abstract track(postKey: string): Promise<TrackFeatures>;
+   /**
+    * Send GPX data for post to a writable stream (usually HTTP response).
+    */
+   abstract gpx(postKey: string, stream: Writable): void;
 
    /**
     * @param baseConfig Configuration for provider API as well as the map module

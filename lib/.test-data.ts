@@ -12,6 +12,7 @@ import {
    blog
 } from './';
 import { ImageConfig } from './config';
+import { Writable } from 'stream';
 
 const imageConfig: ImageConfig = {
    url: 'http://test.com/image.jpg',
@@ -66,6 +67,10 @@ export class MockPostProvider extends PostProvider<MockPostConfig> {
 export class MockMapProvider extends MapProvider<MockMapConfig> {
    track(_postKey: string) {
       return null;
+   }
+
+   gpx(_postKey: string, _stream: Writable) {
+      return;
    }
 
    authorizationURL() {
