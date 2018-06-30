@@ -70,7 +70,7 @@ export class MockMapProvider extends MapProvider<MockMapConfig> {
    }
 
    gpx(_postKey: string, _stream: Writable) {
-      return;
+      return Promise.resolve();
    }
 
    authorizationURL() {

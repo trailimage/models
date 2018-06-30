@@ -332,8 +332,17 @@ export class Post
     * Stream GPX track for post. If the post doesn't have a track then the
     * stream will be ended without data.
     */
-   gpx(stream: Writable): void {
-      return ensureMapProvider().gpx(this.key, stream);
+   gpx(stream: Writable): Promise<void> {
+      try {
+         return ensureMapProvider().gpx(this.key, stream);
+      } catch (err) {
+         if (err.message.includes('not found')) {
+            this.triedTrack = true;
+            this.hasTrack = false;
+         }
+         // re-throw the error so controller can decide how to handle it
+         throw err;
+      }
    }
 
    /**

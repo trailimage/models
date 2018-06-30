@@ -71,9 +71,10 @@ export abstract class PostProvider<T> extends DataProvider<T> {
 export abstract class MapProvider<T extends MapConfig> extends DataProvider<T> {
    abstract track(postKey: string): Promise<TrackFeatures>;
    /**
-    * Send GPX data for post to a writable stream (usually HTTP response).
+    * Send GPX data for post to a writable stream (usually HTTP response). The
+    * `Promise` is resolved when the stream `end` event fires.
     */
-   abstract gpx(postKey: string, stream: Writable): void;
+   abstract gpx(postKey: string, stream: Writable): Promise<void>;
 
    /**
     * @param baseConfig Configuration for provider API as well as the map module
