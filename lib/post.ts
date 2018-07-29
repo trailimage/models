@@ -74,9 +74,9 @@ export class Post
    triedTrack: boolean = false;
    /** Whether GPX track was found for the post. */
    hasTrack: boolean = false;
-   /** Next chronological post. */
+   /** Next chronological post (newer). */
    next: Post = null;
-   /** Previous chronological post. */
+   /** Previous chronological post (older). */
    previous: Post = null;
    /** Position of this post in a series or 0 if it's not in a series. */
    part: number = 0;

@@ -1,4 +1,4 @@
-import { removeItem, is, mapSet } from '@toba/tools';
+import { removeItem, is, mapSet, Sort } from '@toba/tools';
 import { log } from '@toba/logger';
 import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
 import { geoJSON, IMappable } from '@toba/map';
@@ -59,6 +59,11 @@ export class PhotoBlog
     */
    changedKeys: string[] = [];
 
+   /**
+    * Whether the provider's post order should be reversed.
+    */
+   private reversePostOrder = false;
+
    constructor() {
       if (is.value(blog)) {
          throw new Error('PhotoBlog instance already exists');
@@ -91,6 +96,7 @@ export class PhotoBlog
       this.hadPostKeys = this.posts.map(p => p.key);
       this.postCache = this.posts.map(p => p.reset());
       this.posts = [];
+      this.reversePostOrder = config.providerPostSort == Sort.OldestFirst;
       return this;
    }
 
@@ -193,30 +199,56 @@ export class PhotoBlog
    /**
     * Add post to blog and link with adjacent posts. If a post with the same
     * `ID` is already present then no change will be made.
+    *
+    * Post order should be changed to newest-first so new posts are most
+    * visible.
     */
    addPost(p: Post): this {
       if (this.posts.findIndex(e => e.id === p.id) >= 0) {
          // post with same ID has already been added
          return this;
       }
-      this.posts.push(p);
+      /**
+       * During load the cache is used to look-up posts so ensure it too
+       * references the new post.
+       */
+      const alsoCache =
+         this.isLoading && this.postCache.findIndex(e => e.id === p.id) == -1;
+      /**
+       * Whether this post should be linked to adjacent posts.
+       */
+      const linkAdjacent = p.chronological && this.posts.length > 0;
 
-      if (
-         this.isLoading &&
-         this.postCache.findIndex(e => e.id === p.id) == -1
-      ) {
-         // during load the cache is used to look-up posts so ensure it too
-         // references the post
-         this.postCache.push(p);
-      }
-
-      if (p.chronological && this.posts.length > 1) {
-         const prev = this.posts[this.posts.length - 2];
-         if (prev.chronological) {
-            p.previous = prev;
-            prev.next = p;
+      if (this.reversePostOrder) {
+         // implies posts are ordered oldest-first and need to be switched to
+         // newest-first
+         this.posts.unshift(p);
+         if (alsoCache) {
+            this.postCache.unshift(p);
+         }
+         if (linkAdjacent) {
+            const prev = this.posts[1];
+            if (prev.chronological) {
+               p.previous = prev;
+               prev.next = p;
+            }
+         }
+      } else {
+         // added post should be older than those previously added, e.g.
+         // [newest, older1, older2, oldest]
+         this.posts.push(p);
+         if (alsoCache) {
+            this.postCache.push(p);
+         }
+         if (linkAdjacent) {
+            const next = this.posts[this.posts.length - 2];
+            if (next.chronological) {
+               p.next = next;
+               next.previous = p;
+            }
          }
       }
+
       return this;
    }
 
@@ -388,7 +420,11 @@ export class PhotoBlog
    /**
     * Match posts that are part of a series based on them having the same title,
     * only differing by subtitle. This assumes that `this.posts` is already in
-    * the correct sequence and titles have been parsed.
+    * the correct sequence (newest-first) and titles have been parsed.
+    *
+    * Iterate posts in reverse order so older posts are evaluated first. Unlike
+    * the overall post list, which shows newest first, series are sorted with
+    * oldest posts first.
     *
     * This method is called internally by `finishLoad()`.
     */
@@ -396,14 +432,20 @@ export class PhotoBlog
       let parts: Post[] = [];
 
       for (let i = this.posts.length - 1; i >= 0; i--) {
+         // start with oldest post
          let p = this.posts[i];
 
-         if (p.previous != null && is.value(p.subTitle)) {
+         if (is.empty(p.subTitle)) {
+            // no grouping to be done
+            continue;
+         }
+
+         if (p.next != null) {
             parts.push(p);
 
-            while (p.previous != null && p.previous.title == p.title) {
-               p = p.previous;
-               parts.unshift(p);
+            while (p.next != null && p.next.title == p.title) {
+               p = p.next;
+               parts.push(p);
                i--;
             }
 
@@ -426,6 +468,8 @@ export class PhotoBlog
                p.ungroup();
             }
             parts = [];
+         } else {
+            p.ungroup();
          }
       }
       return this;

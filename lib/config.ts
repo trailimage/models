@@ -1,3 +1,4 @@
+import { Sort } from '@toba/tools';
 import { MapProvider, PostProvider, VideoProvider } from './index';
 
 export interface ImageConfig {
@@ -55,6 +56,11 @@ export interface Configuration {
     */
    providers: ProviderConfig;
 
+   /**
+    * How the provider sorts posts determines how to make them chronological.
+    */
+   providerPostSort: Sort;
+
    site: SiteConfig;
    owner: OwnerConfig;
 }
@@ -65,6 +71,7 @@ export interface Configuration {
 export const config: Configuration = {
    subtitleSeparator: ':',
    maxPhotoMarkersOnMap: 100,
+   providerPostSort: Sort.NewestFirst,
    site: null,
    owner: null,
    providers: { post: null, video: null, map: null }

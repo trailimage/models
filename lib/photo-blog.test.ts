@@ -6,6 +6,7 @@ import { Post } from './post';
 const [post1, post2, post3, post4, post5, post6] = mockPosts();
 
 beforeEach(() => {
+   //blog.empty().addAll(post6, post5, post4, post3, post2, post1);
    blog.empty().addAll(post1, post2, post3, post4, post5, post6);
 });
 
@@ -28,6 +29,12 @@ test('links sequential posts', () => {
    expect(post1.next).toBe(post2);
    expect(post2.next).toBe(post3);
    expect(post2.previous).toBe(post1);
+   expect(post3.next).toBe(post4);
+   expect(post3.previous).toBe(post2);
+   expect(post4.next).toBe(post5);
+   expect(post4.previous).toBe(post3);
+   expect(post5.next).toBeNull();
+   expect(post5.previous).toBe(post4);
 });
 
 test('connects posts in a series', () => {

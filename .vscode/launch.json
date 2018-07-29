@@ -7,17 +7,32 @@
          "name": "Jest",
          "port": 9229,
          "address": "localhost",
+         "protocol": "inspector",
          "stopOnEntry": false,
          "sourceMaps": true,
          "runtimeArgs": [
             "--inspect-brk",
             "./node_modules/jest-cli/bin/jest.js",
-            "--runInBand"
-            // "client.test.ts",
+            "--runInBand",
+            "photo-blog.test.ts"
             // "--testNamePattern",
             // "EXIF"
          ],
          "cwd": "${workspaceRoot}"
+      },
+      {
+         "type": "node",
+         "request": "launch",
+         "name": "vscode-jest-tests",
+         "program": "${workspaceFolder}/node_modules/.bin/jest",
+         "protocol": "inspector",
+         "args": ["--runInBand"],
+         "sourceMaps": true,
+         "console": "integratedTerminal",
+         "internalConsoleOptions": "neverOpen",
+         "windows": {
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+         }
       }
    ]
 }

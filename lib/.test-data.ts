@@ -1,4 +1,4 @@
-import { is } from '@toba/tools';
+import { is, Sort } from '@toba/tools';
 import { MapConfig } from '@toba/map';
 import {
    Category,
@@ -106,6 +106,7 @@ config.owner = {
 config.artistsToNormalize = /^Artist (0|1)/;
 config.providers.post = postProvider;
 config.providers.map = mapProvider;
+config.providerPostSort = Sort.OldestFirst;
 
 interface CategoryData {
    key: string;
@@ -140,6 +141,9 @@ interface PostData {
    chronological?: boolean;
 }
 
+/**
+ * Mock posts sorted chronologically.
+ */
 export const mockPosts = (): Post[] =>
    ([
       { id: 'id0', title: 'Series 1: Part 1' },
