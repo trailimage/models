@@ -13,6 +13,7 @@ import {
 } from './';
 import { ImageConfig } from './config';
 import { Writable } from 'stream';
+import { FeatureCollection } from 'geojson';
 
 const imageConfig: ImageConfig = {
    url: 'http://test.com/image.jpg',
@@ -35,27 +36,27 @@ export class MockPostProvider extends PostProvider<MockPostConfig> {
       return Promise.resolve(blog);
    }
 
-   exif(_photoID: string) {
+   exif(_photoID: string): Promise<EXIF> {
       return null;
    }
 
-   postIdWithPhotoId(_photoID: string) {
+   postIdWithPhotoId(_photoID: string): Promise<string> {
       return null;
    }
 
-   photosWithTags(..._tags: string[]) {
+   photosWithTags(..._tags: string[]): Promise<Photo[]> {
       return null;
    }
 
-   postInfo(_p: Post) {
+   postInfo(_p: Post): Promise<Post> {
       return null;
    }
 
-   postPhotos(_p: Post) {
+   postPhotos(_p: Post): Promise<Photo[]> {
       return null;
    }
 
-   authorizationURL() {
+   authorizationURL(): Promise<string> {
       return null;
    }
 
@@ -65,7 +66,7 @@ export class MockPostProvider extends PostProvider<MockPostConfig> {
 }
 
 export class MockMapProvider extends MapProvider<MockMapConfig> {
-   track(_postKey: string) {
+   track(_postKey: string): Promise<FeatureCollection<any>> {
       return null;
    }
 
@@ -73,7 +74,7 @@ export class MockMapProvider extends MapProvider<MockMapConfig> {
       return Promise.resolve();
    }
 
-   authorizationURL() {
+   authorizationURL(): Promise<string> {
       return null;
    }
 
