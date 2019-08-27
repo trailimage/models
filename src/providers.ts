@@ -115,19 +115,18 @@ export abstract class VideoProvider<T> extends DataProvider<T> {}
 /**
  * Return configured post provider or throw a reference error.
  */
-export const ensurePostProvider = (): PostProvider<any> | null =>
+export const ensurePostProvider = (): PostProvider<any> =>
    ensureProvider('post');
 
 /**
  * Return configured map provider or throw a reference error.
  */
-export const ensureMapProvider = (): MapProvider<any> | null =>
-   ensureProvider('map');
+export const ensureMapProvider = (): MapProvider<any> => ensureProvider('map');
 
 /**
  * Return configured video provider or throw a reference error.
  */
-export const ensureVideoProvider = (): VideoProvider<any> | null =>
+export const ensureVideoProvider = (): VideoProvider<any> =>
    ensureProvider('video');
 
 /**

@@ -33,9 +33,9 @@ export interface SiteConfig {
  * Data providers the models will use to populate themselves.
  */
 export interface ProviderConfig {
-   post: PostProvider<any> | null;
-   video: VideoProvider<any> | null;
-   map: MapProvider<any> | null;
+   post: PostProvider<any>;
+   video: VideoProvider<any>;
+   map: MapProvider<any>;
 }
 
 export interface Configuration {
@@ -65,8 +65,8 @@ export interface Configuration {
     */
    providerPostSort: Sort;
 
-   site: SiteConfig | null;
-   owner: OwnerConfig | null;
+   site: SiteConfig;
+   owner: OwnerConfig;
 }
 
 /**

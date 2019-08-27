@@ -17,6 +17,6 @@ export class VideoInfo implements LinkData<JsonLD.VideoObject> {
    }
 
    jsonLD(): JsonLD.VideoObject {
-      return forVideo(this);
+      return forVideo(this)!;
    }
 }

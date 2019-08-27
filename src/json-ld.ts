@@ -1,5 +1,6 @@
 import {
    JsonLD,
+   SchemaType,
    breadcrumb,
    image,
    ld,
@@ -8,7 +9,7 @@ import {
    webPage
 } from '@toba/json-ld';
 import { is } from '@toba/tools';
-import { Category, Post, VideoInfo, blog, config } from './index';
+import { Category, Post, Photo, VideoInfo, blog, config } from './index';
 
 export { serialize } from '@toba/json-ld';
 
@@ -29,7 +30,7 @@ const configOrg = (): JsonLD.Organization =>
    organization(config.site.title, config.site.companyLogo);
 
 export function owner(): JsonLD.Person {
-   return ld<JsonLD.Person>(JsonLD.Type.Person, {
+   return ld<JsonLD.Person>(SchemaType.Person, {
       name: config.owner.name,
       url: config.site.url + '/about',
       sameAs: config.owner.urls,
@@ -47,14 +48,14 @@ export function searchAction(): JsonLD.SearchAction {
    const qi = 'query-input';
    const placeHolder = 'search_term_string';
 
-   return ld<JsonLD.SearchAction>(JsonLD.Type.SearchAction, {
+   return ld<JsonLD.SearchAction>(SchemaType.SearchAction, {
       target: config.site.url + '/search?q={' + placeHolder + '}',
       [qi]: 'required name=' + placeHolder
    });
 }
 
 export function discoverAction(post: Post): JsonLD.DiscoverAction {
-   return ld<JsonLD.DiscoverAction>(JsonLD.Type.DiscoverAction, {
+   return ld<JsonLD.DiscoverAction>(SchemaType.DiscoverAction, {
       target: config.site.url + '/' + post.key + '/map'
    });
 }
@@ -69,7 +70,7 @@ export function forCategory(
    homePage = false
 ): JsonLD.Blog | JsonLD.WebPage {
    if (homePage) {
-      return ld<JsonLD.Blog>(JsonLD.Type.Blog, {
+      return ld<JsonLD.Blog>(SchemaType.Blog, {
          url: config.site.url,
          name: config.site.title,
          author: owner(),
@@ -112,15 +113,15 @@ export function forCategory(
 /**
  * Linked Data for YouTube video
  */
-export function forVideo(v: VideoInfo): JsonLD.VideoObject {
+export function forVideo(v: VideoInfo): JsonLD.VideoObject | null {
    return v === null || v.empty
       ? null
-      : ld<JsonLD.VideoObject>(JsonLD.Type.VideoObject, {
+      : ld<JsonLD.VideoObject>(SchemaType.VideoObject, {
            contentUrl: 'https://www.youtube.com/watch?v=' + v.id,
            videoFrameSize: v.width + 'x' + v.height,
-           description: null,
-           uploadDate: null,
-           thumbnailUrl: null
+           description: undefined,
+           uploadDate: undefined,
+           thumbnailUrl: undefined
         });
 }
 
@@ -136,7 +137,7 @@ export function forPost(p: Post): JsonLD.BlogPosting {
       name: p.title,
       headline: p.title,
       description: p.description,
-      image: is.value(p.coverPhoto)
+      image: is.value<Photo>(p.coverPhoto)
          ? image(p.coverPhoto.size.normal)
          : undefined,
       publisher: configOrg(),
@@ -160,11 +161,11 @@ export function forPost(p: Post): JsonLD.BlogPosting {
    //	content.keywords = config.alwaysKeywords + post.photoTagList;
    //}
 
-   if (is.value(p.coverPhoto) && is.value(p.coverPhoto.size.thumb)) {
+   if (is.value<Photo>(p.coverPhoto) && is.value(p.coverPhoto.size.thumb)) {
       (schema.image as JsonLD.ImageObject).thumbnail = image(
          p.coverPhoto.size.thumb
       );
    }
 
-   return ld<JsonLD.BlogPosting>(JsonLD.Type.BlogPosting, schema);
+   return ld<JsonLD.BlogPosting>(SchemaType.BlogPosting, schema);
 }

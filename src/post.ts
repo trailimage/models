@@ -27,15 +27,15 @@ export class Post
     *
     * @example brother-ride/day-10
     */
-   key: string | null;
+   key?: string;
    title: string;
-   subTitle: string | null;
-   description: string | null;
+   subTitle?: string;
+   description?: string;
    /** Description that includes computed photo and video count. */
-   longDescription: string | null;
-   happenedOn: Date | null;
-   createdOn: Date | null;
-   updatedOn: Date | null;
+   longDescription?: string;
+   happenedOn?: Date;
+   createdOn?: Date;
+   updatedOn?: Date;
    /**
     * Whether post pictures occurred sequentially in a specific time range as
     * opposed to, for example, a themed set of images from various times.
@@ -43,21 +43,21 @@ export class Post
    chronological: boolean = true;
    private originalTitle: string;
    photosLoaded: boolean = false;
-   bigThumbURL: string | null;
-   smallThumbURL: string | null;
-   photos: Photo[] | null = [];
+   bigThumbURL?: string;
+   smallThumbURL?: string;
+   photos?: Photo[] = [];
    photoCount: number = 0;
-   photoTagList: string | null;
+   photoTagList?: string;
    /**
     * Photo coordinates stored as longitude and latitude used to invoke map
     * APIs.
     */
-   photoLocations: number[][] | null;
+   photoLocations?: number[][];
    /** Top left and bottom right coordinates of photos. */
-   bounds: MapBounds | null;
+   bounds?: MapBounds;
    /** Center of photo */
-   centroid: Location | null;
-   coverPhoto: Photo | null;
+   centroid?: Location;
+   coverPhoto?: Photo;
    /** Whether post is featured in main navigation */
    feature: boolean = false;
    /** Category titles mapped to category keys */
@@ -75,9 +75,9 @@ export class Post
    /** Whether GPX track was found for the post. */
    hasTrack: boolean = false;
    /** Next chronological post (newer). */
-   next: Post | null;
+   next?: Post;
    /** Previous chronological post (older). */
-   previous: Post | null;
+   previous?: Post;
    /** Position of this post in a series or 0 if it's not in a series. */
    part: number = 0;
    /** Whether post is part of a series. */
@@ -94,13 +94,13 @@ export class Post
     * Portion of key that is common among series members. For example, with
     * `brother-ride/day-10` the `seriesKey` is `brother-ride`.
     */
-   seriesKey: string | null;
+   seriesKey?: string;
    /**
     * Portion of key that is unique among series members. For example, with
     * `brother-ride/day-10` the `partKey` is `day-10`.
     */
-   partKey: string | null;
-   video: VideoInfo | null;
+   partKey?: string;
+   video?: VideoInfo;
 
    private get load(): PostProvider<any> {
       return ensurePostProvider();
@@ -110,7 +110,7 @@ export class Post
     * Retrieve post photos.
     */
    async getPhotos(): Promise<Photo[]> {
-      return this.photosLoaded && this.photos !== null
+      return this.photosLoaded && this.photos !== undefined
          ? this.photos
          : this.load.postPhotos(this);
    }
@@ -135,8 +135,8 @@ export class Post
     */
    reset(): this {
       this.inferTitleAndKey(this.originalTitle);
-      this.previous = null;
-      this.next = null;
+      this.previous = undefined;
+      this.next = undefined;
       return this.removeFromSeries();
    }
 
@@ -161,10 +161,10 @@ export class Post
     */
    ungroup(): this {
       this.title = this.originalTitle;
-      this.subTitle = null;
-      this.key = slug(this.originalTitle);
-      this.seriesKey = null;
-      this.partKey = null;
+      this.subTitle = undefined;
+      this.key = slug(this.originalTitle) || undefined;
+      this.seriesKey = undefined;
+      this.partKey = undefined;
       return this.removeFromSeries();
    }
 
@@ -189,7 +189,7 @@ export class Post
    hasKey(key: string): boolean {
       return (
          this.key == key ||
-         (is.value(this.partKey) &&
+         (is.value<string>(this.partKey) &&
             key == this.seriesKey + seriesKeySeparator + this.partKey)
       );
    }
@@ -208,11 +208,11 @@ export class Post
 
       if (parts.length > 1) {
          this.subTitle = parts[1];
-         this.seriesKey = slug(this.title);
-         this.partKey = slug(this.subTitle);
+         this.seriesKey = slug(this.title) || undefined;
+         this.partKey = slug(this.subTitle) || undefined;
          this.key = this.seriesKey + seriesKeySeparator + this.partKey;
       } else {
-         this.key = slug(title);
+         this.key = slug(title) || undefined;
       }
       return this;
    }
@@ -229,24 +229,24 @@ export class Post
     */
    empty(): this {
       // from updateInfo()
-      this.video = null;
-      this.createdOn = null;
-      this.updatedOn = null;
+      this.video = undefined;
+      this.createdOn = undefined;
+      this.updatedOn = undefined;
       this.photoCount = 0;
-      this.description = null;
-      this.coverPhoto = null;
-      this.bigThumbURL = null;
-      this.smallThumbURL = null;
+      this.description = undefined;
+      this.coverPhoto = undefined;
+      this.bigThumbURL = undefined;
+      this.smallThumbURL = undefined;
       this.infoLoaded = false;
       this.triedTrack = false;
 
       // from updatePhotos()
-      this.photos = null;
-      this.bounds = null;
-      this.happenedOn = null;
-      this.photoTagList = null;
-      this.photoLocations = null;
-      this.longDescription = null;
+      this.photos = undefined;
+      this.bounds = undefined;
+      this.happenedOn = undefined;
+      this.photoTagList = undefined;
+      this.photoLocations = undefined;
+      this.longDescription = undefined;
       this.photosLoaded = false;
 
       return this;
@@ -270,7 +270,7 @@ export class Post
    updatePhotoLocations() {
       let start = 1; // always skip first photo
 
-      if (this.photos === null) {
+      if (this.photos === undefined) {
          return;
       }
       let total = this.photos.length;
@@ -306,18 +306,20 @@ export class Post
             }
          }
       }
-      this.photoLocations = locations.length > 0 ? locations : null;
+      this.photoLocations = locations.length > 0 ? locations : undefined;
       this.bounds = bounds;
-      this.centroid = measure.centroid(locations);
+      this.centroid = measure.centroid(locations) || undefined;
    }
 
    /**
     * Map information for post.
     */
    async geoJSON() {
-      let collection: GeoJSON.FeatureCollection<GeoJSON.GeometryObject>;
+      let collection:
+         | GeoJSON.FeatureCollection<GeoJSON.GeometryObject>
+         | undefined = undefined;
 
-      if (!this.triedTrack) {
+      if (!this.triedTrack && this.key !== undefined) {
          collection = await ensureMapProvider().track(this.key);
          this.triedTrack = true;
       }
@@ -328,10 +330,12 @@ export class Post
          collection = geoJSON.features();
       }
 
-      collection.features.push(
-         ...this.photos.map(p => p.geoJSON(this.partKey))
-      );
-      return collection;
+      if (this.photos !== undefined) {
+         collection!.features.push(
+            ...this.photos.map(p => p.geoJSON(this.partKey))
+         );
+      }
+      return collection!;
    }
 
    /**
@@ -339,18 +343,20 @@ export class Post
     * stream will be returned unchanged.
     */
    gpx(stream: Writable): Promise<void> {
-      return ensureMapProvider()
-         .gpx(this.key, stream)
-         .catch(err => {
-            const msg = is.text(err) ? err : err.message;
+      return this.key === undefined
+         ? Promise.resolve()
+         : ensureMapProvider()
+              .gpx(this.key, stream)
+              .catch(err => {
+                 const msg = is.text(err) ? err : err.message;
 
-            if (msg.includes('not found')) {
-               this.triedTrack = true;
-               this.hasTrack = false;
-            }
-            // re-throw the error so controller can respond
-            return Promise.reject(err);
-         });
+                 if (msg.includes('not found')) {
+                    this.triedTrack = true;
+                    this.hasTrack = false;
+                 }
+                 // re-throw the error so controller can respond
+                 return Promise.reject(err);
+              });
    }
 
    /**

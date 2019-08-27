@@ -93,7 +93,9 @@ export class PhotoBlog
    beginLoad(): this {
       this.isLoading = true;
       // record post keys before resetting them
-      this.hadPostKeys = this.posts.map(p => p.key);
+      this.hadPostKeys = this.posts
+         .filter(p => p.key !== undefined)
+         .map(p => p.key!);
       this.postCache = this.posts.map(p => p.reset());
       this.posts = [];
       this.reversePostOrder = config.providerPostSort == Sort.OldestFirst;
@@ -113,20 +115,24 @@ export class PhotoBlog
       if (this.hadPostKeys.length > 0) {
          let changedKeys: string[] = [];
          this.posts
-            .filter(p => this.hadPostKeys.indexOf(p.key) == -1)
+            .filter(
+               p => p.key === undefined || this.hadPostKeys.indexOf(p.key) == -1
+            )
             .forEach(p => {
                log.info(`Found new post "${p.title}"`, { key: p.key });
-               changedKeys.push(p.key);
+               if (p.key !== undefined) {
+                  changedKeys.push(p.key);
+               }
 
                // all post categories will need to be refreshed
                changedKeys = changedKeys.concat(
                   Array.from(p.categories.keys())
                );
                // update adjecent posts to correct next/previous links
-               if (is.value(p.next)) {
+               if (is.value<Post>(p.next) && p.next.key !== undefined) {
                   changedKeys.push(p.next.key);
                }
-               if (is.value(p.previous)) {
+               if (is.value<Post>(p.previous) && p.previous.key !== undefined) {
                   changedKeys.push(p.previous.key);
                }
             });
@@ -255,7 +261,7 @@ export class PhotoBlog
    /**
     * Find category with given key.
     */
-   categoryWithKey(key: string): Category {
+   categoryWithKey(key: string): Category | undefined {
       const rootKey = key.includes('/') ? key.split('/')[0] : key;
 
       for (const cat of this.categories.values()) {
@@ -263,7 +269,7 @@ export class PhotoBlog
             return key != rootKey ? cat.getSubcategory(key) : cat;
          }
       }
-      return null;
+      return undefined;
    }
 
    /**
@@ -281,7 +287,7 @@ export class PhotoBlog
 
                if (c.title == name) {
                   keys.push(c.key);
-               } else if (is.value(s)) {
+               } else if (is.value<Category>(s)) {
                   keys.push(s.key);
                }
             }
@@ -321,7 +327,7 @@ export class PhotoBlog
     * Array of all post keys.
     */
    postKeys(): string[] {
-      return this.posts.map(p => p.key);
+      return this.posts.filter(p => p.key !== undefined).map(p => p.key!);
    }
 
    /**
@@ -387,7 +393,7 @@ export class PhotoBlog
       for (const k of keys) {
          const p = this.postWithKey(k);
          // removing post details will force it to reload on next access
-         if (is.value(p)) {
+         if (is.value<Post>(p)) {
             p.empty();
          }
       }
@@ -401,12 +407,15 @@ export class PhotoBlog
    remove(...keys: string[]): this {
       for (const k of keys) {
          const p = this.postWithKey(k);
+         if (p === undefined) {
+            continue;
+         }
          if (removeItem(this.posts, p)) {
-            if (is.value(p.next)) {
-               p.next.previous = null;
+            if (is.value<Post>(p.next)) {
+               p.next.previous = undefined;
             }
-            if (is.value(p.previous)) {
-               p.previous.next = null;
+            if (is.value<Post>(p.previous)) {
+               p.previous.next = undefined;
             }
 
             this.categories.forEach(cat => {

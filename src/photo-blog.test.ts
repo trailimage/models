@@ -24,8 +24,8 @@ test('ensures only one instance exists', () => {
 });
 
 test('links sequential posts', () => {
-   expect(post1.previous).toBeNull();
-   expect(post2.previous.key).toEqual(post1.key);
+   expect(post1.previous).toBeUndefined();
+   expect(post2.previous!.key).toEqual(post1.key);
    expect(post1.next).toBe(post2);
    expect(post2.next).toBe(post3);
    expect(post2.previous).toBe(post1);
