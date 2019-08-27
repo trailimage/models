@@ -1,5 +1,5 @@
 import '@toba/test';
-import { config, blog, seriesKeySeparator } from './';
+import { config, blog, seriesKeySeparator } from '.';
 import { mockPosts } from './.test-data';
 import { Post } from './post';
 

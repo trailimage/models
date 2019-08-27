@@ -20,44 +20,44 @@ export class Post
       IMappable<GeoJSON.GeometryObject>,
       ISyndicate<AtomEntry> {
    /** Provider ID */
-   id: string = null;
+   id: string;
    /**
     * Unique identifer used as the URL slug. If post is part of a series then
     * the key is compound.
     *
     * @example brother-ride/day-10
     */
-   key: string = null;
-   title: string = null;
-   subTitle?: string = null;
-   description: string = null;
+   key: string | null;
+   title: string;
+   subTitle: string | null;
+   description: string | null;
    /** Description that includes computed photo and video count. */
-   longDescription: string = null;
-   happenedOn: Date;
-   createdOn: Date;
-   updatedOn: Date;
+   longDescription: string | null;
+   happenedOn: Date | null;
+   createdOn: Date | null;
+   updatedOn: Date | null;
    /**
     * Whether post pictures occurred sequentially in a specific time range as
     * opposed to, for example, a themed set of images from various times.
     */
    chronological: boolean = true;
-   private originalTitle: string = null;
+   private originalTitle: string;
    photosLoaded: boolean = false;
-   bigThumbURL: string = null;
-   smallThumbURL: string = null;
-   photos: Photo[] = [];
+   bigThumbURL: string | null;
+   smallThumbURL: string | null;
+   photos: Photo[] | null = [];
    photoCount: number = 0;
-   photoTagList: string = null;
+   photoTagList: string | null;
    /**
     * Photo coordinates stored as longitude and latitude used to invoke map
     * APIs.
     */
-   photoLocations: number[][];
+   photoLocations: number[][] | null;
    /** Top left and bottom right coordinates of photos. */
-   bounds: MapBounds;
+   bounds: MapBounds | null;
    /** Center of photo */
-   centroid: Location = null;
-   coverPhoto: Photo = null;
+   centroid: Location | null;
+   coverPhoto: Photo | null;
    /** Whether post is featured in main navigation */
    feature: boolean = false;
    /** Category titles mapped to category keys */
@@ -75,9 +75,9 @@ export class Post
    /** Whether GPX track was found for the post. */
    hasTrack: boolean = false;
    /** Next chronological post (newer). */
-   next: Post = null;
+   next: Post | null;
    /** Previous chronological post (older). */
-   previous: Post = null;
+   previous: Post | null;
    /** Position of this post in a series or 0 if it's not in a series. */
    part: number = 0;
    /** Whether post is part of a series. */
@@ -94,13 +94,13 @@ export class Post
     * Portion of key that is common among series members. For example, with
     * `brother-ride/day-10` the `seriesKey` is `brother-ride`.
     */
-   seriesKey: string = null;
+   seriesKey: string | null;
    /**
     * Portion of key that is unique among series members. For example, with
     * `brother-ride/day-10` the `partKey` is `day-10`.
     */
-   partKey: string = null;
-   video: VideoInfo = null;
+   partKey: string | null;
+   video: VideoInfo | null;
 
    private get load(): PostProvider<any> {
       return ensurePostProvider();
@@ -110,7 +110,9 @@ export class Post
     * Retrieve post photos.
     */
    async getPhotos(): Promise<Photo[]> {
-      return this.photosLoaded ? this.photos : this.load.postPhotos(this);
+      return this.photosLoaded && this.photos !== null
+         ? this.photos
+         : this.load.postPhotos(this);
    }
 
    /**
@@ -267,6 +269,10 @@ export class Post
     */
    updatePhotoLocations() {
       let start = 1; // always skip first photo
+
+      if (this.photos === null) {
+         return;
+      }
       let total = this.photos.length;
       const locations: number[][] = [];
       const bounds: MapBounds = { sw: [0, 0], ne: [0, 0] };

@@ -298,7 +298,7 @@ export class PhotoBlog
    /**
     * Find post with given ID. Return `undefined` if not found.
     */
-   postWithID(id: string): Post {
+   postWithID(id: string): Post | undefined {
       if (is.value(id)) {
          const searchIn = this.isLoading ? this.postCache : this.posts;
          return searchIn.find(p => p.id == id);
@@ -309,7 +309,7 @@ export class PhotoBlog
    /**
     * Find post with given slug. Return `undefined` if not found.
     */
-   postWithKey(key: string, partKey: string = null): Post {
+   postWithKey(key: string, partKey: string | null = null): Post | undefined {
       if (is.value(partKey)) {
          key += seriesKeySeparator + partKey;
       }
@@ -339,7 +339,7 @@ export class PhotoBlog
    /**
     * Get first post that includes the given photo.
     */
-   async postWithPhoto(photo: Photo | string): Promise<Post> {
+   async postWithPhoto(photo: Photo | string): Promise<Post | undefined> {
       const id: string = is.text(photo)
          ? (photo as string)
          : (photo as Photo).id;
@@ -359,7 +359,7 @@ export class PhotoBlog
     * Get tag abbreviations applied to photos and replace them with their full
     * names.
     */
-   photoTagList(photos: Photo[]): string {
+   photoTagList(photos: Photo[]): string | null {
       // all photo tags in the blog
       const postTags: Set<string> = new Set();
 

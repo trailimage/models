@@ -2,7 +2,7 @@
  * URL of a specific photo size.
  */
 export class PhotoSize {
-   url: string = null;
+   url: string;
    width: number = 0;
    height: number = 0;
 

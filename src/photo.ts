@@ -5,12 +5,12 @@ import { ensurePostProvider } from './providers';
 
 export class Photo implements IMappable<GeoJSON.Point> {
    /** Provider photo ID */
-   id: string = null;
+   id: string;
    /** Position of photo within post. */
    index: number;
-   sourceUrl: string = null;
-   title: string = null;
-   description: string = null;
+   sourceUrl: string;
+   title: string;
+   description: string;
    /** Tags applied to the photo. */
    tags: Set<string> = new Set();
    dateTaken: Date;
@@ -20,13 +20,13 @@ export class Photo implements IMappable<GeoJSON.Point> {
    primary: boolean = false;
    size: { [key: string]: PhotoSize } = {};
    /** Size at which to preview the photo such as in search results. */
-   preview: PhotoSize = null;
+   preview: PhotoSize;
    /** Normal photo size shown within post. */
-   normal: PhotoSize = null;
+   normal: PhotoSize;
    /** Size shown when post photo is clicked for enlargmenet. */
-   big: PhotoSize = null;
+   big: PhotoSize;
 
-   private _exif: EXIF = null;
+   private _exif: EXIF;
 
    /**
     * Whether taken date is an outlier compared to other photos in the same

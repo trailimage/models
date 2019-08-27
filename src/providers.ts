@@ -100,7 +100,9 @@ export abstract class MapProvider<T extends MapConfig> extends DataProvider<T> {
    /**
     * @param sourceKey configured `MapSource` key
     */
-   source(sourceKey: string): Promise<FeatureCollection<GeometryObject>> {
+   source(
+      sourceKey: string
+   ): Promise<FeatureCollection<GeometryObject> | null> {
       return loadSource(sourceKey);
    }
 }
@@ -113,18 +115,19 @@ export abstract class VideoProvider<T> extends DataProvider<T> {}
 /**
  * Return configured post provider or throw a reference error.
  */
-export const ensurePostProvider = (): PostProvider<any> =>
+export const ensurePostProvider = (): PostProvider<any> | null =>
    ensureProvider('post');
 
 /**
  * Return configured map provider or throw a reference error.
  */
-export const ensureMapProvider = (): MapProvider<any> => ensureProvider('map');
+export const ensureMapProvider = (): MapProvider<any> | null =>
+   ensureProvider('map');
 
 /**
  * Return configured video provider or throw a reference error.
  */
-export const ensureVideoProvider = (): VideoProvider<any> =>
+export const ensureVideoProvider = (): VideoProvider<any> | null =>
    ensureProvider('video');
 
 /**

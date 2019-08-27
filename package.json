@@ -1,6 +1,6 @@
 {
    "name": "@trailimage/models",
-   "version": "2.3.0",
+   "version": "3.0.0",
    "description": "Trail Image models",
    "private": false,
    "author": {
@@ -11,23 +11,25 @@
    "publishConfig": {
       "access": "public"
    },
-   "main": "dist/index.js",
-   "types:": "dist/index.d.ts",
+   "main": "cjs/index.js",
+   "module": "esm/index.js",
+   "types": "esm/index.d.ts",
    "files": [
-      "dist/**/*"
+      "esm",
+      "cjs"
    ],
    "scripts": {
-      "prepublishOnly": "./node_modules/.bin/tsc",
+      "build:esm": "./node_modules/.bin/tsc --project ./node_modules/@toba/develop/tsconfig.esm.json",
+      "build:cjs": "./node_modules/.bin/tsc --project ./node_modules/@toba/develop/tsconfig.cjs-min.json",
+      "prepublishOnly": "npm run build:esm & npm run build:cjs",
       "test": "jest --coverage"
    },
    "devDependencies": {
-      "@toba/build": "^1.7.0",
+      "@toba/develop": "^6.6.11",
       "@toba/oauth": "^1.2.8",
-      "@toba/test": "^1.20.0",
+      "@toba/test": "^4.1.0",
       "@types/geojson": "^7946.0.2",
-      "prettier": "^1.14.0",
-      "typedoc": "^0.11.1",
-      "typescript": "^3.0.0"
+      "typescript": "^3.5.0"
    },
    "repository": {
       "type": "git",
@@ -36,15 +38,11 @@
    "bugs": {
       "url": "https://github.com/trailimage/models/issues"
    },
-   "prettier": {
-      "singleQuote": true,
-      "tabWidth": 3
-   },
    "dependencies": {
       "@toba/feed": "^1.3.0",
-      "@toba/json-ld": "^1.2.0",
+      "@toba/json-ld": "^3.0.0",
       "@toba/logger": "^1.1.0",
-      "@toba/map": "^1.3.0",
-      "@toba/tools": "^3.12.0"
+      "@toba/map": "^2.0.0",
+      "@toba/tools": "^6.0.0"
    }
 }

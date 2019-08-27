@@ -1,5 +1,5 @@
 import '@toba/test';
-import { PhotoBlog, blog } from './';
+import { PhotoBlog, blog } from '.';
 import { mockPosts } from './.test-data';
 import { Post } from './post';
 
@@ -11,8 +11,8 @@ beforeEach(() => {
 });
 
 test('ensures only one instance exists', () => {
-   let e: Error;
-   let b: PhotoBlog;
+   let e: Error | undefined = undefined;
+   let b: PhotoBlog | undefined = undefined;
    try {
       b = new PhotoBlog();
    } catch (err) {
@@ -20,7 +20,7 @@ test('ensures only one instance exists', () => {
    }
    expect(b).toBeUndefined();
    expect(e).toBeDefined();
-   expect(e.message).toBe('PhotoBlog instance already exists');
+   expect(e!.message).toBe('PhotoBlog instance already exists');
 });
 
 test('links sequential posts', () => {

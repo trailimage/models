@@ -10,7 +10,7 @@ import {
    MapProvider,
    config,
    blog
-} from './';
+} from '.';
 import { ImageConfig } from './config';
 import { Writable } from 'stream';
 import { FeatureCollection } from 'geojson';
@@ -37,7 +37,7 @@ export class MockPostProvider extends PostProvider<MockPostConfig> {
    }
 
    exif(_photoID: string): Promise<EXIF> {
-      return null;
+      return Promise.resolve();
    }
 
    postIdWithPhotoId(_photoID: string): Promise<string> {

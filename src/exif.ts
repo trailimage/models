@@ -5,15 +5,15 @@ import { config } from './config';
  * EXIF data for a photo.
  */
 export class EXIF {
-   artist: string = null;
-   compensation: string = null;
-   time: string = null;
+   artist: string;
+   compensation: string;
+   time: string;
    fNumber: number = 0;
-   focalLength: number;
+   focalLength: number | null;
    ISO: number = 0;
-   lens: string = null;
-   model: string = null;
-   software: string = null;
+   lens: string;
+   model: string;
+   software: string;
    /** Whether raw values have been formatted. */
    sanitized: boolean = false;
 
@@ -23,8 +23,8 @@ export class EXIF {
       }
 
       if (
-         is.value(this.artist) &&
-         is.value(config.artistsToNormalize) &&
+         is.value<string>(this.artist) &&
+         is.value<RegExp>(config.artistsToNormalize) &&
          config.artistsToNormalize.test(this.artist)
       ) {
          // only sanitize EXIF for photos shot by configured artists

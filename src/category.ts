@@ -7,12 +7,12 @@ import { Post } from './index';
  * Post category.
  */
 export class Category implements LinkData<JsonLD.Blog | JsonLD.WebPage> {
-   title: string = null;
+   title: string;
    /**
     * Slug style key that represents path to category.
     * @example parent/child
     */
-   key: string = null;
+   key: string;
    subcategories: Set<Category> = new Set();
    posts: Set<Post> = new Set();
 
@@ -26,7 +26,7 @@ export class Category implements LinkData<JsonLD.Blog | JsonLD.WebPage> {
    /**
     * Category with matching key or title.
     */
-   getSubcategory(keyOrTitle: string): Category {
+   getSubcategory(keyOrTitle: string): Category | undefined {
       return findInSet(
          this.subcategories,
          c => c.title === keyOrTitle || c.key === keyOrTitle

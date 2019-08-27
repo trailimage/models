@@ -2,7 +2,7 @@ import { JsonLD, LinkData } from '@toba/json-ld';
 import { forVideo } from './json-ld';
 
 export class VideoInfo implements LinkData<JsonLD.VideoObject> {
-   id: string = null;
+   id: string;
    width: number = 0;
    height: number = 0;
 
