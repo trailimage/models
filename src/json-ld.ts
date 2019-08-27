@@ -91,13 +91,16 @@ export function forCategory(
          // implies category is a subscategory
          const rootKey = category.key.split('/')[0];
          const rootCategory = blog.categoryWithKey(rootKey);
-         schema.breadcrumb.push(
-            breadcrumb(
-               config.site.url + '/' + rootCategory.key,
-               rootCategory.title,
-               position++
-            )
-         );
+
+         if (rootCategory !== undefined) {
+            schema.breadcrumb.push(
+               breadcrumb(
+                  config.site.url + '/' + rootCategory.key,
+                  rootCategory.title,
+                  position++
+               )
+            );
+         }
       }
       schema.breadcrumb.push(
          breadcrumb(

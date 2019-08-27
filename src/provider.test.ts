@@ -15,8 +15,8 @@ import {
 } from './providers';
 
 test('returns configured post provider', () => {
-   let p: PostProvider<MockPostConfig>;
-   let e: ReferenceError;
+   let p: PostProvider<MockPostConfig> | undefined = undefined;
+   let e: ReferenceError | undefined = undefined;
    try {
       p = ensurePostProvider();
    } catch (err) {
@@ -27,8 +27,8 @@ test('returns configured post provider', () => {
 });
 
 test('returns configured map provider', () => {
-   let p: MapProvider<MockMapConfig>;
-   let e: ReferenceError;
+   let p: MapProvider<MockMapConfig> | undefined = undefined;
+   let e: ReferenceError | undefined = undefined;
    try {
       p = ensureMapProvider();
    } catch (err) {
@@ -39,8 +39,8 @@ test('returns configured map provider', () => {
 });
 
 test('throws error for unconfigured provider', () => {
-   let p: VideoProvider<any>;
-   let e: ReferenceError;
+   let p: VideoProvider<any> | undefined = undefined;
+   let e: ReferenceError | undefined = undefined;
    try {
       p = ensureVideoProvider();
    } catch (err) {
@@ -48,7 +48,7 @@ test('throws error for unconfigured provider', () => {
    }
    expect(p).toBeUndefined();
    expect(e).toBeDefined();
-   expect(e.message).toBe('video provider is undefined');
+   expect(e!.message).toBe('video provider is undefined');
 });
 
 test('can configure providers after instantiation', () => {

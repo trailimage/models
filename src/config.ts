@@ -76,7 +76,7 @@ export const config: Configuration = {
    subtitleSeparator: ':',
    maxPhotoMarkersOnMap: 100,
    providerPostSort: Sort.NewestFirst,
-   site: null,
-   owner: null,
+   site: {},
+   owner: {},
    providers: { post: null, video: null, map: null }
 };

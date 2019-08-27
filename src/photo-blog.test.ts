@@ -49,7 +49,7 @@ test('connects posts in a series', () => {
    expect(post4.isPartial).toBe(false);
    expect(post2.isPartial).toBe(true);
    expect(post2.isSeriesStart).toBe(false);
-   expect(post2.previous.isSeriesStart).toBe(true);
+   expect(post2.previous!.isSeriesStart).toBe(true);
 });
 
 test('recognizes posts that have series-like title but no other members', () => {
@@ -76,12 +76,12 @@ test('generates GeoJSON point feature collection for photos', async () => {
 });
 
 test('removes a post', () => {
-   expect(post3.next.key).toBe(post4.key);
+   expect(post3.next!.key).toBe(post4.key);
 
-   blog.remove(post4.key);
+   blog.remove(post4.key!);
 
-   expect(blog.postWithKey(post4.key)).toBeUndefined();
-   expect(post4.previous.key).toBe(post3.key);
+   expect(blog.postWithKey(post4.key!)).toBeUndefined();
+   expect(post4.previous!.key).toBe(post3.key);
    expect(post3.next).toBeNull();
 });
 
@@ -98,7 +98,7 @@ test('ungroups posts from a series', () => {
 
 test('identifies changed keys when loading blog', () => {
    expect(blog.posts).toHaveLength(6);
-   blog.remove(post4.key);
+   blog.remove(post4.key!);
    expect(blog.posts).toHaveLength(5);
 
    blog.beginLoad();
@@ -135,7 +135,7 @@ test('finds cached posts while in loading state', () => {
    const p1 = blog.postWithID(post1.id);
    expect(p1).toBeDefined();
 
-   const p2 = blog.postWithKey(post2.key);
+   const p2 = blog.postWithKey(post2.key!);
    expect(p2).toBeDefined();
 
    blog.finishLoad();
