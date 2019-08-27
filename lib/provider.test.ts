@@ -1,10 +1,21 @@
 import '@toba/test';
-import { postProvider } from './.test-data';
-import { PostProvider, MapProvider } from '../';
-import { ensurePostProvider, ensureMapProvider } from './providers';
+import {
+   postProvider,
+   mapProvider,
+   MockPostConfig,
+   MockMapConfig,
+   MockMapProvider,
+   MockPostProvider
+} from './.test-data';
+import { PostProvider, MapProvider, VideoProvider } from './index';
+import {
+   ensurePostProvider,
+   ensureMapProvider,
+   ensureVideoProvider
+} from './providers';
 
-test('Returns configured provider', () => {
-   let p: PostProvider;
+test('returns configured post provider', () => {
+   let p: PostProvider<MockPostConfig>;
    let e: ReferenceError;
    try {
       p = ensurePostProvider();
@@ -15,15 +26,37 @@ test('Returns configured provider', () => {
    expect(e).toBeUndefined();
 });
 
-test('Throws error for unconfigured provider', () => {
-   let p: MapProvider;
+test('returns configured map provider', () => {
+   let p: MapProvider<MockMapConfig>;
    let e: ReferenceError;
    try {
       p = ensureMapProvider();
    } catch (err) {
       e = err;
    }
+   expect(p).toBe(mapProvider);
+   expect(e).toBeUndefined();
+});
+
+test('throws error for unconfigured provider', () => {
+   let p: VideoProvider<any>;
+   let e: ReferenceError;
+   try {
+      p = ensureVideoProvider();
+   } catch (err) {
+      e = err;
+   }
    expect(p).toBeUndefined();
    expect(e).toBeDefined();
-   expect(e.message).toBe('map provider is undefined');
+   expect(e.message).toBe('video provider is undefined');
+});
+
+test('can configure providers after instantiation', () => {
+   const p1 = new MockMapProvider();
+   p1.configure({ api: 'fake' });
+   expect(p1).toBeDefined();
+
+   const p2 = new MockPostProvider();
+   p2.configure({ api: 'fake' });
+   expect(p2).toBeDefined();
 });

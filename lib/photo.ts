@@ -1,7 +1,6 @@
-import '@toba/test';
 import { boundary } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
-import { PhotoSize, EXIF, PostProvider } from '../';
+import { PhotoSize, EXIF, PostProvider } from './index';
 import { ensurePostProvider } from './providers';
 
 export class Photo implements IMappable<GeoJSON.Point> {
@@ -44,7 +43,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
       this.index = index;
    }
 
-   private get load(): PostProvider {
+   private get load(): PostProvider<any> {
       return ensurePostProvider();
    }
 
@@ -64,6 +63,9 @@ export class Photo implements IMappable<GeoJSON.Point> {
 
    /**
     * Generate GeoJSON for photo feature.
+    *
+    * @param partKey Optional series part that photo post belongs to, used to
+    * generate link from map info box back to post URL
     */
    geoJSON(partKey?: string): GeoJSON.Feature<GeoJSON.Point> {
       const properties: MapPhoto = { url: this.size.preview.url };
@@ -85,7 +87,8 @@ export class Photo implements IMappable<GeoJSON.Point> {
 }
 
 /**
- * Simplistic outlier calculation.
+ * Simplistic outlier calculation identifies photos that are likely not part of
+ * the main sequence.
  *
  * @see https://en.wikipedia.org/wiki/Outlier
  * @see http://www.wikihow.com/Calculate-Outliers

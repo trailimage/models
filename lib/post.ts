@@ -3,9 +3,16 @@ import { slug, is } from '@toba/tools';
 import { geoJSON, IMappable } from '@toba/map';
 import { ISyndicate, AtomEntry, AtomPerson } from '@toba/feed';
 import { measure, MapBounds, Location } from '@toba/map';
-import { Photo, VideoInfo, config, PostProvider } from '../';
+import {
+   Photo,
+   VideoInfo,
+   config,
+   PostProvider,
+   seriesKeySeparator
+} from './index';
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
+import { Writable } from 'stream';
 
 export class Post
    implements
@@ -24,6 +31,7 @@ export class Post
    title: string = null;
    subTitle?: string = null;
    description: string = null;
+   /** Description that includes computed photo and video count. */
    longDescription: string = null;
    happenedOn: Date;
    createdOn: Date;
@@ -33,7 +41,7 @@ export class Post
     * opposed to, for example, a themed set of images from various times.
     */
    chronological: boolean = true;
-   originalTitle: string = null;
+   private originalTitle: string = null;
    photosLoaded: boolean = false;
    bigThumbURL: string = null;
    smallThumbURL: string = null;
@@ -66,9 +74,9 @@ export class Post
    triedTrack: boolean = false;
    /** Whether GPX track was found for the post. */
    hasTrack: boolean = false;
-   /** Next chronological post. */
+   /** Next chronological post (newer). */
    next: Post = null;
-   /** Previous chronological post. */
+   /** Previous chronological post (older). */
    previous: Post = null;
    /** Position of this post in a series or 0 if it's not in a series. */
    part: number = 0;
@@ -94,7 +102,7 @@ export class Post
    partKey: string = null;
    video: VideoInfo = null;
 
-   private get load(): PostProvider {
+   private get load(): PostProvider<any> {
       return ensurePostProvider();
    }
 
@@ -115,8 +123,32 @@ export class Post
    /**
     * Whether post is in any categories.
     */
-   get hasCategories() {
+   get hasCategories(): boolean {
       return this.categories.size > 0;
+   }
+
+   /**
+    * Reset post to initial load state without correlation to other posts,
+    * meaning no groups (series) or previous/next links.
+    */
+   reset(): this {
+      this.inferTitleAndKey(this.originalTitle);
+      this.previous = null;
+      this.next = null;
+      return this.removeFromSeries();
+   }
+
+   /**
+    * Remove post from a series but leave next/previous, title and keys as is.
+    */
+   private removeFromSeries(): this {
+      this.part = 0;
+      this.totalParts = 0;
+      this.isSeriesStart = false;
+      this.isPartial = false;
+      this.nextIsPart = false;
+      this.previousIsPart = false;
+      return this;
    }
 
    /**
@@ -125,36 +157,62 @@ export class Post
     * correctly handle ungrouping posts that are a legitimate series member
     * since other series members are not also updated.
     */
-   ungroup() {
+   ungroup(): this {
       this.title = this.originalTitle;
       this.subTitle = null;
       this.key = slug(this.originalTitle);
-      this.part = 0;
-      this.totalParts = 0;
-      this.isSeriesStart = false;
-      this.isPartial = false;
-      this.nextIsPart = false;
-      this.previousIsPart = false;
       this.seriesKey = null;
       this.partKey = null;
+      return this.removeFromSeries();
    }
 
    /**
-    * Flag post as the start of a series.
+    * Flag post as the start of a series. Unlike other parts in the series, the
+    * first part key is simply the series key.
     */
-   makeSeriesStart() {
+   makeSeriesStart(): this {
       this.isSeriesStart = true;
       this.key = this.seriesKey;
+      return this;
    }
 
    /**
     * Whether key matches series or non-series post.
+    *
+    * Match should still succeed if searching for a compound key even though
+    * first post in a series doesn't include the subtitle slug. For example,
+    * searching `series-1/title-1` should match the first post in "Series 1"
+    * even though it's key is simply `series-1`.
     */
    hasKey(key: string): boolean {
       return (
          this.key == key ||
-         (is.value(this.partKey) && key == this.seriesKey + '-' + this.partKey)
+         (is.value(this.partKey) &&
+            key == this.seriesKey + seriesKeySeparator + this.partKey)
       );
+   }
+
+   /**
+    * Set original provider title and infer series and subtitles based on
+    * presence of configured subtitle separator (default is `:`). Then generate
+    * key slug(s) from title(s).
+    */
+   inferTitleAndKey(title: string): this {
+      this.originalTitle = title;
+      const re = new RegExp(config.subtitleSeparator + '\\s*', 'g');
+      const parts = title.split(re);
+
+      this.title = parts[0];
+
+      if (parts.length > 1) {
+         this.subTitle = parts[1];
+         this.seriesKey = slug(this.title);
+         this.partKey = slug(this.subTitle);
+         this.key = this.seriesKey + seriesKeySeparator + this.partKey;
+      } else {
+         this.key = slug(title);
+      }
+      return this;
    }
 
    /**
@@ -271,6 +329,25 @@ export class Post
    }
 
    /**
+    * Stream GPX track for post. If the post doesn't have a track then the
+    * stream will be returned unchanged.
+    */
+   gpx(stream: Writable): Promise<void> {
+      return ensureMapProvider()
+         .gpx(this.key, stream)
+         .catch(err => {
+            const msg = is.text(err) ? err : err.message;
+
+            if (msg.includes('not found')) {
+               this.triedTrack = true;
+               this.hasTrack = false;
+            }
+            // re-throw the error so controller can respond
+            return Promise.reject(err);
+         });
+   }
+
+   /**
     * Link Data for post.
     */
    jsonLD(): JsonLD.BlogPosting {
@@ -278,7 +355,7 @@ export class Post
    }
 
    /**
-    * Details for RSS/Atom feed.
+    * Details for RSS/Atom feed. Rights default to full copyright.
     */
    rssJSON(): AtomEntry {
       const author: AtomPerson = {
@@ -290,16 +367,16 @@ export class Post
       }
 
       return {
-         id: this.id,
-         title: this.title,
-         link: { href: 'http://' + config.site.domain },
+         id: config.site.url + '/' + this.key,
+         title: this.name(),
+         link: 'http://' + config.site.domain,
          published: this.createdOn,
          updated: this.updatedOn,
-         rights: `'Copyright © ${new Date().getFullYear()}
-         ${config.owner.name}. All rights reserved.`,
+         rights: `Copyright © ${new Date().getFullYear()} ${
+            config.owner.name
+         }. All rights reserved.`,
          summary: this.description,
          author: author,
-         contributor: [author],
          content: config.site.url + '/' + this.key
       };
    }

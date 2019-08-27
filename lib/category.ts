@@ -1,7 +1,7 @@
 import { is, mapSet, findInSet } from '@toba/tools';
 import { JsonLD, LinkData } from '@toba/json-ld';
 import { forCategory } from './json-ld';
-import { Post } from '../index';
+import { Post } from './index';
 
 /**
  * Post category.

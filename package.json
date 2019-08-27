@@ -1,6 +1,6 @@
 {
    "name": "@trailimage/models",
-   "version": "1.1.4",
+   "version": "2.3.0",
    "description": "Trail Image models",
    "private": false,
    "author": {
@@ -11,30 +11,23 @@
    "publishConfig": {
       "access": "public"
    },
-   "main": "index.ts",
+   "main": "dist/index.js",
+   "types:": "dist/index.d.ts",
    "files": [
-      "index.ts",
-      "lib/category.ts",
-      "lib/config.ts",
-      "lib/exif.ts",
-      "lib/json-ld.ts",
-      "lib/photo-blog.ts",
-      "lib/photo-size.ts",
-      "lib/photo.ts",
-      "lib/post.ts",
-      "lib/providers.ts",
-      "lib/video-info.ts"
+      "dist/**/*"
    ],
    "scripts": {
+      "prepublishOnly": "./node_modules/.bin/tsc",
       "test": "jest --coverage"
    },
    "devDependencies": {
-      "@toba/build": "^1.5.0",
-      "@toba/test": "^1.13.0",
+      "@toba/build": "^1.7.0",
+      "@toba/oauth": "^1.2.8",
+      "@toba/test": "^1.20.0",
       "@types/geojson": "^7946.0.2",
-      "prettier": "^1.12.0",
+      "prettier": "^1.14.0",
       "typedoc": "^0.11.1",
-      "typescript": "^2.8.0"
+      "typescript": "^3.0.0"
    },
    "repository": {
       "type": "git",
@@ -48,9 +41,10 @@
       "tabWidth": 3
    },
    "dependencies": {
-      "@toba/feed": "^1.2.0",
+      "@toba/feed": "^1.3.0",
       "@toba/json-ld": "^1.2.0",
-      "@toba/map": "^1.2.0",
-      "@toba/tools": "^3.1.0"
+      "@toba/logger": "^1.1.0",
+      "@toba/map": "^1.3.0",
+      "@toba/tools": "^3.12.0"
    }
 }

@@ -1,14 +1,19 @@
+import { is, Sort } from '@toba/tools';
+import { MapConfig } from '@toba/map';
 import {
    Category,
    Post,
    Photo,
    PhotoSize,
    EXIF,
-   PhotoBlog,
-   PostProvider
-} from '../';
-import { config } from '../';
+   PostProvider,
+   MapProvider,
+   config,
+   blog
+} from './';
 import { ImageConfig } from './config';
+import { Writable } from 'stream';
+import { FeatureCollection } from 'geojson';
 
 const imageConfig: ImageConfig = {
    url: 'http://test.com/image.jpg',
@@ -16,33 +21,70 @@ const imageConfig: ImageConfig = {
    height: 100
 };
 
-export const postProvider: PostProvider = {
-   async photoBlog(instance: PhotoBlog): Promise<PhotoBlog> {
-      return instance;
-   },
+const someDate = new Date(Date.UTC(1973, 2, 15, 0, 0, 0));
 
-   async exif(_photoID: string): Promise<EXIF> {
-      return mockEXIF[0];
-   },
+export interface MockPostConfig {
+   api: string;
+}
 
-   async postIdWithPhotoId(_photoID: string): Promise<string> {
-      return '';
-   },
+export interface MockMapConfig extends MapConfig {
+   api: string;
+}
 
-   async photosWithTags(_tags: string | string[]): Promise<Photo[]> {
-      return [];
-   },
-
-   async postInfo(p: Post): Promise<Post> {
-      p.infoLoaded = true;
-      return p;
-   },
-
-   async postPhotos(p: Post): Promise<Photo[]> {
-      p.photosLoaded = true;
-      return [];
+export class MockPostProvider extends PostProvider<MockPostConfig> {
+   photoBlog(_async = true) {
+      return Promise.resolve(blog);
    }
-};
+
+   exif(_photoID: string): Promise<EXIF> {
+      return null;
+   }
+
+   postIdWithPhotoId(_photoID: string): Promise<string> {
+      return null;
+   }
+
+   photosWithTags(..._tags: string[]): Promise<Photo[]> {
+      return null;
+   }
+
+   postInfo(_p: Post): Promise<Post> {
+      return null;
+   }
+
+   postPhotos(_p: Post): Promise<Photo[]> {
+      return null;
+   }
+
+   authorizationURL(): Promise<string> {
+      return null;
+   }
+
+   getAccessToken(_req: any) {
+      return Promise.resolve(null);
+   }
+}
+
+export class MockMapProvider extends MapProvider<MockMapConfig> {
+   track(_postKey: string): Promise<FeatureCollection<any>> {
+      return null;
+   }
+
+   gpx(_postKey: string, _stream: Writable) {
+      return Promise.resolve();
+   }
+
+   authorizationURL(): Promise<string> {
+      return null;
+   }
+
+   async getAccessToken(_req: any) {
+      return Promise.resolve(null);
+   }
+}
+
+export const postProvider = new MockPostProvider();
+export const mapProvider = new MockMapProvider();
 
 config.site = {
    domain: 'test.com',
@@ -64,6 +106,8 @@ config.owner = {
 
 config.artistsToNormalize = /^Artist (0|1)/;
 config.providers.post = postProvider;
+config.providers.map = mapProvider;
+config.providerPostSort = Sort.OldestFirst;
 
 interface CategoryData {
    key: string;
@@ -93,30 +137,44 @@ export const mockCategories: Category[] = ([
 );
 
 interface PostData {
-   key: string;
+   id: string;
    title: string;
-   seriesKey?: string;
+   chronological?: boolean;
 }
 
-export const mockPosts: Post[] = ([
-   { key: 'key0', title: 'Title 1', seriesKey: 'series1' },
-   { key: 'key1', title: 'Title 2', seriesKey: 'series1' },
-   { key: 'key2', title: 'Title 3', seriesKey: 'series1' },
-   { key: 'key3', title: 'Title 4' }
-] as PostData[]).map((d, index) => {
-   const p = new Post();
-   p.key = d.key;
-   p.title = d.title;
-   p.photos = mockPhotos;
-   if (index != 3) {
-      // assign no categories to key3
-      p.categories = mockCategories.reduce((hash, c) => {
-         hash.set(c.key, c.title);
-         return hash;
-      }, new Map<string, string>());
-   }
-   return p;
-});
+/**
+ * Mock posts sorted chronologically.
+ */
+export const mockPosts = (): Post[] =>
+   ([
+      { id: 'id0', title: 'Series 1: Part 1' },
+      { id: 'id1', title: 'Series 1: Part 2' },
+      { id: 'id2', title: 'Series 1: Part 3' },
+      { id: 'id3', title: 'Title 4' },
+      { id: 'id4', title: 'Not a Series: Subtitle' },
+      { id: 'id5', title: 'Highlights', chronological: false }
+   ] as PostData[]).map((d, index) => {
+      const p = new Post();
+      p.id = d.id;
+      p.inferTitleAndKey(d.title);
+      p.photos = mockPhotos;
+      p.photosLoaded = true;
+      p.createdOn = someDate;
+      p.updatedOn = someDate;
+
+      if (is.value<boolean>(d.chronological)) {
+         p.chronological = d.chronological;
+      }
+
+      if (index != 3) {
+         // assign no categories to key3
+         p.categories = mockCategories.reduce((hash, c) => {
+            hash.set(c.key, c.title);
+            return hash;
+         }, new Map<string, string>());
+      }
+      return p;
+   });
 
 interface SizeData {
    url: string;
@@ -136,17 +194,40 @@ interface PhotoData {
    id: string;
    title: string;
    tags: string[];
+   latitude?: number;
+   longitude?: number;
 }
 
 export const mockPhotos: Photo[] = ([
-   { id: 'id1', title: 'Title 1', tags: ['tag1', 'tag2', 'tag3'] },
-   { id: 'id2', title: 'Title 2', tags: ['tag1', 'tag2', 'tag4'] },
-   { id: 'id3', title: 'Title 3', tags: [] },
-   { id: 'id4', title: 'Title 4', tags: ['tag1', 'tag5'] }
+   {
+      id: 'id1',
+      title: 'Title 1',
+      latitude: 100,
+      longitude: 10,
+      tags: ['tag1', 'tag2', 'tag3']
+   },
+   {
+      id: 'id2',
+      title: 'Title 2',
+      latitude: 120,
+      longitude: 20,
+      tags: ['tag1', 'tag2', 'tag4']
+   },
+   { id: 'id3', title: 'Title 3', latitude: 130, longitude: 30, tags: [] },
+   {
+      id: 'id4',
+      title: 'Title 4',
+      latitude: 140,
+      longitude: 40,
+      tags: ['tag1', 'tag5']
+   }
 ] as PhotoData[]).map((data, index) => {
    const p = new Photo(data.id, index);
    p.title = data.title;
    p.tags = new Set<string>(data.tags);
+   p.latitude = data.latitude;
+   p.longitude = data.longitude;
+   p.size['preview'] = mockSizes[3];
    p.size['small'] = mockSizes[0];
    p.size['medium'] = mockSizes[1];
    p.size['large'] = mockSizes[2];
