@@ -367,7 +367,7 @@ export class PhotoBlog
     * Get tag abbreviations applied to photos and replace them with their full
     * names.
     */
-   photoTagList(photos: Photo[]): string | null {
+   photoTagList(photos: Photo[]): string | undefined {
       // all photo tags in the blog
       const postTags: Set<string> = new Set();
 
@@ -384,7 +384,7 @@ export class PhotoBlog
          }
          p.tags = photoTags;
       }
-      return postTags.size > 0 ? Array.from(postTags).join(', ') : null;
+      return postTags.size > 0 ? Array.from(postTags).join(', ') : undefined;
    }
 
    /**
