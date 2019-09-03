@@ -58,7 +58,7 @@ export interface Configuration {
    /**
     * Data providers the models will use to populate themselves.
     */
-   providers?: ProviderConfig;
+   providers: ProviderConfig;
 
    /**
     * How the provider sorts posts determines how to make them chronological.
@@ -91,5 +91,6 @@ export function ensureConfig(): StrictConfiguration {
 export const config: Configuration = {
    subtitleSeparator: ':',
    maxPhotoMarkersOnMap: 100,
-   providerPostSort: Sort.NewestFirst
+   providerPostSort: Sort.NewestFirst,
+   providers: {}
 };
