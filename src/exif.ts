@@ -5,15 +5,15 @@ import { config } from './config';
  * EXIF data for a photo.
  */
 export class EXIF {
-   artist: string;
-   compensation: string;
-   time: string;
+   artist?: string;
+   compensation?: string;
+   time?: string;
    fNumber: number = 0;
    focalLength: number | null;
    ISO: number = 0;
-   lens: string;
-   model: string;
-   software: string;
+   lens?: string;
+   model?: string;
+   software?: string;
    /** Whether raw values have been formatted. */
    sanitized: boolean = false;
 
@@ -49,7 +49,7 @@ const numericRange = /\d\-\d/;
 /**
  * Normalize camera name.
  */
-const camera = (text: string) =>
+const camera = (text?: string) =>
    is.empty(text)
       ? ''
       : text
@@ -64,8 +64,8 @@ const camera = (text: string) =>
 /**
  * Normalize lens name.
  */
-const lens = (text: string, camera: string) =>
-   is.empty(text)
+const lens = (text?: string, camera?: string) =>
+   is.empty(text) || is.empty(camera)
       ? ''
       : text
            .replace(/FE 35mm.*/i, 'Sony FE 35mm ƒ2.8')
@@ -108,7 +108,7 @@ const lens = (text: string, camera: string) =>
 /**
  * Normalize software name.
  */
-const software = (text: string) =>
+const software = (text?: string) =>
    is.empty(text)
       ? ''
       : text
@@ -118,5 +118,5 @@ const software = (text: string) =>
 /**
  * Normalize compensation value.
  */
-const compensation = (text: string | number) =>
-   text == '0' ? 'No' : text.toString();
+const compensation = (text?: string | number) =>
+   is.empty(text) || text == '0' ? 'No' : text.toString();
