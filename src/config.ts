@@ -33,9 +33,9 @@ export interface SiteConfig {
  * Data providers the models will use to populate themselves.
  */
 export interface ProviderConfig {
-   post: PostProvider<any>;
-   video: VideoProvider<any>;
-   map: MapProvider<any>;
+   post?: PostProvider<any>;
+   video?: VideoProvider<any>;
+   map?: MapProvider<any>;
 }
 
 export interface Configuration {
@@ -70,20 +70,19 @@ export interface Configuration {
 }
 
 export interface StrictConfiguration extends Configuration {
-   providers: ProviderConfig;
    site: SiteConfig;
    owner: OwnerConfig;
 }
 
 export function ensureConfig(): StrictConfiguration {
-   const { site, owner, providers } = config;
+   const { site, owner } = config;
 
-   if (site === undefined || owner === undefined || providers === undefined) {
+   if (site === undefined || owner === undefined) {
       throw new ReferenceError(
          'Invalid model configuration (missing site, owner or provider information)'
       );
    }
-   return { ...config, site, owner, providers };
+   return { ...config, site, owner };
 }
 
 /**

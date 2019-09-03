@@ -136,5 +136,5 @@ function ensureProvider<K extends keyof ProviderConfig>(key: K) {
    if (config.providers === undefined || !is.value(config.providers![key])) {
       throw new ReferenceError(key + ' provider is undefined');
    }
-   return config.providers[key];
+   return config.providers[key]!;
 }

@@ -13,6 +13,7 @@ import {
    ensureMapProvider,
    ensureVideoProvider
 } from './providers';
+import { config } from './config';
 
 test('returns configured post provider', () => {
    let p: PostProvider<MockPostConfig> | undefined = undefined;
@@ -38,9 +39,12 @@ test('returns configured map provider', () => {
    expect(e).toBeUndefined();
 });
 
-test.skip('throws error for unconfigured provider', () => {
+test('throws error for unconfigured provider', () => {
    let p: VideoProvider<any> | undefined = undefined;
    let e: ReferenceError | undefined = undefined;
+
+   delete config.providers!.video;
+
    try {
       p = ensureVideoProvider();
    } catch (err) {
