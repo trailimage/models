@@ -10,10 +10,10 @@ export class Photo implements IMappable<GeoJSON.Point> {
    index: number;
    sourceUrl: string;
    title: string;
-   description: string;
+   description?: string;
    /** Tags applied to the photo. */
    tags: Set<string> = new Set();
-   dateTaken: Date;
+   dateTaken?: Date;
    latitude?: number;
    longitude?: number;
    /** Whether this is the post's main photo. */
@@ -101,10 +101,17 @@ export class Photo implements IMappable<GeoJSON.Point> {
  * @see http://www.wikihow.com/Calculate-Outliers
  */
 export function identifyOutliers(photos: Photo[]) {
-   const fence = boundary(photos.map(p => p.dateTaken.getTime()));
+   const fence = boundary(
+      photos
+         .filter(p => p.dateTaken !== undefined)
+         .map(p => p.dateTaken!.getTime())
+   );
 
    if (fence !== null) {
       for (const p of photos) {
+         if (p.dateTaken === undefined) {
+            continue;
+         }
          const d = p.dateTaken.getTime();
          if (d > fence.max || d < fence.min) {
             p.outlierDate = true;
