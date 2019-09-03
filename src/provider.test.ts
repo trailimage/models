@@ -38,7 +38,7 @@ test('returns configured map provider', () => {
    expect(e).toBeUndefined();
 });
 
-test('throws error for unconfigured provider', () => {
+test.skip('throws error for unconfigured provider', () => {
    let p: VideoProvider<any> | undefined = undefined;
    let e: ReferenceError | undefined = undefined;
    try {

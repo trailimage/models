@@ -14,6 +14,8 @@ import {
 import { ImageConfig } from './config';
 import { Writable } from 'stream';
 import { FeatureCollection } from 'geojson';
+import { Token } from '@toba/oauth';
+import { VideoProvider } from './providers';
 
 const imageConfig: ImageConfig = {
    url: 'http://test.com/image.jpg',
@@ -31,60 +33,46 @@ export interface MockMapConfig extends MapConfig {
    api: string;
 }
 
+export interface MockVideoConfig {
+   api: string;
+}
+
+const mockToken: Token = {
+   access: ''
+};
+
 export class MockPostProvider extends PostProvider<MockPostConfig> {
-   photoBlog(_async = true) {
-      return Promise.resolve(blog);
-   }
+   photoBlog = (_async = true) => Promise.resolve(blog);
+   exif = (_photoID: string): Promise<EXIF> => Promise.resolve(new EXIF());
+   postIdWithPhotoId = (_photoID: string) => Promise.resolve('');
+   photosWithTags = (..._tags: string[]): Promise<Photo[]> =>
+      Promise.resolve([]);
 
-   exif(_photoID: string): Promise<EXIF> {
-      return Promise.resolve();
-   }
-
-   postIdWithPhotoId(_photoID: string): Promise<string> {
-      return null;
-   }
-
-   photosWithTags(..._tags: string[]): Promise<Photo[]> {
-      return null;
-   }
-
-   postInfo(_p: Post): Promise<Post> {
-      return null;
-   }
-
-   postPhotos(_p: Post): Promise<Photo[]> {
-      return null;
-   }
-
-   authorizationURL(): Promise<string> {
-      return null;
-   }
-
-   getAccessToken(_req: any) {
-      return Promise.resolve(null);
-   }
+   postInfo = (_p: Post) => Promise.resolve(new Post());
+   postPhotos = (_p: Post): Promise<Photo[]> => Promise.resolve([]);
+   authorizationURL = (): Promise<string> => Promise.resolve('');
+   getAccessToken = async (_req: any) => mockToken;
 }
 
 export class MockMapProvider extends MapProvider<MockMapConfig> {
-   track(_postKey: string): Promise<FeatureCollection<any>> {
-      return null;
-   }
+   track = (_postKey: string): Promise<FeatureCollection<any>> =>
+      Promise.resolve({
+         type: 'FeatureCollection',
+         features: []
+      });
+   gpx = (_postKey: string, _stream: Writable) => Promise.resolve();
+   authorizationURL = () => Promise.resolve('');
+   getAccessToken = async (_req: any) => mockToken;
+}
 
-   gpx(_postKey: string, _stream: Writable) {
-      return Promise.resolve();
-   }
-
-   authorizationURL(): Promise<string> {
-      return null;
-   }
-
-   async getAccessToken(_req: any) {
-      return Promise.resolve(null);
-   }
+export class MockVideoProvider extends VideoProvider<MockVideoConfig> {
+   authorizationURL = () => Promise.resolve('');
+   getAccessToken = async (_req: any) => mockToken;
 }
 
 export const postProvider = new MockPostProvider();
 export const mapProvider = new MockMapProvider();
+export const videoProvider = new MockVideoProvider();
 
 config.site = {
    domain: 'test.com',
@@ -105,8 +93,11 @@ config.owner = {
 };
 
 config.artistsToNormalize = /^Artist (0|1)/;
-config.providers.post = postProvider;
-config.providers.map = mapProvider;
+config.providers = {
+   post: postProvider,
+   map: mapProvider,
+   video: videoProvider
+};
 config.providerPostSort = Sort.OldestFirst;
 
 interface CategoryData {

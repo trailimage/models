@@ -58,15 +58,32 @@ export interface Configuration {
    /**
     * Data providers the models will use to populate themselves.
     */
-   providers: ProviderConfig;
+   providers?: ProviderConfig;
 
    /**
     * How the provider sorts posts determines how to make them chronological.
     */
    providerPostSort: Sort;
 
+   site?: SiteConfig;
+   owner?: OwnerConfig;
+}
+
+export interface StrictConfiguration extends Configuration {
+   providers: ProviderConfig;
    site: SiteConfig;
    owner: OwnerConfig;
+}
+
+export function ensureConfig(): StrictConfiguration {
+   const { site, owner, providers } = config;
+
+   if (site === undefined || owner === undefined || providers === undefined) {
+      throw new ReferenceError(
+         'Invalid model configuration (missing site, owner or provider information)'
+      );
+   }
+   return { ...config, site, owner, providers };
 }
 
 /**
@@ -75,8 +92,5 @@ export interface Configuration {
 export const config: Configuration = {
    subtitleSeparator: ':',
    maxPhotoMarkersOnMap: 100,
-   providerPostSort: Sort.NewestFirst,
-   site: {},
-   owner: {},
-   providers: { post: null, video: null, map: null }
+   providerPostSort: Sort.NewestFirst
 };

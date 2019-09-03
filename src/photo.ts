@@ -14,8 +14,8 @@ export class Photo implements IMappable<GeoJSON.Point> {
    /** Tags applied to the photo. */
    tags: Set<string> = new Set();
    dateTaken: Date;
-   latitude: number;
-   longitude: number;
+   latitude?: number;
+   longitude?: number;
    /** Whether this is the post's main photo. */
    primary: boolean = false;
    size: { [key: string]: PhotoSize } = {};
@@ -62,6 +62,16 @@ export class Photo implements IMappable<GeoJSON.Point> {
    }
 
    /**
+    * GeoJSON point constructor expect requires populated coordinate array or
+    * `null`.
+    */
+   private get coordinate(): [number, number] | null {
+      return this.longitude !== undefined && this.latitude !== undefined
+         ? [this.longitude, this.latitude]
+         : null;
+   }
+
+   /**
     * Generate GeoJSON for photo feature.
     *
     * @param partKey Optional series part that photo post belongs to, used to
@@ -78,10 +88,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
       return {
          type: geoJSON.Type.Feature,
          properties,
-         geometry: geoJSON.geometry(geoJSON.Type.Point, [
-            this.longitude,
-            this.latitude
-         ])
+         geometry: geoJSON.geometry(geoJSON.Type.Point, this.coordinate)
       } as GeoJSON.Feature<GeoJSON.Point>;
    }
 }

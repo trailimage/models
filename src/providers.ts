@@ -133,9 +133,8 @@ export const ensureVideoProvider = (): VideoProvider<any> =>
  * Return provider or throw a reference error.
  */
 function ensureProvider<K extends keyof ProviderConfig>(key: K) {
-   if (is.value(config.providers[key])) {
-      return config.providers[key];
-   } else {
+   if (config.providers === undefined || !is.value(config.providers![key])) {
       throw new ReferenceError(key + ' provider is undefined');
    }
+   return config.providers[key];
 }

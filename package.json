@@ -25,11 +25,11 @@
       "test": "jest --coverage"
    },
    "devDependencies": {
-      "@toba/develop": "^6.6.11",
+      "@toba/develop": "^6.6.12",
       "@toba/oauth": "^2.0.0",
       "@toba/test": "^4.1.0",
       "@types/geojson": "^7946.0.2",
-      "typescript": "^3.5.0"
+      "typescript": "^3.6.2"
    },
    "repository": {
       "type": "git",
@@ -39,7 +39,7 @@
       "url": "https://github.com/trailimage/models/issues"
    },
    "dependencies": {
-      "@toba/feed": "^3.1.0",
+      "@toba/feed": "^3.1.1",
       "@toba/json-ld": "^3.2.6",
       "@toba/map": "^2.0.0",
       "@toba/tools": "^6.0.0"

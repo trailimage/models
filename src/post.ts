@@ -13,6 +13,9 @@ import {
 import { ensureMapProvider, ensurePostProvider } from './providers';
 import { forPost } from './json-ld';
 import { Writable } from 'stream';
+import { ensureConfig } from './config';
+
+const oldDate = new Date(1900, 0, 1);
 
 export class Post
    implements
@@ -34,8 +37,8 @@ export class Post
    /** Description that includes computed photo and video count. */
    longDescription?: string;
    happenedOn?: Date;
-   createdOn?: Date;
-   updatedOn?: Date;
+   createdOn: Date;
+   updatedOn: Date;
    /**
     * Whether post pictures occurred sequentially in a specific time range as
     * opposed to, for example, a themed set of images from various times.
@@ -230,8 +233,8 @@ export class Post
    empty(): this {
       // from updateInfo()
       this.video = undefined;
-      this.createdOn = undefined;
-      this.updatedOn = undefined;
+      this.createdOn = oldDate;
+      this.updatedOn = oldDate;
       this.photoCount = 0;
       this.description = undefined;
       this.coverPhoto = undefined;
@@ -263,7 +266,7 @@ export class Post
    }
 
    /**
-    * Update cached photo coordinates and overall bounds from photo objets.
+    * Update cached photo coordinates and overall bounds from photo objects.
     *
     * @see https://www.mapbox.com/api-documentation/#static
     */
@@ -287,7 +290,11 @@ export class Post
 
       for (let i = start; i < total; i++) {
          const img = this.photos[i];
-         if (img.latitude > 0) {
+         if (
+            img.latitude !== undefined &&
+            img.longitude !== undefined &&
+            img.latitude > 0
+         ) {
             locations.push([
                parseFloat(img.longitude.toFixed(5)),
                parseFloat(img.latitude.toFixed(5))
@@ -370,26 +377,27 @@ export class Post
     * Details for RSS/Atom feed. Rights default to full copyright.
     */
    rssJSON(): AtomEntry {
+      const { owner, site } = ensureConfig();
       const author: AtomPerson = {
-         name: config.owner.name
+         name: owner.name
       };
 
-      if (is.array(config.owner.urls, 1)) {
-         author.uri = config.owner.urls[0];
+      if (is.array(owner.urls, 1)) {
+         author.uri = owner.urls[0];
       }
 
       return {
-         id: config.site.url + '/' + this.key,
+         id: site.url + '/' + this.key,
          title: this.name(),
-         link: 'http://' + config.site.domain,
+         link: 'http://' + site.domain,
          published: this.createdOn,
          updated: this.updatedOn,
          rights: `Copyright © ${new Date().getFullYear()} ${
-            config.owner.name
+            owner.name
          }. All rights reserved.`,
          summary: this.description,
          author: author,
-         content: config.site.url + '/' + this.key
+         content: site.url + '/' + this.key
       };
    }
 }

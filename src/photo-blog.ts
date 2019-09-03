@@ -3,6 +3,7 @@ import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
 import { geoJSON, IMappable } from '@toba/map';
 import { Post, Category, Photo, EXIF, PostProvider, config } from './index';
 import { ensurePostProvider } from './providers';
+import { ensureConfig } from './config';
 
 /**
  * Slug and cache key which probably differs from the seperator used to display
@@ -178,7 +179,9 @@ export class PhotoBlog
    ): Promise<GeoJSON.FeatureCollection<any>> {
       const photos = await this.photos();
       geo.features = geo.features.concat(
-         photos.filter(p => p.latitude > 0).map(p => p.geoJSON())
+         photos
+            .filter(p => p.latitude !== undefined && p.latitude > 0)
+            .map(p => p.geoJSON())
       );
       return geo;
    }
@@ -484,18 +487,19 @@ export class PhotoBlog
    }
 
    rssJSON(): AtomFeed {
+      const { site, owner } = ensureConfig();
       const author: AtomPerson = {
-         name: config.owner.name
+         name: owner.name
       };
 
       return {
-         id: config.site.url,
-         title: config.site.title,
-         subtitle: config.site.subtitle,
+         id: site.url,
+         title: site.title,
+         subtitle: site.subtitle,
          link: {
-            href: config.site.url
+            href: site.url
          },
-         author: author,
+         author,
          contributor: author,
          generator: {
             name: 'Toba',

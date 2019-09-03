@@ -10,13 +10,14 @@ import {
 } from '@toba/json-ld';
 import { is } from '@toba/tools';
 import { Category, Post, Photo, VideoInfo, blog, config } from './index';
+import { ensureConfig } from './config';
 
 export { serialize } from '@toba/json-ld';
 
-const pathUrl = (path: string) => config.site.url + '/' + path;
+const pathUrl = (path: string) => ensureConfig().site.url + '/' + path;
 
 const postPlace = (post: Post) =>
-   place(config.site.url + '/' + post.key + '/map');
+   place(ensureConfig().site.url + '/' + post.key + '/map');
 
 /**
  * Page prefixed with configured URL.
@@ -26,16 +27,19 @@ const configPage = (path: string = '') => webPage(pathUrl(path));
 /**
  * Configured organization.
  */
-const configOrg = (): JsonLD.Organization =>
-   organization(config.site.title, config.site.companyLogo);
+function configOrg(): JsonLD.Organization {
+   const { site } = ensureConfig();
+   return organization(site.title, site.companyLogo);
+}
 
 export function owner(): JsonLD.Person {
+   const { owner, site } = ensureConfig();
    return ld<JsonLD.Person>(SchemaType.Person, {
-      name: config.owner.name,
-      url: config.site.url + '/about',
-      sameAs: config.owner.urls,
+      name: owner.name,
+      url: site.url + '/about',
+      sameAs: owner.urls,
       mainEntityOfPage: webPage('about'),
-      image: image(config.owner.image)
+      image: image(owner.image)
    });
 }
 
@@ -49,14 +53,14 @@ export function searchAction(): JsonLD.SearchAction {
    const placeHolder = 'search_term_string';
 
    return ld<JsonLD.SearchAction>(SchemaType.SearchAction, {
-      target: config.site.url + '/search?q={' + placeHolder + '}',
+      target: ensureConfig().site.url + '/search?q={' + placeHolder + '}',
       [qi]: 'required name=' + placeHolder
    });
 }
 
 export function discoverAction(post: Post): JsonLD.DiscoverAction {
    return ld<JsonLD.DiscoverAction>(SchemaType.DiscoverAction, {
-      target: config.site.url + '/' + post.key + '/map'
+      target: ensureConfig().site.url + '/' + post.key + '/map'
    });
 }
 
@@ -69,6 +73,12 @@ export function forCategory(
    key: string = category.key,
    homePage = false
 ): JsonLD.Blog | JsonLD.WebPage {
+   if (config.site === undefined) {
+      throw new ReferenceError(
+         'Invalid model configuration (missing site information)'
+      );
+   }
+
    if (homePage) {
       return ld<JsonLD.Blog>(SchemaType.Blog, {
          url: config.site.url,

@@ -24,7 +24,7 @@ test('infers titles, subtitles and keys', () => {
    p.inferTitleAndKey('Simple Title');
    expect(p.title).toBe('Simple Title');
    expect(p.key).toBe('simple-title');
-   expect(p.subTitle).toBeNull();
+   expect(p.subTitle).toBeUndefined();
 
    p.inferTitleAndKey('Series Name: Part Name');
    expect(p.title).toBe('Series Name');
@@ -48,18 +48,20 @@ test('identifies category membership', () => {
 test('writes RSS data', () => {
    const entry2 = post2.rssJSON();
 
-   expect(entry2.id).toBe(config.site.url + '/' + post2.key);
+   expect(config.site).toBeDefined();
+
+   expect(entry2.id).toBe(config.site!.url + '/' + post2.key);
    expect(entry2.summary).toBe(post2.description);
    expect(entry2.title).toBe(post2.name());
 });
 
 test('can be emptied', () => {
    post1.empty();
-   expect(post1.updatedOn).toBeNull();
+   expect(post1.description).toBeUndefined();
 });
 
 test('can be reset', () => {
-   expect(post2.next).not.toBeNull();
+   expect(post2.next).toBeDefined();
    post2.reset();
-   expect(post2.next).toBeNull();
+   expect(post2.next).toBeUndefined();
 });

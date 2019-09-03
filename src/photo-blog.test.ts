@@ -33,7 +33,7 @@ test('links sequential posts', () => {
    expect(post3.previous).toBe(post2);
    expect(post4.next).toBe(post5);
    expect(post4.previous).toBe(post3);
-   expect(post5.next).toBeNull();
+   expect(post5.next).toBeUndefined();
    expect(post5.previous).toBe(post4);
 });
 
@@ -42,7 +42,7 @@ test('connects posts in a series', () => {
    expect(post4.totalParts).toBe(0);
    expect(post2.part).toBe(2);
    expect(post4.part).toBe(0);
-   expect(post4.subTitle).toBeNull();
+   expect(post4.subTitle).toBeUndefined();
    expect(post2.subTitle).toBe('Part 2');
    expect(post1.previousIsPart).toBe(false);
    expect(post2.previousIsPart).toBe(true);
@@ -82,13 +82,13 @@ test('removes a post', () => {
 
    expect(blog.postWithKey(post4.key!)).toBeUndefined();
    expect(post4.previous!.key).toBe(post3.key);
-   expect(post3.next).toBeNull();
+   expect(post3.next).toBeUndefined();
 });
 
 test('ungroups posts from a series', () => {
    post2.ungroup();
 
-   expect(post2.subTitle).toBeNull();
+   expect(post2.subTitle).toBeUndefined();
    expect(post2.isPartial).toBe(false);
    expect(post2.totalParts).toBe(0);
    expect(post2.part).toBe(0);
