@@ -59,7 +59,7 @@ export abstract class PostProvider<T> extends DataProvider<T> {
    /** Retrieve EXIF for single photo. */
    abstract exif(photoID: string): Promise<EXIF>;
    /** Find ID of Post that contains photo with given ID. */
-   abstract postIdWithPhotoId(photoID: string): Promise<string>;
+   abstract postIdWithPhotoId(photoID: string): Promise<string | null>;
    abstract photosWithTags(tags: string | string[]): Promise<Photo[]>;
    abstract postInfo(p: Post): Promise<Post>;
    abstract postPhotos(p: Post): Promise<Photo[]>;

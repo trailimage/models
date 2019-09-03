@@ -348,12 +348,10 @@ export class PhotoBlog
     * Get first post that includes the given photo.
     */
    async postWithPhoto(photo: Photo | string): Promise<Post | undefined> {
-      const id: string = is.text(photo)
-         ? (photo as string)
-         : (photo as Photo).id;
+      const id: string = is.text(photo) ? photo : photo.id;
       const postID = await this.provide.postIdWithPhotoId(id);
 
-      return this.postWithID(postID);
+      return postID === null ? undefined : this.postWithID(postID);
    }
 
    /**
