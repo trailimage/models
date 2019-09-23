@@ -7,6 +7,6 @@
 
 # Usage
 
-```
-yarn add @trailimage/models
+```sh
+npm install @trailimage/models
 ```

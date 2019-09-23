@@ -25,11 +25,11 @@
       "test": "jest --coverage"
    },
    "devDependencies": {
-      "@toba/develop": "^6.6.12",
+      "@toba/develop": "^6.7.3",
       "@toba/oauth": "^2.0.0",
       "@toba/test": "^4.1.13",
       "@types/geojson": "^7946.0.2",
-      "typescript": "^3.6.2"
+      "typescript": "^3.6.3"
    },
    "repository": {
       "type": "git",
