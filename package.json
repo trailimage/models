@@ -27,7 +27,7 @@
    "devDependencies": {
       "@toba/develop": "^6.7.3",
       "@toba/oauth": "^2.0.0",
-      "@toba/test": "^4.1.13",
+      "@toba/test": "^4.1.16",
       "@types/geojson": "^7946.0.2",
       "typescript": "^3.6.3"
    },
