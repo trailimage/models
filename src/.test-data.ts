@@ -52,6 +52,7 @@ export class MockPostProvider extends PostProvider<MockPostConfig> {
    postPhotos = (_p: Post): Promise<Photo[]> => Promise.resolve([]);
    authorizationURL = (): Promise<string> => Promise.resolve('');
    getAccessToken = async (_req: any) => mockToken;
+   clearCache = () => undefined;
 }
 
 export class MockMapProvider extends MapProvider<MockMapConfig> {
@@ -63,11 +64,13 @@ export class MockMapProvider extends MapProvider<MockMapConfig> {
    gpx = (_postKey: string, _stream: Writable) => Promise.resolve();
    authorizationURL = () => Promise.resolve('');
    getAccessToken = async (_req: any) => mockToken;
+   clearCache = () => undefined;
 }
 
 export class MockVideoProvider extends VideoProvider<MockVideoConfig> {
    authorizationURL = () => Promise.resolve('');
    getAccessToken = async (_req: any) => mockToken;
+   clearCache = () => undefined;
 }
 
 export const postProvider = new MockPostProvider();

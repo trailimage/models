@@ -39,6 +39,11 @@ export abstract class DataProvider<T> {
    abstract getAccessToken(req: IncomingMessage): Promise<Token>;
 
    /**
+    * Clear cached API responses.
+    */
+   abstract clearCache(): void;
+
+   /**
     * Apply configuration.
     */
    configure(newConfig: Partial<T>) {
