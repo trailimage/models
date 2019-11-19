@@ -57,6 +57,8 @@ const camera = (text?: string) =>
            .replace('ILCE-7R', 'Sony α7ʀ')
            .replace('ILCE-7RM2', 'Sony α7ʀ II')
            .replace('Sony α7ʀM2', 'Sony α7ʀ II')
+           .replace('Sony ILCE-7RM4', 'Sony α7ʀ IV')
+           .replace('ILCE-7RM4', 'Sony α7ʀ IV')
            .replace('VS980 4G', 'LG G2')
            .replace('XT1060', 'Motorola Moto X')
            .replace('TG-4', 'Olympus Tough TG-3');
@@ -81,6 +83,8 @@ const lens = (text?: string, camera?: string) =>
                  : 'Nikkor 35mm ƒ2.0D'
            )
            .replace('100.0 mm f/2.0', 'Zeiss Makro-Planar T* 2/100 ZF.2')
+           .replace('ZEISS Loxia 2.4/85', 'Zeiss Loxia 2.4/85')
+           .replace('E 21mm F2.8', 'Zeiss Loxia 2.8/21')
            .replace('150.0 mm f/2.8', 'Sigma 150mm ƒ2.8 EX DG HSM APO')
            .replace('90.0 mm f/2.8', 'Tamron 90mm ƒ2.8 SP AF Di')
            .replace('24.0 mm f/3.5', 'Nikkor PC-E 24mm ƒ3.5D ED')
@@ -113,6 +117,7 @@ const software = (text?: string) =>
       ? ''
       : text
            .replace('Photoshop Lightroom', 'Lightroom')
+           .replace(/\s*Classic/, '')
            .replace(/\s*\(Windows\)/, '');
 
 /**
