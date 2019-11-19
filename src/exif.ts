@@ -58,6 +58,7 @@ const camera = (text?: string) =>
            .replace('ILCE-7RM2', 'Sony α7ʀ II')
            .replace('Sony α7ʀM2', 'Sony α7ʀ II')
            .replace('Sony ILCE-7RM4', 'Sony α7ʀ IV')
+           .replace('Sony α7ʀM4', 'Sony α7ʀ IV')
            .replace('ILCE-7RM4', 'Sony α7ʀ IV')
            .replace('VS980 4G', 'LG G2')
            .replace('XT1060', 'Motorola Moto X')
