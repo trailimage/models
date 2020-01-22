@@ -1,6 +1,6 @@
 {
    "name": "@trailimage/models",
-   "version": "3.2.1",
+   "version": "3.2.2",
    "description": "Trail Image models",
    "private": false,
    "author": {
@@ -25,11 +25,11 @@
       "test": "jest --coverage"
    },
    "devDependencies": {
-      "@toba/develop": "^6.7.5",
+      "@toba/develop": "^6.8.0",
       "@toba/oauth": "^2.0.0",
-      "@toba/test": "^4.1.17",
+      "@toba/test": "^4.1.18",
       "@types/geojson": "^7946.0.2",
-      "typescript": "^3.7.3"
+      "typescript": "^3.7.5"
    },
    "repository": {
       "type": "git",
@@ -41,7 +41,7 @@
    "dependencies": {
       "@toba/feed": "^3.1.1",
       "@toba/json-ld": "^3.2.6",
-      "@toba/map": "^2.0.0",
-      "@toba/tools": "^6.10.1"
+      "@toba/map": "^2.6.2",
+      "@toba/tools": "^6.13.4"
    }
 }

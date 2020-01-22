@@ -1,15 +1,15 @@
-import { removeItem, is, mapSet, Sort } from '@toba/tools';
-import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed';
-import { geoJSON, IMappable } from '@toba/map';
-import { Post, Category, Photo, EXIF, PostProvider, config } from './index';
-import { ensurePostProvider } from './providers';
-import { ensureConfig } from './config';
+import { removeItem, is, mapSet, Sort } from '@toba/tools'
+import { ISyndicate, AtomFeed, AtomPerson } from '@toba/feed'
+import { GeoJSON, IMappable } from '@toba/map'
+import { Post, Category, Photo, EXIF, PostProvider, config } from './index'
+import { ensurePostProvider } from './providers'
+import { ensureConfig } from './config'
 
 /**
  * Slug and cache key which probably differs from the seperator used to display
  * the title : subtitle.
  */
-export const seriesKeySeparator = '/';
+export const seriesKeySeparator = '/'
 
 /**
  * Singleton collection of photos grouped into "posts" (called a "set" or
@@ -19,59 +19,59 @@ export const seriesKeySeparator = '/';
 export class PhotoBlog
    implements ISyndicate<AtomFeed>, IMappable<GeoJSON.GeometryObject> {
    /** All categories mapped to their (slug-style) key. */
-   categories: Map<string, Category> = new Map();
+   categories: Map<string, Category> = new Map()
    /**
     * All posts in the blog. These must be stored as an indexed list (`Array`)
     * rather than `Set` so they can be managed as a linked list.
     */
-   posts: Post[] = [];
+   posts: Post[] = []
 
    /**
     * Store previous posts in cache while loading so potential new post sequence
     * can be correctly correlated without having to rebuild each post.
     */
-   private postCache: Post[] = [];
+   private postCache: Post[] = []
 
    /** Photo tags mapped to their slug-style abbreviations. */
-   tags: Map<string, string> = new Map();
+   tags: Map<string, string> = new Map()
 
    /** Whether categories and post summaries have been loaded. */
-   loaded: boolean = false;
+   loaded: boolean = false
 
    /**
     * Whether blog is currently being loaded by a provider. This determines
     * whether posts should be found in the temporary cache.
     */
-   private isLoading: boolean = false;
+   private isLoading: boolean = false
 
    /**
     * Whether all post details have been loaded. Depending on the data provider,
     * the basic blog load may only include post metadata.
     */
-   postInfoLoaded: boolean = false;
+   postInfoLoaded: boolean = false
 
    /** Post keys present prior to current data load. */
-   private hadPostKeys: string[];
+   private hadPostKeys: string[]
 
    /**
     * Keys of posts and categories that changed when data were reloaded from the
     * provider (can be used for cache invalidation).
     */
-   changedKeys: string[] = [];
+   changedKeys: string[] = []
 
    /**
     * Whether the provider's post order should be reversed.
     */
-   private reversePostOrder = false;
+   private reversePostOrder = false
 
    constructor() {
       if (is.value(blog)) {
-         throw new Error('PhotoBlog instance already exists');
+         throw new Error('PhotoBlog instance already exists')
       }
    }
 
    private get provide(): PostProvider<any> {
-      return ensurePostProvider();
+      return ensurePostProvider()
    }
 
    /**
@@ -80,9 +80,9 @@ export class PhotoBlog
     */
    load(emptyIfLoaded = false): Promise<PhotoBlog> {
       if (this.loaded && emptyIfLoaded) {
-         this.empty();
+         this.empty()
       }
-      return this.provide.photoBlog();
+      return this.provide.photoBlog()
    }
 
    /**
@@ -91,15 +91,15 @@ export class PhotoBlog
     * provider.
     */
    beginLoad(): this {
-      this.isLoading = true;
+      this.isLoading = true
       // record post keys before resetting them
       this.hadPostKeys = this.posts
          .filter(p => p.key !== undefined)
-         .map(p => p.key!);
-      this.postCache = this.posts.map(p => p.reset());
-      this.posts = [];
-      this.reversePostOrder = config.providerPostSort == Sort.OldestFirst;
-      return this;
+         .map(p => p.key!)
+      this.postCache = this.posts.map(p => p.reset())
+      this.posts = []
+      this.reversePostOrder = config.providerPostSort == Sort.OldestFirst
+      return this
    }
 
    /**
@@ -110,40 +110,36 @@ export class PhotoBlog
     * ensure synchronicity.
     */
    finishLoad(): this {
-      this.correlatePosts();
+      this.correlatePosts()
 
       if (this.hadPostKeys.length > 0) {
-         let changedKeys: string[] = [];
+         let changedKeys: string[] = []
          this.posts
             .filter(
                p => p.key === undefined || this.hadPostKeys.indexOf(p.key) == -1
             )
             .forEach(p => {
-               console.info(`Found new post "${p.title}"`, { key: p.key });
-               if (p.key !== undefined) {
-                  changedKeys.push(p.key);
-               }
+               console.info(`Found new post "${p.title}"`, { key: p.key })
+               if (p.key !== undefined) changedKeys.push(p.key)
 
                // all post categories will need to be refreshed
-               changedKeys = changedKeys.concat(
-                  Array.from(p.categories.keys())
-               );
+               changedKeys = changedKeys.concat(Array.from(p.categories.keys()))
                // update adjecent posts to correct next/previous links
                if (is.value<Post>(p.next) && p.next.key !== undefined) {
-                  changedKeys.push(p.next.key);
+                  changedKeys.push(p.next.key)
                }
                if (is.value<Post>(p.previous) && p.previous.key !== undefined) {
-                  changedKeys.push(p.previous.key);
+                  changedKeys.push(p.previous.key)
                }
-            });
-         this.changedKeys = changedKeys;
-         this.hadPostKeys = [];
+            })
+         this.changedKeys = changedKeys
+         this.hadPostKeys = []
       }
-      this.isLoading = false;
-      this.loaded = true;
-      this.postCache = [];
+      this.isLoading = false
+      this.loaded = true
+      this.postCache = []
 
-      return this;
+      return this
    }
 
    /**
@@ -153,19 +149,19 @@ export class PhotoBlog
       /** Array of post photo arrays */
       const blogPhotos: Photo[][] = await Promise.all(
          this.posts.map(p => p.getPhotos())
-      );
+      )
 
-      const unique: Photo[] = [];
+      const unique: Photo[] = []
 
       blogPhotos.forEach(postPhotos => {
          postPhotos.forEach(p => {
             if (unique.findIndex(photo => photo.id == p.id) == -1) {
-               unique.push(p);
+               unique.push(p)
             }
-         });
-      });
+         })
+      })
 
-      return unique;
+      return unique
    }
 
    /**
@@ -173,17 +169,17 @@ export class PhotoBlog
     * feature collection.
     */
    async geoJSON(
-      geo: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = geoJSON.features<
+      geo: GeoJSON.FeatureCollection<GeoJSON.GeometryObject> = GeoJSON.features<
          GeoJSON.Point
       >()
    ): Promise<GeoJSON.FeatureCollection<any>> {
-      const photos = await this.photos();
+      const photos = await this.photos()
       geo.features = geo.features.concat(
          photos
             .filter(p => p.latitude !== undefined && p.latitude > 0)
             .map(p => p.geoJSON())
-      );
-      return geo;
+      )
+      return geo
    }
 
    /**
@@ -191,7 +187,7 @@ export class PhotoBlog
     * instance but is useful here when the instance isn't available.
     */
    getEXIF(photoID: string): Promise<EXIF> {
-      return this.provide.exif(photoID);
+      return this.provide.exif(photoID)
    }
 
    /**
@@ -199,9 +195,9 @@ export class PhotoBlog
     * `changedKeys`.
     */
    addAll(...posts: Post[]): this {
-      this.beginLoad();
-      posts.forEach(p => this.addPost(p));
-      return this.finishLoad();
+      this.beginLoad()
+      posts.forEach(p => this.addPost(p))
+      return this.finishLoad()
    }
 
    /**
@@ -214,64 +210,64 @@ export class PhotoBlog
    addPost(p: Post): this {
       if (this.posts.findIndex(e => e.id === p.id) >= 0) {
          // post with same ID has already been added
-         return this;
+         return this
       }
       /**
        * During load the cache is used to look-up posts so ensure it too
        * references the new post.
        */
       const alsoCache =
-         this.isLoading && this.postCache.findIndex(e => e.id === p.id) == -1;
+         this.isLoading && this.postCache.findIndex(e => e.id === p.id) == -1
       /**
        * Whether this post should be linked to adjacent posts.
        */
-      const linkAdjacent = p.chronological && this.posts.length > 0;
+      const linkAdjacent = p.chronological && this.posts.length > 0
 
       if (this.reversePostOrder) {
          // implies posts are ordered oldest-first and need to be switched to
          // newest-first
-         this.posts.unshift(p);
+         this.posts.unshift(p)
          if (alsoCache) {
-            this.postCache.unshift(p);
+            this.postCache.unshift(p)
          }
          if (linkAdjacent) {
-            const prev = this.posts[1];
+            const prev = this.posts[1]
             if (prev.chronological) {
-               p.previous = prev;
-               prev.next = p;
+               p.previous = prev
+               prev.next = p
             }
          }
       } else {
          // added post should be older than those previously added, e.g.
          // [newest, older1, older2, oldest]
-         this.posts.push(p);
-         if (alsoCache) {
-            this.postCache.push(p);
-         }
+         this.posts.push(p)
+
+         if (alsoCache) this.postCache.push(p)
+
          if (linkAdjacent) {
-            const next = this.posts[this.posts.length - 2];
+            const next = this.posts[this.posts.length - 2]
             if (next.chronological) {
-               p.next = next;
-               next.previous = p;
+               p.next = next
+               next.previous = p
             }
          }
       }
 
-      return this;
+      return this
    }
 
    /**
     * Find category with given key.
     */
    categoryWithKey(key: string): Category | undefined {
-      const rootKey = key.includes('/') ? key.split('/')[0] : key;
+      const rootKey = key.includes('/') ? key.split('/')[0] : key
 
       for (const cat of this.categories.values()) {
          if (cat.key == rootKey) {
-            return key != rootKey ? cat.getSubcategory(key) : cat;
+            return key != rootKey ? cat.getSubcategory(key) : cat
          }
       }
-      return undefined;
+      return undefined
    }
 
    /**
@@ -279,28 +275,28 @@ export class PhotoBlog
     * @param withNames Only get keys for named categories
     */
    categoryKeys(...withNames: string[]): string[] {
-      const keys: string[] = [];
+      const keys: string[] = []
 
       if (withNames.length > 0) {
          // get keys only for named categories
          for (const name of withNames) {
             for (const c of this.categories.values()) {
-               const s = c.getSubcategory(name);
+               const s = c.getSubcategory(name)
 
                if (c.title == name) {
-                  keys.push(c.key);
+                  keys.push(c.key)
                } else if (is.value<Category>(s)) {
-                  keys.push(s.key);
+                  keys.push(s.key)
                }
             }
          }
       } else {
          // get keys for all categories
          for (const c of this.categories.values()) {
-            keys.push(c.key, ...mapSet(c.subcategories, s => s.key));
+            keys.push(c.key, ...mapSet(c.subcategories, s => s.key))
          }
       }
-      return keys;
+      return keys
    }
 
    /**
@@ -308,57 +304,56 @@ export class PhotoBlog
     */
    postWithID(id: string): Post | undefined {
       if (is.value(id)) {
-         const searchIn = this.isLoading ? this.postCache : this.posts;
-         return searchIn.find(p => p.id == id);
+         const searchIn = this.isLoading ? this.postCache : this.posts
+         return searchIn.find(p => p.id == id)
       }
-      return undefined;
+      return undefined
    }
 
    /**
     * Find post with given slug. Return `undefined` if not found.
     */
    postWithKey(key: string, partKey: string | null = null): Post | undefined {
-      if (is.value(partKey)) {
-         key += seriesKeySeparator + partKey;
-      }
-      const searchIn = this.isLoading ? this.postCache : this.posts;
-      return searchIn.find(p => p.hasKey(key));
+      if (is.value(partKey)) key += seriesKeySeparator + partKey
+      const searchIn = this.isLoading ? this.postCache : this.posts
+
+      return searchIn.find(p => p.hasKey(key))
    }
 
    /**
     * Array of all post keys.
     */
    postKeys(): string[] {
-      return this.posts.filter(p => p.key !== undefined).map(p => p.key!);
+      return this.posts.filter(p => p.key !== undefined).map(p => p.key!)
    }
 
    /**
     * Remove all blog data.
     */
    empty(): this {
-      this.categories.clear();
-      this.posts = [];
-      this.tags.clear();
-      this.loaded = false;
-      this.postInfoLoaded = false;
-      return this;
+      this.categories.clear()
+      this.posts = []
+      this.tags.clear()
+      this.loaded = false
+      this.postInfoLoaded = false
+      return this
    }
 
    /**
     * Get first post that includes the given photo.
     */
    async postWithPhoto(photo: Photo | string): Promise<Post | undefined> {
-      const id: string = is.text(photo) ? photo : photo.id;
-      const postID = await this.provide.postIdWithPhotoId(id);
+      const id: string = is.text(photo) ? photo : photo.id
+      const postID = await this.provide.postIdWithPhotoId(id)
 
-      return postID === null ? undefined : this.postWithID(postID);
+      return postID === null ? undefined : this.postWithID(postID)
    }
 
    /**
     * All photos with given tags.
     */
    getPhotosWithTags(tags: string | string[]): Promise<Photo[]> {
-      return this.provide.photosWithTags(tags);
+      return this.provide.photosWithTags(tags)
    }
 
    /**
@@ -367,22 +362,22 @@ export class PhotoBlog
     */
    photoTagList(photos: Photo[]): string | undefined {
       // all photo tags in the blog
-      const postTags: Set<string> = new Set();
+      const postTags: Set<string> = new Set()
 
       for (const p of photos) {
-         const photoTags: Set<string> = new Set();
+         const photoTags: Set<string> = new Set()
 
          for (const tagSlug of p.tags) {
             // lookup full tag name from its slug
-            const tagName = this.tags.get(tagSlug);
+            const tagName = this.tags.get(tagSlug)
             if (!is.empty(tagName)) {
-               photoTags.add(tagName);
-               postTags.add(tagName);
+               photoTags.add(tagName)
+               postTags.add(tagName)
             }
          }
-         p.tags = photoTags;
+         p.tags = photoTags
       }
-      return postTags.size > 0 ? Array.from(postTags).join(', ') : undefined;
+      return postTags.size > 0 ? Array.from(postTags).join(', ') : undefined
    }
 
    /**
@@ -391,13 +386,11 @@ export class PhotoBlog
     */
    unload(...keys: string[]): this {
       for (const k of keys) {
-         const p = this.postWithKey(k);
+         const p = this.postWithKey(k)
          // removing post details will force it to reload on next access
-         if (is.value<Post>(p)) {
-            p.empty();
-         }
+         if (is.value<Post>(p)) p.empty()
       }
-      return this;
+      return this
    }
 
    /**
@@ -406,24 +399,18 @@ export class PhotoBlog
     */
    remove(...keys: string[]): this {
       for (const k of keys) {
-         const p = this.postWithKey(k);
-         if (p === undefined) {
-            continue;
-         }
-         if (removeItem(this.posts, p)) {
-            if (is.value<Post>(p.next)) {
-               p.next.previous = undefined;
-            }
-            if (is.value<Post>(p.previous)) {
-               p.previous.next = undefined;
-            }
+         const p = this.postWithKey(k)
 
-            this.categories.forEach(cat => {
-               cat.removePost(p);
-            });
+         if (p === undefined) continue
+
+         if (removeItem(this.posts, p)) {
+            if (is.value<Post>(p.next)) p.next.previous = undefined
+            if (is.value<Post>(p.previous)) p.previous.next = undefined
+
+            this.categories.forEach(cat => cat.removePost(p))
          }
       }
-      return this;
+      return this
    }
 
    /**
@@ -438,57 +425,51 @@ export class PhotoBlog
     * This method is called internally by `finishLoad()`.
     */
    correlatePosts(): this {
-      let parts: Post[] = [];
+      let parts: Post[] = []
 
       for (let i = this.posts.length - 1; i >= 0; i--) {
          // start with oldest post
-         let p = this.posts[i];
+         let p = this.posts[i]
 
-         if (is.empty(p.subTitle)) {
-            // no grouping to be done
-            continue;
-         }
+         // no grouping to be done
+         if (is.empty(p.subTitle)) continue
 
          if (p.next != null) {
-            parts.push(p);
+            parts.push(p)
 
             while (p.next != null && p.next.title == p.title) {
-               p = p.next;
-               parts.push(p);
-               i--;
+               p = p.next
+               parts.push(p)
+               i--
             }
 
             if (parts.length > 1) {
-               parts[0].makeSeriesStart();
+               parts[0].makeSeriesStart()
 
                for (let j = 0; j < parts.length; j++) {
-                  parts[j].part = j + 1;
-                  parts[j].totalParts = parts.length;
-                  parts[j].isPartial = true;
+                  parts[j].part = j + 1
+                  parts[j].totalParts = parts.length
+                  parts[j].isPartial = true
 
-                  if (j > 0) {
-                     parts[j].previousIsPart = true;
-                  }
-                  if (j < parts.length - 1) {
-                     parts[j].nextIsPart = true;
-                  }
+                  if (j > 0) parts[j].previousIsPart = true
+                  if (j < parts.length - 1) parts[j].nextIsPart = true
                }
             } else {
-               p.ungroup();
+               p.ungroup()
             }
-            parts = [];
+            parts = []
          } else {
-            p.ungroup();
+            p.ungroup()
          }
       }
-      return this;
+      return this
    }
 
    rssJSON(): AtomFeed {
-      const { site, owner } = ensureConfig();
+      const { site, owner } = ensureConfig()
       const author: AtomPerson = {
          name: owner.name
-      };
+      }
 
       return {
          id: site.url,
@@ -505,11 +486,11 @@ export class PhotoBlog
          },
          updated: new Date(),
          entry: this.posts.map(p => p.rssJSON())
-      };
+      }
    }
 }
 
 /**
  * `PhotoBlog` singleton
  */
-export const blog = new PhotoBlog();
+export const blog = new PhotoBlog()

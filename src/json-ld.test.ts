@@ -1,10 +1,10 @@
-import '@toba/test';
-import { mockCategories, mockPosts } from './.test-data';
+import '@toba/test'
+import { mockCategories, mockPosts } from './.test-data'
 
-const [post1] = mockPosts();
+const [post1] = mockPosts()
 
 test('Creates link data for posts', () => {
-   const schema = post1.jsonLD();
+   const schema = post1.jsonLD()
 
    expect(schema).toHaveAllProperties(
       'author',
@@ -12,20 +12,20 @@ test('Creates link data for posts', () => {
       'publisher',
       'headline',
       'articleSection'
-   );
+   )
    // schema will contain redundant context properties until serialized
-   expect(schema).toHaveProperty('@context', 'http://schema.org');
-   expect(schema).toMatchSnapshot();
+   expect(schema).toHaveProperty('@context', 'http://schema.org')
+   expect(schema).toMatchSnapshot()
    // expect(schema.name).toBe('Spring Fish & Chips');
    // expect(schema.headline).toBe(schema.name);
    // expect(schema.author).toHaveProperty('name', 'Jason Abbott');
    // expect(schema.publisher).toHaveProperty('name', 'Trail Image');
    // expect(schema.articleSection).toContain('Family');
-});
+})
 
 test('creates link data for categories', () => {
-   expect(mockCategories[0].jsonLD()).toMatchSnapshot();
-});
+   expect(mockCategories[0].jsonLD()).toMatchSnapshot()
+})
 
 // test('serializes link data', () => {
 //    const target =

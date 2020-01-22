@@ -1,32 +1,32 @@
-import { boundary } from '@toba/tools';
-import { geoJSON, IMappable } from '@toba/map';
-import { PhotoSize, EXIF, PostProvider } from './index';
-import { ensurePostProvider } from './providers';
+import { boundary } from '@toba/tools'
+import { GeoJSON, GeoJsonType, IMappable } from '@toba/map'
+import { PhotoSize, EXIF, PostProvider } from './index'
+import { ensurePostProvider } from './providers'
 
 export class Photo implements IMappable<GeoJSON.Point> {
    /** Provider photo ID */
-   id: string;
+   id: string
    /** Position of photo within post. */
-   index: number;
-   sourceUrl: string;
-   title: string;
-   description?: string;
+   index: number
+   sourceUrl: string
+   title: string
+   description?: string
    /** Tags applied to the photo. */
-   tags: Set<string> = new Set();
-   dateTaken?: Date;
-   latitude?: number;
-   longitude?: number;
+   tags: Set<string> = new Set()
+   dateTaken?: Date
+   latitude?: number
+   longitude?: number
    /** Whether this is the post's main photo. */
-   primary: boolean = false;
-   size: { [key: string]: PhotoSize } = {};
+   primary: boolean = false
+   size: { [key: string]: PhotoSize } = {}
    /** Size at which to preview the photo such as in search results. */
-   preview: PhotoSize;
+   preview: PhotoSize
    /** Normal photo size shown within post. */
-   normal: PhotoSize;
+   normal: PhotoSize
    /** Size shown when post photo is clicked for enlargmenet. */
-   big: PhotoSize;
+   big: PhotoSize
 
-   private _exif: EXIF;
+   private _exif: EXIF
 
    /**
     * Whether taken date is an outlier compared to other photos in the same
@@ -36,29 +36,29 @@ export class Photo implements IMappable<GeoJSON.Point> {
     *
     * @see http://www.wikihow.com/Calculate-Outliers
     */
-   outlierDate?: boolean;
+   outlierDate?: boolean
 
    constructor(id: string, index: number) {
-      this.id = id;
-      this.index = index;
+      this.id = id
+      this.index = index
    }
 
    private get load(): PostProvider<any> {
-      return ensurePostProvider();
+      return ensurePostProvider()
    }
 
    /**
     * Comma-delimited list of all tags applied to the photo.
     */
    get tagList(): string {
-      return Array.from(this.tags).join(',');
+      return Array.from(this.tags).join(',')
    }
 
    async EXIF(): Promise<EXIF> {
       if (this._exif === null) {
-         this._exif = await this.load.exif(this.id);
+         this._exif = await this.load.exif(this.id)
       }
-      return this._exif;
+      return this._exif
    }
 
    /**
@@ -68,7 +68,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
    private get coordinate(): [number, number] | null {
       return this.longitude !== undefined && this.latitude !== undefined
          ? [this.longitude, this.latitude]
-         : null;
+         : null
    }
 
    /**
@@ -78,18 +78,18 @@ export class Photo implements IMappable<GeoJSON.Point> {
     * generate link from map info box back to post URL
     */
    geoJSON(partKey?: string): GeoJSON.Feature<GeoJSON.Point> {
-      const properties: MapPhoto = { url: this.size.preview.url };
+      const properties: MapPhoto = { url: this.size.preview.url }
 
       if (partKey !== undefined) {
          // implies GeoJSON for single post
-         properties.title = this.title;
-         properties.partKey = partKey;
+         properties.title = this.title
+         properties.partKey = partKey
       }
       return {
-         type: geoJSON.Type.Feature,
+         type: GeoJsonType.Feature,
          properties,
-         geometry: geoJSON.geometry(geoJSON.Type.Point, this.coordinate)
-      } as GeoJSON.Feature<GeoJSON.Point>;
+         geometry: GeoJSON.geometry(GeoJsonType.Point, this.coordinate)
+      } as GeoJSON.Feature<GeoJSON.Point>
    }
 }
 
@@ -105,17 +105,13 @@ export function identifyOutliers(photos: Photo[]) {
       photos
          .filter(p => p.dateTaken !== undefined)
          .map(p => p.dateTaken!.getTime())
-   );
+   )
 
    if (fence !== null) {
       for (const p of photos) {
-         if (p.dateTaken === undefined) {
-            continue;
-         }
-         const d = p.dateTaken.getTime();
-         if (d > fence.max || d < fence.min) {
-            p.outlierDate = true;
-         }
+         if (p.dateTaken === undefined) continue
+         const d = p.dateTaken.getTime()
+         if (d > fence.max || d < fence.min) p.outlierDate = true
       }
    }
 }
@@ -124,9 +120,9 @@ export function identifyOutliers(photos: Photo[]) {
  * GeoJSON properties for photos.
  */
 export interface MapPhoto {
-   url?: string;
-   title?: string;
-   partKey?: string;
+   url?: string
+   title?: string
+   partKey?: string
    /** Distance from clicked cluster */
-   distance?: number;
+   distance?: number
 }

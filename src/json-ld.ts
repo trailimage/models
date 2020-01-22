@@ -7,40 +7,40 @@ import {
    organization,
    place,
    webPage
-} from '@toba/json-ld';
-import { is } from '@toba/tools';
-import { Category, Post, Photo, VideoInfo, blog, config } from './index';
-import { ensureConfig } from './config';
+} from '@toba/json-ld'
+import { is } from '@toba/tools'
+import { Category, Post, Photo, VideoInfo, blog, config } from './index'
+import { ensureConfig } from './config'
 
-export { serialize } from '@toba/json-ld';
+export { serialize } from '@toba/json-ld'
 
-const pathUrl = (path: string) => ensureConfig().site.url + '/' + path;
+const pathUrl = (path: string) => ensureConfig().site.url + '/' + path
 
 const postPlace = (post: Post) =>
-   place(ensureConfig().site.url + '/' + post.key + '/map');
+   place(ensureConfig().site.url + '/' + post.key + '/map')
 
 /**
  * Page prefixed with configured URL.
  */
-const configPage = (path: string = '') => webPage(pathUrl(path));
+const configPage = (path: string = '') => webPage(pathUrl(path))
 
 /**
  * Configured organization.
  */
 function configOrg(): JsonLD.Organization {
-   const { site } = ensureConfig();
-   return organization(site.title, site.companyLogo);
+   const { site } = ensureConfig()
+   return organization(site.title, site.companyLogo)
 }
 
 export function owner(): JsonLD.Person {
-   const { owner, site } = ensureConfig();
+   const { owner, site } = ensureConfig()
    return ld<JsonLD.Person>(SchemaType.Person, {
       name: owner.name,
       url: site.url + '/about',
       sameAs: owner.urls,
       mainEntityOfPage: webPage('about'),
       image: image(owner.image)
-   });
+   })
 }
 
 /**
@@ -49,19 +49,19 @@ export function owner(): JsonLD.Person {
  * @see https://developers.google.com/structured-data/slsb-overview
  */
 export function searchAction(): JsonLD.SearchAction {
-   const qi = 'query-input';
-   const placeHolder = 'search_term_string';
+   const qi = 'query-input'
+   const placeHolder = 'search_term_string'
 
    return ld<JsonLD.SearchAction>(SchemaType.SearchAction, {
       target: ensureConfig().site.url + '/search?q={' + placeHolder + '}',
       [qi]: 'required name=' + placeHolder
-   });
+   })
 }
 
 export function discoverAction(post: Post): JsonLD.DiscoverAction {
    return ld<JsonLD.DiscoverAction>(SchemaType.DiscoverAction, {
       target: ensureConfig().site.url + '/' + post.key + '/map'
-   });
+   })
 }
 
 /**
@@ -76,7 +76,7 @@ export function forCategory(
    if (config.site === undefined) {
       throw new ReferenceError(
          'Invalid model configuration (missing site information)'
-      );
+      )
    }
 
    if (homePage) {
@@ -88,19 +88,19 @@ export function forCategory(
          mainEntityOfPage: configPage(),
          potentialAction: searchAction(),
          publisher: configOrg()
-      });
+      })
    } else {
-      const schema = webPage(key);
-      let position = 1;
+      const schema = webPage(key)
+      let position = 1
 
-      schema.name = category.title;
-      schema.publisher = configOrg();
-      schema.breadcrumb = [breadcrumb(config.site.url, 'Home', position++)];
+      schema.name = category.title
+      schema.publisher = configOrg()
+      schema.breadcrumb = [breadcrumb(config.site.url, 'Home', position++)]
 
       if (category.key.includes('/')) {
          // implies category is a subscategory
-         const rootKey = category.key.split('/')[0];
-         const rootCategory = blog.categoryWithKey(rootKey);
+         const rootKey = category.key.split('/')[0]
+         const rootCategory = blog.categoryWithKey(rootKey)
 
          if (rootCategory !== undefined) {
             schema.breadcrumb.push(
@@ -109,7 +109,7 @@ export function forCategory(
                   rootCategory.title,
                   position++
                )
-            );
+            )
          }
       }
       schema.breadcrumb.push(
@@ -118,8 +118,8 @@ export function forCategory(
             category.title,
             position
          )
-      );
-      return schema;
+      )
+      return schema
    }
 }
 
@@ -135,7 +135,7 @@ export function forVideo(v: VideoInfo): JsonLD.VideoObject | null {
            description: undefined,
            uploadDate: undefined,
            thumbnailUrl: undefined
-        });
+        })
 }
 
 /**
@@ -144,7 +144,7 @@ export function forVideo(v: VideoInfo): JsonLD.VideoObject | null {
  * @see https://developers.google.com/structured-data/rich-snippets/articles
  */
 export function forPost(p: Post): JsonLD.BlogPosting {
-   const categoryTitle = Array.from(p.categories.keys());
+   const categoryTitle = Array.from(p.categories.keys())
    const schema: JsonLD.BlogPosting = {
       author: owner(),
       name: p.title,
@@ -158,11 +158,11 @@ export function forPost(p: Post): JsonLD.BlogPosting {
       datePublished: p.createdOn,
       dateModified: p.updatedOn,
       articleSection: categoryTitle.join(',')
-   };
+   }
 
    if (p.chronological && p.centroid != null) {
-      schema.locationCreated = postPlace(p);
-      schema.potentialAction = discoverAction(p);
+      schema.locationCreated = postPlace(p)
+      schema.potentialAction = discoverAction(p)
    }
 
    // implement video when full source data is ready
@@ -175,10 +175,10 @@ export function forPost(p: Post): JsonLD.BlogPosting {
    //}
 
    if (is.value<Photo>(p.coverPhoto) && is.value(p.coverPhoto.size.thumb)) {
-      (schema.image as JsonLD.ImageObject).thumbnail = image(
+      ;(schema.image as JsonLD.ImageObject).thumbnail = image(
          p.coverPhoto.size.thumb
-      );
+      )
    }
 
-   return ld<JsonLD.BlogPosting>(SchemaType.BlogPosting, schema);
+   return ld<JsonLD.BlogPosting>(SchemaType.BlogPosting, schema)
 }
