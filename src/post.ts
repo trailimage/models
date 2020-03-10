@@ -44,7 +44,7 @@ export class Post
     * opposed to, for example, a themed set of images from various times.
     */
    chronological: boolean = true
-   private originalTitle: string
+   originalTitle: string
    photosLoaded: boolean = false
    bigThumbURL?: string
    smallThumbURL?: string
