@@ -25,9 +25,9 @@
       "test": "jest --coverage"
    },
    "devDependencies": {
-      "@toba/develop": "^6.8.0",
+      "@toba/develop": "^6.8.1",
       "@toba/oauth": "^2.1.2",
-      "@toba/test": "^4.2.0",
+      "@toba/test": "^4.2.1",
       "@types/geojson": "^7946.0.2",
       "typescript": "^3.8.3"
    },
@@ -42,6 +42,6 @@
       "@toba/feed": "^3.1.1",
       "@toba/json-ld": "^3.2.6",
       "@toba/map": "^2.6.2",
-      "@toba/tools": "^6.13.4"
+      "@toba/tools": "^6.13.5"
    }
 }
