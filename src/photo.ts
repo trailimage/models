@@ -26,7 +26,7 @@ export class Photo implements IMappable<GeoJSON.Point> {
    /** Size shown when post photo is clicked for enlargmenet. */
    big: PhotoSize
 
-   private _exif: EXIF
+   #exif: EXIF
 
    /**
     * Whether taken date is an outlier compared to other photos in the same
@@ -55,10 +55,8 @@ export class Photo implements IMappable<GeoJSON.Point> {
    }
 
    async EXIF(): Promise<EXIF> {
-      if (this._exif === null) {
-         this._exif = await this.load.exif(this.id)
-      }
-      return this._exif
+      if (this.#exif === null) this.#exif = await this.load.exif(this.id)
+      return this.#exif
    }
 
    /**

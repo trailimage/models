@@ -18,9 +18,7 @@ export class EXIF {
    sanitized: boolean = false
 
    sanitize(): EXIF {
-      if (this.sanitized) {
-         return this
-      }
+      if (this.sanitized) return this
 
       if (
          is.value<string>(this.artist) &&
