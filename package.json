@@ -1,6 +1,6 @@
 {
    "name": "@trailimage/models",
-   "version": "3.2.2",
+   "version": "3.2.3",
    "description": "Trail Image models",
    "private": false,
    "author": {
@@ -19,8 +19,8 @@
       "cjs"
    ],
    "scripts": {
-      "build:esm": "./node_modules/.bin/tsc --project ./node_modules/@toba/develop/tsconfig.esm.json",
-      "build:cjs": "./node_modules/.bin/tsc --project ./node_modules/@toba/develop/tsconfig.cjs-min.json",
+      "build:esm": "tsc --project ./node_modules/@toba/develop/tsconfig.esm.json",
+      "build:cjs": "tsc --project ./node_modules/@toba/develop/tsconfig.cjs-min.json",
       "prepublishOnly": "npm run build:esm & npm run build:cjs",
       "test": "jest --coverage"
    },
@@ -29,7 +29,7 @@
       "@toba/oauth": "^2.1.2",
       "@toba/test": "^4.2.2",
       "@types/geojson": "^7946.0.2",
-      "typescript": "^3.8.3"
+      "typescript": "^4.0.0"
    },
    "repository": {
       "type": "git",
@@ -39,7 +39,7 @@
       "url": "https://github.com/trailimage/models/issues"
    },
    "dependencies": {
-      "@toba/feed": "^3.1.1",
+      "@toba/feed": "^3.1.2",
       "@toba/json-ld": "^3.2.6",
       "@toba/map": "^2.6.3",
       "@toba/tools": "^6.13.5"
